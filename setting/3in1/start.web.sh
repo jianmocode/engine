@@ -44,13 +44,13 @@ fi
 
 # 检出代码
 if [ ! -d "/code" ]; then
-	/usr/bin/git clone --single-branch --branch publish https://github.com/trheyi/xpmse.git /code
+	/usr/bin/git clone --single-branch --branch publish https://github.com/jianmocode/engine.git /code
 fi
 
 # 重新检出代码
 if [ ! -f "/code/README.md" ]; then
     rm -rf /code
-	/usr/bin/git clone --single-branch --branch publish https://github.com/trheyi/xpmse.git /code
+	/usr/bin/git clone --single-branch --branch publish https://github.com/jianmocode/engine.git /code
 fi
 
 if [ ! -f "/bin/xpm" ]; then
