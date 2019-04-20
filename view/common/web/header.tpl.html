@@ -1,0 +1,95 @@
+            <!-- Header -->
+            <header id="header-navbar" class="content-mini content-mini-full">
+                <!-- Header Navigation Right -->
+                <ul class="nav-header pull-right ">
+
+                    <li class="hidden-xs">
+                        <div class="btn-group">
+                            <button class="btn btn-default btn-image dropdown-toggle font-w300" data-toggle="dropdown" type="button">
+                                <img src="<?=$_USER['avatarUrl']?>" alt="Avatar">
+                                <?=$_USER['name']?><span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-right">
+                                <!-- <li>
+                                    <a tabindex="-1" href="base_pages_inbox.html">
+                                        <i class="si si-envelope pull-right"></i>
+                                        <span class="badge badge-primary pull-right">3</span>收件箱
+                                    </a>
+                                </li> -->
+                                <li>
+                                    <a tabindex="-1" href="<?=R('core-dept','default','userprofile')?>">
+                                        <i class="si si-user pull-right"></i>
+                                        修改资料
+                                    </a>
+                                </li>
+
+                                <!--
+                                <li class="divider"></li>
+                                <li>
+                                    <a tabindex="-1" href="#">
+                                        <i class="si si-lock pull-right"></i>锁定屏幕
+                                    </a>
+                                </li> 
+                                -->
+                                
+                                <li>
+                                    <a tabindex="-1" href="<?=R('core-dept','account','logout')?>">
+                                        <i class="si si-logout pull-right"></i>退出登录
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    
+                  <!-- <li>
+                           Layout API, functionality initialized in App() -> uiLayoutApi()  
+                        <button class="btn btn-default" data-toggle="layout" data-action="side_overlay_toggle" type="button">
+                            <i class="fa fa-tasks"></i>
+                        </button>
+                    </li>  -->
+
+                    <li class="visible-xs visible-sm">
+                        <!-- Layout API, functionality initialized in App() -> uiLayoutApi() -->
+                        <button class="btn btn-default" data-toggle="layout" data-action="sidebar_toggle" type="button">
+                            <i class="fa fa-navicon"></i>
+                        </button>
+                    </li>
+                    
+
+                </ul>
+                <!-- END Header Navigation Right -->
+
+                <!-- Header Navigation Left -->
+                <ul class="nav-header pull-left">
+
+                    <li class="hidden-xs">
+                        <div class="h4 text-main" style="margin-top:6px;">
+                            <?php if ( $_APP['icontype'] == "img" ) : ?>
+                                <img src="<?=$_APP['icon']?>" style="width:20px;height:20px;margin-right: 5px;margin-top:-5px;" >
+                            <?php else : ?>
+                            <i class="<?=$_APP['icon']?> <?=$_APP['icontype']?>" style="font-size:20px;line-height:20px;margin-right:5px;"> </i>
+                            <?php endif ?>
+
+                            <span class="sidebar-mini-hide font-w300"><?=$_APP['cname']?></span>
+                        </div>
+                    </li>
+                    <li>
+                         <div>
+                            <ol class="breadcrumb push-10-t">
+                                <?php 
+                                foreach ($_CRUMB as $crumb) { 
+                                    if ($crumb['link'] != null) {
+                                ?>
+                                    <li><a class="link-effect font-w300"  href="<?=$crumb['link']?>"><?=$crumb['name']?></a></li>
+                                <?php } else { ?>
+                                <li class="font-w300"><?=$crumb['name']?></li>
+                                <?php  }
+                                }?>
+                            </ol>
+                        </div>
+
+                    </li>
+                </ul>
+                <!-- END Header Navigation Left -->
+            </header> <!-- END Header -->
+            

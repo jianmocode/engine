@@ -1,0 +1,86 @@
+        <?php include_once(tpl('common/web/head')); ?>
+        <?php include_once(tpl('common/web/foot')); ?>
+       
+        <div id="page-container" class="sidebar-l sidebar-o side-scroll header-navbar-fixed <?=$_SIDEBAR_MINI?> main-sidebar">
+           
+           <!-- 左侧菜单-->
+           <?php include_once(tpl('common/web/menu')); ?>
+           <!-- 左侧菜单 结束-->
+
+ 		   <!-- Header Overlay-->
+           <?php include_once(tpl('common/web/header')); ?>
+           <!-- END Header  Overlay-->
+
+            <!-- Main Container -->
+            <main id="main-container" class="width-sidebar">
+
+             <?php 
+             $loadFile = tpl('core/system/web' .$_page);
+             if ( file_exists($loadFile) ) : ?>
+             <?php include_once($loadFile); ?>
+             <?php endif;?>
+
+            </main>
+            <!-- END Main Container -->
+
+            <!-- Footer Overlay-->
+            <?php include_once(tpl('common/web/footer')); ?>
+            <!-- END Footer Overlay-->
+
+            <!-- btn-ajax-post 操作确认对话框 Modal id="_btn-ajax-confirm" -->
+            <?php include_once(tpl('common/web/btn-ajax-post.confirm.mod')); ?>
+                
+            <!-- 应用浏览器 Modal -->
+            <div class="modal fade " id="_app_browser" tabindex="-1" role="dialog" aria-hidden="true"  data-backdrop="static">
+                <div class="modal-dialog modal-dialog-fromtop modal-lg" style="width:61.8%">
+                    <div class="modal-content"></div>
+                </div>
+            </div>
+
+        </div>
+        <!-- END Page Container -->
+
+
+        
+        
+        <!-- Page JS Code -->
+        <script src="/static/assets/js/plugins/select2/select2.full.js"></script>
+        <script src="/static/assets/js/plugins/jquery-validation/jquery.validate.min.js"></script>
+         <script src="/static/assets/js/plugins/easy-pie-chart/jquery.easypiechart.min.js"></script>
+
+        <script src="/static/assets/js/plugins/dropzonejs/dropzone.min.js"></script>
+        <script src="/static/assets/js/plugins/cropper/cropper.min.js"></script>
+
+        <script>
+
+
+            /**
+            * 查看日志弹窗
+            * @param string $service_id 服务ID
+            */
+            function log(){
+                name = name || "";
+                var url = "<?=R('core-system', 'info', 'log')?>";
+                $('#_app_browser .modal-content').html('<div class="text-center" style="padding:40px;"><i class="fa fa-refresh fa-2x fa-spin"></i></div>');
+                $('#_app_browser').modal('show');
+                $('#_app_browser .modal-content').load(url);
+            }
+
+
+            $(function () {
+                // Init page helpers (Table Tools helper)
+                // App.initHelpers('table-tools', { 
+                //     onchange: function ( selectedCheckboxs ){
+                //         if ( selectedCheckboxs.length == 0 ) {
+                //             $('#removeAllMember').hide();
+                //         } else {
+                //             $('#removeAllMember').show();
+                //         }
+                //     }
+                // });
+                // App.initHelpers(['easy-pie-chart']);
+            });
+        </script>
+
+    </body>
+</html>

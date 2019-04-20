@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<title>测试样例</title>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+	<link rel="stylesheet" type="text/css" href="../web.css">
+	<link rel="stylesheet" type="text/css" href="bar.css">
+
+	<script type="text/javascript" src="../../Web.dev.js"></script>
+	<script type="text/javascript" src="../../Page.dev.js"></script>
+	<script type="text/javascript" src="../../getWeb.dev.js"></script>
+
+	<script type="text/javascript" src="../web.js"></script>
+	<script type="text/javascript" src="bar.js"></script>
+
+
+</head>
+<body class="deepblue" >
+
+<template name="text">
+	<div>
+		<label> {{index}}: {{msg}} </label>
+		<label> Time: {{time}} </label>
+	</div>
+</template>
+
+<template name="image">
+	<div>
+		<img src="{{src}}">  
+		<label> {{index}}: {{msg}}  Time: {{time}} </label>
+	</div>
+</template>
+
+<div class="wrapper">
+
+	<div class="{{class}} show" id="vnode-01">
+		<div class="vnode-0101"> 这样好吗？</div>
+	</div>
+
+
+	<div class="title {{hidden}} ">北京你好</div>
+	<div class="content">
+		{{content}}
+	</div>
+
+	<div class="hot" mp:for="{{hots.top}}" mp:for-index="{{idx}}" mp:for-item="{{item}}" >
+		<span class="text-muted"> {{idx}} </span> : {{item.title}} 
+	</div>
+
+	<div class="adv" mp:if="{{hots.0.title == '张三'}}">
+		<div> <a href="#" >我是一条广告 {{author}} 张三 {{test}} </a> </div>
+	</div>
+
+
+	<div class="adv" mp:elif="{{hots.0.title == '李四'}}">
+		<div> <a href="#" >我是一条广告 {{author}} 李四 </a> </div>
+	</div>
+	<div class="adv" mp:else hello="slls" ">
+		<div> <a href="#" >我是一条广告 {{author}} 王五 </a> </div>
+	</div>
+
+	<div class="adv" mp:if="{{true}}">
+		<div> <a href="#" >我是一条广告 true </a> </div>
+	</div>
+
+	<div class="adv" mp:if="{{cook}}">
+		<div> <a href="#" >我是一条广告 true </a> </div>
+	</div>
+
+	<div class="adv" mp:if="{{tim.cook}}">
+		<div> <a href="#" >我是一条广告 true </a> </div>
+	</div>
+
+
+	<template is="{{message.type}}" data="{{message}}"></template>
+
+	<div class="events">
+		<button class="btn" bind:click="hello" > 世界你好 </button>
+	</div>
+
+</div>
+
+	<script language="javascript" type="text/javascript">
+		// document.ready = function( event ) {
+			window.mina.page.$load({name:'load',b:100}, {});
+		// }
+	</script>
+
+
+</body>
+</html>

@@ -1,0 +1,169 @@
+		<?php include_once(tpl('common/web/head')); ?>
+
+		<!-- Page JS Plugins CSS -->
+		<link rel="stylesheet" href="<?=\Xpmse\Conf::G('general/static')?>/assets/js/plugins/slick/slick.min.css">
+		<link rel="stylesheet" href="<?=\Xpmse\Conf::G('general/static')?>/assets/js/plugins/slick/slick-theme.min.css">
+		<link rel="stylesheet" href="<?=\Xpmse\Conf::G('general/static')?>/assets/js/plugins/handsontable/handsontable.full.min.css">
+        <link rel="stylesheet" href="<?=\Xpmse\Conf::G('general/static')?>/assets/js/plugins/smartwizard/css/smart_wizard.min.css" >
+        <link rel="stylesheet" href="<?=\Xpmse\Conf::G('general/static')?>/assets/js/plugins/dropzonejs/dropzone.min.css">
+		
+
+		<!-- foot JS CODE-->
+		<?php include_once(tpl('common/web/foot')); ?>
+		<script src="<?=\Xpmse\Conf::G('general/static')?>/assets/js/plugins/jquery-sortable/sortable.min.js"></script>
+		<script src="<?=\Xpmse\Conf::G('general/static')?>/assets/js/plugins/jquery-validation/jquery.validate.min.js"></script>
+		<script src="<?=\Xpmse\Conf::G('general/static')?>/assets/js/plugins/select2/select2.full.min.js"></script>
+		<script src="<?=\Xpmse\Conf::G('general/static')?>/assets/js/plugins/masked-inputs/jquery.maskedinput.min.js"></script>
+		<script src="<?=\Xpmse\Conf::G('general/static')?>/assets/js/plugins/handsontable/handsontable.full.min.js"></script>
+		<script src="<?=\Xpmse\Conf::G('general/static')?>/assets/js/plugins/handsontable/zeroclipboard/ZeroClipboard.js"></script>
+		<script src="<?=\Xpmse\Conf::G('general/static')?>/assets/js/plugins/smartwizard/js/jquery.smartWizard.min.js"></script>
+		<script src="<?=\Xpmse\Conf::G('general/static')?>/assets/js/plugins/slick/slick.min.js"></script>
+        <script src="<?=\Xpmse\Conf::G('general/static')?>/assets/js/plugins/bootstrap-treeview/bootstrap-treeview.min.js"></script>
+        <script src="<?=\Xpmse\Conf::G('general/static')?>/assets/js/plugins/dropzonejs/dropzone.min.js"></script>
+	
+		<div id="page-container" class="sidebar-l sidebar-o side-scroll header-navbar-fixed sidebar-mini main-sidebar">
+		   
+		   <!-- 左侧菜单-->
+		   <?php include_once(tpl('common/web/menu')); ?><!-- 左侧菜单 结束-->
+		   
+		   <!-- Header Overlay-->
+		   <?php include_once(tpl('common/web/header')); ?><!-- END Header  Overlay-->
+		   
+			<!-- Main Container -->
+			<main id="main-container" class="width-sidebar">
+				<?php include_once(tpl("mina/codemaker/{$action}")); ?>
+			</main>
+
+			<!-- Footer Overlay-->
+		   <?php include_once(tpl('common/web/footer')); ?>
+		   <!-- END Footer Overlay-->
+		</div>
+		<!-- END Page Container -->
+
+		<!-- btn-ajax-post 操作确认对话框 Modal id="_btn-ajax-confirm" -->
+		<?php include_once(tpl('common/web/btn-ajax-post.confirm.mod')); ?>
+		
+		<!-- 应用浏览器 Modal -->
+		<div class="modal fade " id="_app_browser" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+			<div class="modal-dialog modal-dialog-fromtop modal-lg">
+				<div class="modal-content">
+				</div>
+			</div>
+		</div>
+
+
+		<script type="text/javascript">
+
+			/**
+			 * 项目创建/复制/改名弹窗
+			 * @param  {[type]} id [description]
+			 * @return {[type]}    [description]
+			 */
+			function create( id ) {
+				id = id || '';
+				var url = '<?=R("mina", "codemaker", "create", ["id"=>""])?>' + id;
+				$('#_app_browser .modal-content').html('<div class="text-center" style="padding:40px;"><i class="fa fa-refresh fa-2x fa-spin"></i></div>');
+				$('#_app_browser').modal('show');
+				$('#_app_browser .modal-content').load(url);
+            }
+            
+
+            /**
+             * 导入项目弹窗
+             */
+            function importForm() {
+                var url = '<?=R("mina", "codemaker", "import")?>';
+				$('#_app_browser .modal-content').html('<div class="text-center" style="padding:40px;"><i class="fa fa-refresh fa-2x fa-spin"></i></div>');
+				$('#_app_browser').modal('show');
+				$('#_app_browser .modal-content').load(url);
+            }
+
+
+			/**
+			 * 项目部署弹窗
+			 * @param  {[type]} id [description]
+			 * @return {[type]}    [description]
+			 */
+			function deploy( id, name ){
+				name = name || "";
+				var url = '<?=R("mina", "codemaker", "deploy", ["id"=>""])?>' + id + '&name=' + name;
+				$('#_app_browser .modal-content').html('<div class="text-center" style="padding:40px;"><i class="fa fa-refresh fa-2x fa-spin"></i></div>');
+				$('#_app_browser').modal('show');
+				$('#_app_browser .modal-content').load(url);
+			}
+
+
+
+			/**
+			 * 下一步
+			 * @return
+			 */
+			function setOption( code_id ) {
+				
+				if ( typeof code_id == 'undefined') {
+					code_id = $('[name="code"]').val();
+					if ( code_id == null || code_id == false ) {
+						App.notify( '请选择代码模板', 'fa fa-times','danger');
+						return;
+					}
+				}
+				var url = "<?=R('mina', 'codemaker', 'setOption', ['code_id'=>''])?>";
+				window.location = url + code_id;
+			}
+
+
+
+
+			$(function(){
+
+				// 取消导航浮动
+				$('#header-navbar').css('position', 'static');
+				$('main').css('padding-top', '0px');
+
+				// 流程提示浮动
+				$(window).scroll(function(){
+
+					var offset = 120;
+					var pos = $(document).scrollTop();
+
+					if ( pos > offset ) {  // 固定
+
+						var tw = $('.block-wizard-header').outerWidth();
+						$('.block-wizard-header').css('width', tw + 'px' );
+						$('.block-wizard-header').css('position','fixed');
+						$('.block-wizard-header').css('z-index',400);
+						$('.block-wizard-header').css('margin-top', -132 + 'px');
+						$('.block-wizard-header').css('box-shadow', '0 0 12px rgba(0,0,0,0.1)');
+
+						// NAV
+						var navtw = $('.block-wizard-nav').outerWidth();
+						$('.block-wizard-nav').css('width', navtw + 'px' );
+						$('.block-wizard-nav').css('z-index',400);
+						$('.block-wizard-nav').css('position','fixed');
+						$('.block-wizard-nav').css('margin-top', -70 + 'px');
+
+					} else {  // 恢复原貌
+						$('.block-wizard-header').css('position','static');
+						$('.block-wizard-header').css('width', '' );
+						$('.block-wizard-header').css('margin-top', "");
+						$('.block-wizard-header').css('box-shadow', '');
+
+						// NAV
+						$('.block-wizard-nav').css('position','static');
+						$('.block-wizard-nav').css('width', '' );
+						$('.block-wizard-nav').css('margin-top', "");
+
+					}
+				})
+
+				$('.block-wizard-content').css('minHeight', $(document).outerHeight() );
+
+			});
+		</script>
+
+		
+
+	</body>
+</html>
+
+

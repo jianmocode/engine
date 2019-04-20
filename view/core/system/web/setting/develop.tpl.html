@@ -1,0 +1,162 @@
+<div class="block-content">
+
+    <!-- Panel Group -->
+    <div id="develop" class="panel-group">
+
+        <!-- 管理工具  -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <a class="accordion-toggle" data-toggle="collapse" width="80%" data-parent="#develop" href="#develop_tools"> 管理工具 </a>
+                </h3>
+            </div>
+            <div id="develop_tools" class="panel-collapse collapse in">
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <td>日志系统</td>
+                            <td class="text-center" style="width: 200px;">
+                                <div class="btn-group">
+                                    <button class="btn btn-xs btn-primary font-w300 push-15-r" type="button" data-toggle="tooltip" title="Edit Client">
+                                        <i class="fa fa-refresh"></i> 使用
+                                    </button>
+
+                                    <button class="btn btn-xs btn-danger font-w300" type="button" data-toggle="tooltip" title="Edit Client">
+                                        <i class="fa fa-close"></i> 停用
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>PHPMyAdmin</td>
+                            <td class="text-center">
+                                <div class="btn-group">
+                                    <button class="btn btn-xs btn-primary font-w300 push-15-r" type="button" data-toggle="tooltip" title="Edit Client">
+                                        <i class="fa fa-refresh"></i>  使用
+                                    </button>
+
+                                    <button class="btn btn-xs btn-danger font-w300" type="button" data-toggle="tooltip" title="Edit Client">
+                                        <i class="fa fa-close"></i> 停用
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>ES 管理 </td>
+                            <td class="text-center">
+                                <div class="btn-group">
+                                    <button class="btn btn-xs btn-primary font-w300 push-15-r" type="button" data-toggle="tooltip" title="Edit Client">
+                                        <i class="fa fa-refresh"></i>  使用
+                                    </button>
+
+                                    <button class="btn btn-xs btn-danger font-w300" type="button" data-toggle="tooltip" title="Edit Client">
+                                        <i class="fa fa-close"></i> 停用
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>ES SQL查询器 </td>
+                            <td class="text-center">
+                                <div class="btn-group">
+                                    <button class="btn btn-xs btn-primary font-w300 push-15-r" type="button" data-toggle="tooltip" title="Edit Client">
+                                        <i class="fa fa-refresh"></i>  使用
+                                    </button>
+
+                                    <button class="btn btn-xs btn-danger font-w300" type="button" data-toggle="tooltip" title="Edit Client">
+                                        <i class="fa fa-close"></i> 停用
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </div> <!-- END 管理工具 -->
+
+
+        <!-- 开发调试选项  -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <a class="accordion-toggle" data-toggle="collapse" width="80%" data-parent="#develop" href="#develop_options"> 开发调试选项 </a>
+                </h3>
+            </div>
+            <div id="develop_options" class="panel-collapse collapse">
+                <table class="table ">
+
+                    <tbody>
+                        <tr>
+                            <td style="vertical-align:middle">启用调试模式</td>
+                            <td class="text-center">
+                                <div class="btn-group pull-right push-10-r">
+                                    <label class="css-input switch switch-sm switch-primary">
+                                        <span class="push-10-r"></span>  <input type="checkbox" > <span></span> 
+                                    </label>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="vertical-align:middle">向XpmSE通报异常</td>
+                            <td class="text-center">
+                                <div class="btn-group pull-right push-10-r">
+                                    <label class="css-input switch switch-sm switch-primary">
+                                    <span class="push-10-r"></span>  <input type="checkbox" > <span></span> 
+                                    </label>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div> <!-- END 开发调试选项 -->
+
+
+        <!-- 数据表管理  -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <a class="accordion-toggle" data-toggle="collapse" width="80%" data-parent="#develop" href="#data_admin"> 数据表管理 </a>
+                </h3>
+            </div>
+            <div id="data_admin" class="panel-collapse collapse">
+                <table class="table ">
+                    <tbody>
+                        <?php 
+                        $tabs = [
+                            '部门数据表 (Dept)' => R('core-system','scaffold','index',['model_name'=>'Dept']),
+                            '用户数据表 (DUser)' => R('core-system','scaffold','index',['model_name'=>'DUser']),
+                            '应用数据表 (DApp)' => R('core-system','scaffold','index',['model_name'=>'DApp']),
+                            '开放API数据表 (DApi)' => R('core-system','scaffold','index',['model_name'=>'DApi']),
+                            'ACL权限数据表 (DAcl)' => R('core-system','scaffold','index',['model_name'=>'DAcl'])
+                        ];
+                        foreach ($tabs as $name=>$link): ?>
+                        <tr>
+                            <td style="vertical-align:middle"><?=$name?></td>
+                            <td class="text-center">
+                                <div class="btn-group pull-right push-10-r">
+                                    <a href="<?=$link?>" class="btn btn-sm btn-primary">管理</a>
+                                </div>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+
+                    </tbody>
+                </table>
+            </div>
+        </div> <!-- END 数据表管理 -->
+
+
+        <div class="row push-20-t"></div>
+
+    </div> <!-- END Panel Group -->
+
+</div>
+
+<script type="text/javascript"></script>
+
+

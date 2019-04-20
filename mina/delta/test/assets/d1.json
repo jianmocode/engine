@@ -1,0 +1,331 @@
+{
+  "ops": [
+    {
+      "insert": "我是一个一级标题"
+    },
+    {
+      "attributes": {
+        "header": 1
+      },
+      "insert": "\n"
+    },
+    {
+      "insert": "我是一个二级标题"
+    },
+    {
+      "attributes": {
+        "header": 2
+      },
+      "insert": "\n"
+    },
+    {
+      "insert": "我是一个三级标题"
+    },
+    {
+      "attributes": {
+        "header": 3
+      },
+      "insert": "\n"
+    },
+    {
+      "insert": "我是一个四级标题"
+    },
+    {
+      "attributes": {
+        "header": 4
+      },
+      "insert": "\n"
+    },
+    {
+      "insert": "我是一个五级标题"
+    },
+    {
+      "attributes": {
+        "header": 5
+      },
+      "insert": "\n"
+    },
+    {
+      "insert": "我是一个六级标题"
+    },
+    {
+      "attributes": {
+        "header": 6
+      },
+      "insert": "\n"
+    },
+    {
+      "insert": "\n"
+    },
+    {
+      "attributes": {
+        "size": "20px"
+      },
+      "insert": "我是一个自定义 20px 号字"
+    },
+    {
+      "insert": "\n"
+    },
+    {
+      "attributes": {
+        "size": "36px"
+      },
+      "insert": "我是一个自定义 36px 号字"
+    },
+    {
+      "insert": "\n"
+    },
+    {
+      "attributes": {
+        "link": "http://www.baidu.com"
+      },
+      "insert": "我是一个超链接"
+    },
+    {
+      "insert": "\n我是一段引用"
+    },
+    {
+      "attributes": {
+        "blockquote": true
+      },
+      "insert": "\n"
+    },
+    {
+      "insert": "引用"
+    },
+    {
+      "attributes": {
+        "blockquote": true
+      },
+      "insert": "\n"
+    },
+    {
+      "insert": "\n"
+    },
+    {
+      "insert": {
+        "divider": true
+      }
+    },
+    {
+      "insert": "<?php "
+    },
+    {
+      "attributes": {
+        "code-block": true
+      },
+      "insert": "\n"
+    },
+    {
+      "insert": "echo \"Hello The world\";"
+    },
+    {
+      "attributes": {
+        "code-block": true
+      },
+      "insert": "\n"
+    },
+    {
+      "insert": "?>"
+    },
+    {
+      "attributes": {
+        "code-block": true
+      },
+      "insert": "\n"
+    },
+    {
+      "insert": "\n"
+    },
+    {
+      "insert": {
+        "formula": "e=mc^2"
+      }
+    },
+    {
+      "insert": " \n\n"
+    },
+    {
+      "attributes": {
+        "bold": true
+      },
+      "insert": "我是粗体字"
+    },
+    {
+      "insert": "\n"
+    },
+    {
+      "attributes": {
+        "italic": true
+      },
+      "insert": "我是斜体字"
+    },
+    {
+      "insert": "\n"
+    },
+    {
+      "attributes": {
+        "underline": true
+      },
+      "insert": "我是下划线"
+    },
+    {
+      "insert": "\n"
+    },
+    {
+      "attributes": {
+        "strike": true
+      },
+      "insert": "我是删除线"
+    },
+    {
+      "insert": "\n"
+    },
+    {
+      "attributes": {
+        "color": "#e60000"
+      },
+      "insert": "我是红色字体"
+    },
+    {
+      "insert": "\n"
+    },
+    {
+      "attributes": {
+        "background": "#e60000",
+        "color": "#ffffff"
+      },
+      "insert": "我是白色字体红色背景"
+    },
+    {
+      "insert": "\n我居中对齐"
+    },
+    {
+      "attributes": {
+        "align": "center"
+      },
+      "insert": "\n"
+    },
+    {
+      "insert": "我靠右侧对齐"
+    },
+    {
+      "attributes": {
+        "align": "right"
+      },
+      "insert": "\n"
+    },
+    {
+      "insert": "我两端对齐"
+    },
+    {
+      "attributes": {
+        "align": "justify"
+      },
+      "insert": "\n"
+    },
+    {
+      "insert": "我是有序列表一"
+    },
+    {
+      "attributes": {
+        "align": "justify",
+        "list": "ordered"
+      },
+      "insert": "\n"
+    },
+    {
+      "insert": "我是有序列表二"
+    },
+    {
+      "attributes": {
+        "align": "justify",
+        "list": "ordered"
+      },
+      "insert": "\n"
+    },
+    {
+      "insert": "我是有序列表三"
+    },
+    {
+      "attributes": {
+        "align": "justify",
+        "list": "ordered"
+      },
+      "insert": "\n"
+    },
+    {
+      "attributes": {
+        "align": "justify"
+      },
+      "insert": "\n"
+    },
+    {
+      "insert": "我是无序列表一"
+    },
+    {
+      "attributes": {
+        "align": "justify",
+        "list": "bullet"
+      },
+      "insert": "\n"
+    },
+    {
+      "insert": "我是无序列表二"
+    },
+    {
+      "attributes": {
+        "align": "justify",
+        "list": "bullet"
+      },
+      "insert": "\n"
+    },
+    {
+      "insert": "我是无序列表三"
+    },
+    {
+      "attributes": {
+        "align": "justify",
+        "list": "bullet"
+      },
+      "insert": "\n"
+    },
+    {
+      "insert": "我向右侧缩进"
+    },
+    {
+      "attributes": {
+        "align": "justify",
+        "indent": 2
+      },
+      "insert": "\n"
+    },
+    {
+      "insert": "我向左缩进"
+    },
+    {
+      "attributes": {
+        "align": "justify",
+        "indent": 1
+      },
+      "insert": "\n\n"
+    },
+    {
+      "insert": "我是一张图片"
+    },
+    {
+      "attributes": {
+        "align": "justify"
+      },
+      "insert": "\n\n"
+    },
+    {
+      "insert": {
+        "image": "/static-file/media/2017/07/11/b2863f6916c7ca491d1871936210e178.png"
+      }
+    },
+    {
+      "insert": "\n\n（全文完）\n\n"
+    }
+  ]
+}

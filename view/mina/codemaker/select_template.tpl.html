@@ -1,0 +1,174 @@
+<style type="text/css">
+
+	.block-wizard-header {
+		background: #ffffff;
+	}
+	.template-item {
+		display: inline-block;
+		border: 1px solid #e9e9e9;
+		width: 330px;
+		margin: 20px 20px 20px 20px;
+		cursor: pointer;
+	}
+	.template-item:hover,  .template-item.active {
+		/*border-width: 1px;*/
+		border-color: #5c90d2;
+	}
+
+	.template-item .block-content {
+		cursor: pointer;
+	}
+
+	.template-item .block-content p {
+		margin-bottom: 0px;
+	}
+</style>
+
+<div class="content">
+	<div class="row">
+		<div class="col-xs-8">
+			<ol class="breadcrumb  font-s14">
+				<li> <a href="<?=R('mina', 'codemaker', 'history')?>"> <i class="fa fa-codepen"></i> 项目列表 </a> </li>
+				<li> <?=$history['name']?> ( <?=$history['history_id']?> ) </li>
+			</ol>
+		</div>
+		<div class="col-xs-4 text-right  font-s14">
+			<a href="<?=R('mina', 'codemaker', 'scan')?>" class="push-10-r"> <i class="fa fa-search"></i> 扫描 </a>
+			<a href="javascript:create();" class="push-10-r"> <i class="fa fa-plus"></i> 新建 </a>
+		</div>
+	</div>
+
+	<div class="block push-20-t">
+		<div class="block-wizard-header">
+			<ul class="col-xs-9">
+				<li class="active" > <a href="javascript:void(0);"> 第一步: 选择母版</a> </li>
+				<li class="" > <a href="javascript:setOption();">第二步: 设定选项</a></li>
+				<li>第三步: 生成代码</li>
+			</ul>
+		</div>
+
+		<div class="block-content  block-wizard-content block-content-full row">
+			
+			<?php if( $codes['total'] > 0 ):?>
+			<?php foreach($codes["data"] as $code ) : ?>
+			<div class="template-item" data-id="<?=$code['code_id']?>">
+				<label class="css-input css-checkbox css-checkbox-lg css-checkbox-danger" style="position:absolute;z-index: 200; margin-left:290px; margin-top:10px;">
+					<input type="checkbox" class="item-checkbox" name="item-<?=$code['code_id']?>"><span></span>
+				</label>
+
+				<div class="js-slider slick-nav-white slick-nav-hover remove-margin-b hidden">
+					<?php foreach($code["images"] as $img): ?>
+					<div>
+						<img class="img-responsive"  src="<?=$img['url']?>" alt="">
+					</div>
+					<?php endforeach; ?>
+				</div>
+
+				<div class="block-content">
+					<div class="row items-push text-center">
+						<div class="col-xs-12 text-left">
+							<h5 class="font-w300"> <?=$code["cname"]?> </h5>
+							<p class="push-5-t"><?=$code["summary"]?> </p>
+							
+						</div>
+					</div>
+				</div>
+			</div>
+			<?php endforeach; ?>
+
+			<div class="col-xs-12">
+				<ul class="pagination font-s16">
+					<?php if ( $codes['prev'] !== false): ?>
+					<li>
+						<a href="javascript:search('page', '<?=$articles['prev']?>' )">
+							<i class="fa fa-angle-double-left"></i>
+						</a>
+					</li>
+					<?php endif;?>
+
+					<?php for( $i=1; $i<=$codes['last_page']; $i++) :?>
+					<li class="<?=($i==$codes['curr'])? 'active': ''?>" >
+						<a href="javascript:search('page', '<?=$i?>' )"><?=$i?></a>
+					</li>
+					<?php endfor; ?>
+
+					<?php if ( $codes['next']  !== false): ?>
+					<li>
+						<a href="javascript:search('page', '<?=$codes['next']?>' )">
+							<i class="fa fa-angle-double-right"></i>
+						</a>
+					</li>
+					<?php endif;?>
+				</ul>
+			</div>
+			
+			<?php else : ?>
+			<p class="font-s16 push-15-t push-15-l"> 
+				没到找程序母版。请上传后点击 <a href="<?=R('mina', 'codemaker', 'scan')?>"> 扫描已购母版</a> 更新。
+				您也可以可到 <a href="<?=R('core-system', 'appmanager', 'index')?>"> 应用商店</a> 购买程序模板。
+			</p>
+			<?php endif; ?>
+
+		</div>
+	</div> <!--  END Block  -->
+</div> <!-- END content -->
+
+<!-- 功能操作面板-->
+<div class="block block-quickpanel" style="margin-bottom: 20px;" >
+	<div class="block-quickpanel-content" >
+		<div class="row">
+			<div class="col-xs-12 text-center" style="padding:20px;">
+				<input type="hidden" name="code" value="" / >
+				<button class="btn btn-primary btn-lg btn-minw push-20-r disabled" disabled> <i class="fa fa-angle-double-left"></i> 上一步  </button>
+				<a class="btn btn-primary btn-lg btn-minw" href="javascript:setOption();"> 下一步 <i class="fa fa-angle-double-right"></i> </a>
+			</div>
+		</div>
+	</div>
+	<div class="bg-primary text-white text-center bottom-line"></div>   
+</div><!-- END 功能操作面板-->
+
+
+<script type="text/javascript">
+
+
+
+
+/**
+ * 选中代码模板
+ * @param  {[type]} id [description]
+ * @return {[type]}    [description]
+ */
+function selectCode( id ) {
+	$('.item-checkbox').prop('checked', false);
+	$('[name="item-'+ id +'"]').prop('checked', true );
+	$('[name="code"]').val( id );
+}
+
+
+/**
+ * 搜索
+ * @todo 按条件检索
+ */
+function search( key, value ) {
+	var url = "<?=R('mina', 'codemaker', 'selectTemplate' , ['page'=>''])?>";
+	url = url + value;
+	window.location = url;
+}
+
+$(function(){
+	App.initHelpers(['slick']);
+
+	$('.js-slider').removeClass('hidden');
+
+	// 切换code 
+	$('.template-item').click(function(){
+		var id = $(this).attr('data-id');
+		selectCode(id);
+	});
+
+	// 默认选中
+	<?php if ( !empty($code_id) ) : ?>
+		selectCode("<?=$code_id?>");
+	<?php endif; ?>
+});
+</script>

@@ -1,0 +1,202 @@
+<div class="block block-themed remove-margin">
+	<div class="block-header bg-primary">
+		<ul class="block-options">
+			<li>
+				 <button type="button" onclick="$('#_app_browser').modal('hide');"><i class="fa fa-times"></i></button>
+			</li>
+		</ul>
+		<h3 class="block-title"> <i class="fa fa-arrow-right"></i> <?=$app['cname']?> </h3>
+	</div>
+	<div class="block-content" style="padding-top:10px;padding-bottom: 20px;">
+		<div class="list-group-item clearfix" style="border: 0px;">
+			<a class="item item-rounded pull-left push-10-r bg-info" href="<?=$app['homepage']?>" target="_blank">
+				<?php if ($app['icontype']=="img") : ?>
+					<img src="<?=$app['image']['light']?>" style="width:48px;height:48px;" >
+				<?php else:  ?>
+					<i class="<?=$app['icontype']?> <?=$app['icon']?> text-white-op"></i>
+				<?php endif;  ?>
+			</a>
+
+			<div class="push-5 clearfix pull-right " style="min-width:300px;width:90%;">
+				<div class="text-danger pull-right font-s16 status-text">
+					<?=sprintf('%.2f', $app['price']/100);?> 元/<?=$app['unit']?>
+				</div>
+				<a class="font-w600 font-s16" href="<?=$app['homepage']?>" target="_blank"><?=$app['cname']?></a>
+				<span class="text-muted font-s16"><?=$app['version']?></span>
+				<div class="font-s14 text-muted push-5-t app-intro" style="min-height: 36px;">
+					<?=$app['detail']?>
+				</div>
+			</div>
+		</div>
+
+		<hr class=" remove-padding" />
+
+		<form class="form-horizontal buyform" method="post" style="padding-top:20px;" >
+			<div class="form-group">
+				<label class="col-md-3 control-label input-lg" for="host">授权域</label>
+				<div class="col-md-7">
+					<input name="host" class="form-control input-lg disabled" disabled value="<?=$_SERVER['HOST']?>">
+					<div class="help-block text-right">绑定此域名，不可更改。</div>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="col-md-3 control-label input-lg" for="paycode">付款码</label>
+				<div class="col-md-7">
+					<input name="paycode" class="form-control input-lg "  value="">
+					<div class="help-block message  text-right hidden" ></div>
+					<div class="help-block text-right helper">请联系销售顾问索要付款码。
+						<a href="#" 
+						   data-toggle="popover" 
+						   data-placement="right" 
+						   data-html="true"
+						   title="" 
+						   data-content='
+						   		<div style="padding:10px;width:240px;">
+						   			<p>销售顾问: <?=$app["contact_name"]?> </p>
+						   			<p>联系电话: <?=$app["contact_mobile"]?> </p>
+						   			<p> 微信: <?=$app["contact_wxid"]?> </p>
+						   			<p>
+						   				<img src=" <?=$app["contact_wxqr"]?>" width="220">
+						   			</p>
+						   			<p>客服电话: <?=$app["service_phone"]?> </p>
+						   		</div>
+						   '>
+						查看联系方式</a> 
+					</div>
+					
+				</div>
+			</div>
+			
+			<div class="form-group">
+				<label class="col-md-3 control-label input-lg" for="terms"></label>
+				<div class="col-md-7">
+					<label class="css-input css-checkbox-md css-checkbox css-checkbox-primary font-s14">
+						<input type="checkbox" name="terms" ><span></span> 我已阅读并接受服务条款 
+						<a 
+							href='<?=R("core-system", "appmanager", "storeTerms", ["id"=>$app["appid"]])?>'  
+							target="_blank" class="push-15-l"> <i class="glyphicon glyphicon-list-alt"></i> 服务条款
+						</a>
+					</label>
+					<div class="help-block message hidden" ></div>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="col-md-3 control-label input-lg" for="host"></label>
+				<div class="col-md-7">
+					<input name="id"  value="<?=$app['appid']?>" type="hidden">
+					<button class="btn btn-lg btn-primary checkPaycodeAndDownload fn-action" name="download" type="button">立即下载</button>
+					<div class="help-block message font-s16 hidden" ></div>
+				</div>
+			</div>
+
+		</form>
+		
+	</div>
+</div>
+<script type="text/javascript">
+	$(function(){
+
+		App.init('uiInit');
+
+		function clean() {
+			$('.has-error').removeClass('has-error');
+			$('.message', '.buyform').html('');
+		}
+
+		function error( message, field ) {
+			field = field || null;
+			if ( field  != null ) {
+				var $input = $('[name="' + field +'"]');
+				var $group = $input.parent().parent();
+				var $helper = $('.helper', $group);
+				var $message = $('.message', $group);
+
+				// 添加信息
+				$group.addClass('has-error');
+				// $helper.addClass('hidden');
+				$message.html( message );
+				$message.removeClass('hidden');
+			}
+		}
+
+
+		function success( message, timer ) {
+			timer = timer || 5;
+
+			$('.buyform').html(
+				'<div class="form-group">' +
+					'<div class="col-xs-12 text-center font-s18 text-success">' +
+						message +
+						'<div class="text-muted font-s14 push-10-t">'+
+							'<span class="timer">'+timer+'</span>秒后转向 <a href="javascript:detail(\'<?=$app["appid"]?>\')">查看下载进度</a> ' +
+						'</div>' +
+					'</div>' +
+				'</div>');
+
+			setTimeout(function(){
+				timer = timer - 1;
+				if ( timer <= 0 ) {
+					detail('<?=$app["appid"]?>');
+					return;
+				}
+				success( message, timer );
+			}, 1000);
+
+
+		}
+
+		$('.checkPaycodeAndDownload').click(function( event ){
+
+			clean();
+			var errorflag = false;
+			if ( !$('[name="terms"]').prop('checked') ) {
+				error('请阅读接受服务条款', 'terms');
+				errorflag = true;
+			}
+
+			if ( $('[name="paycode"]').val() == '' ) {
+				error('请填写付款码', 'paycode');
+				errorflag  = true;
+			}
+
+			if ( errorflag ) { 
+				return; 
+			}
+
+			var api = '<?=R("core-system", "appmanager", "storeCheckPaycodeAndDownload")?>';
+			var data = $('.buyform').serializeData();
+
+			$('.fn-action').attr('disabled', 'disabled').addClass('disabled');
+			$.post( api, data,  function(data, textStatus, xhr) {
+
+				$('.fn-action').removeAttr('disabled').removeClass('disabled');
+
+				if ( data['code'] != undefined && data['code'] != 0 ) {
+					data['message'] = data['message'] || '服务端错误';
+					error( data['message'], 'download');
+					return;
+				}
+				success('购买成功, 正在下载应用...');
+				
+				// console.log( data );
+			}, 'json').error( function(xhr, status, statusText ) {
+				$('.fn-action').removeAttr('disabled').removeClass('disabled');
+				error( '网络错误 (' + statusText + ')', 'download');
+			});
+
+
+			// error('请接受服务条款', 'terms');
+			// error('付款码不正确', 'paycode');
+			// success('购买成功, 正在下载应用...');
+		})
+	});
+</script>
+
+
+
+
+
+
+

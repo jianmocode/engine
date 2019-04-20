@@ -1,0 +1,402 @@
+{
+  "ops": [
+    {
+      "insert": "这是一个标题"
+    },
+    {
+      "attributes": {
+        "header": 1
+      },
+      "insert": "\n"
+    },
+    {
+      "attributes": {
+        "header": 2
+      },
+      "insert": "\n"
+    },
+    {
+      "insert": "这是一个二级标题"
+    },
+    {
+      "attributes": {
+        "header": 2
+      },
+      "insert": "\n"
+    },
+    {
+      "insert": "这是一个三级标题"
+    },
+    {
+      "attributes": {
+        "header": 3
+      },
+      "insert": "\n"
+    },
+    {
+      "insert": "\n这是一个四级标题"
+    },
+    {
+      "attributes": {
+        "header": 4
+      },
+      "insert": "\n"
+    },
+    {
+      "insert": "\n这是一个五级标题"
+    },
+    {
+      "attributes": {
+        "header": 5
+      },
+      "insert": "\n"
+    },
+    {
+      "insert": "\n这是一个六级标题"
+    },
+    {
+      "attributes": {
+        "header": 6
+      },
+      "insert": "\n"
+    },
+    {
+      "insert": "\n"
+    },
+    {
+      "attributes": {
+        "size": "24px"
+      },
+      "insert": "我是24号字"
+    },
+    {
+      "insert": "\n\n"
+    },
+    {
+      "insert": {
+        "formula": "f(x) = \\int_{-\\infty}^\\infty     \\hat f(\\xi)\\,e^{2 \\pi i \\xi x}     \\,d\\xi"
+      }
+    },
+    {
+      "insert": " \n\n"
+    },
+    {
+      "attributes": {
+        "size": "20px",
+        "link": "minapages.com"
+      },
+      "insert": "我是一个超链接"
+    },
+    {
+      "insert": "\n\n我引用了一段话"
+    },
+    {
+      "attributes": {
+        "blockquote": true
+      },
+      "insert": "\n"
+    },
+    {
+      "insert": "\n\n"
+    },
+    {
+      "attributes": {
+        "size": "48px",
+        "color": "#f06666",
+        "background": "#0066cc",
+        "bold": true
+      },
+      "insert": "我引用了一大段话并且设定了一些属性"
+    },
+    {
+      "attributes": {
+        "blockquote": true
+      },
+      "insert": "\n"
+    },
+    {
+      "insert": "\n"
+    },
+    {
+      "insert": {
+        "divider": true
+      }
+    },
+    {
+      "insert": "echo \"hello world\""
+    },
+    {
+      "attributes": {
+        "code-block": true
+      },
+      "insert": "\n"
+    },
+    {
+      "insert": "\n"
+    },
+    {
+      "insert": {
+        "formula": "e=mc^2"
+      }
+    },
+    {
+      "insert": " \n\n居中对齐"
+    },
+    {
+      "attributes": {
+        "align": "center"
+      },
+      "insert": "\n\n"
+    },
+    {
+      "attributes": {
+        "bold": true
+      },
+      "insert": "粗体显示"
+    },
+    {
+      "attributes": {
+        "align": "center"
+      },
+      "insert": "\n\n\n"
+    },
+    {
+      "attributes": {
+        "italic": true,
+        "bold": true
+      },
+      "insert": "斜体字"
+    },
+    {
+      "attributes": {
+        "align": "center"
+      },
+      "insert": "\n\n"
+    },
+    {
+      "attributes": {
+        "color": "#e60000"
+      },
+      "insert": "我有是一个红色的字体"
+    },
+    {
+      "attributes": {
+        "align": "center"
+      },
+      "insert": "\n"
+    },
+    {
+      "insert": "\n"
+    },
+    {
+      "attributes": {
+        "background": "#ffff66"
+      },
+      "insert": "我有背景色是黄色的"
+    },
+    {
+      "insert": "\n\n222 "
+    },
+    {
+      "attributes": {
+        "list": "ordered"
+      },
+      "insert": "\n"
+    },
+    {
+      "insert": "列表"
+    },
+    {
+      "attributes": {
+        "list": "ordered"
+      },
+      "insert": "\n"
+    },
+    {
+      "insert": "大沙发斯蒂芬"
+    },
+    {
+      "attributes": {
+        "list": "ordered"
+      },
+      "insert": "\n"
+    },
+    {
+      "insert": "\n列表暗将啊啊地方"
+    },
+    {
+      "attributes": {
+        "list": "bullet"
+      },
+      "insert": "\n"
+    },
+    {
+      "insert": "这是一个列表"
+    },
+    {
+      "attributes": {
+        "list": "bullet"
+      },
+      "insert": "\n"
+    },
+    {
+      "insert": "\n最后插入一张图片看看\n"
+    },
+    {
+      "attributes": {
+        "height": "225px",
+        "width": "400px"
+      },
+      "insert": {
+        "image": "/static-file/media/2017/07/24/785d227e05da6139d79a8a186e6e93bd.jpg"
+      }
+    },
+    {
+      "insert": "\n\n还可以再插入一张图片的\n"
+    },
+    {
+      "attributes": {
+        "height": "450px",
+        "width": "1366px"
+      },
+      "insert": {
+        "image": "/static-file/media/2017/07/12/12a7b6eff2dd744689b38b3d4f8b9a7e.jpg"
+      }
+    },
+    {
+      "attributes": {
+        "align": "center"
+      },
+      "insert": "\n"
+    },
+    {
+      "insert": "\n居中显示"
+    },
+    {
+      "attributes": {
+        "align": "center"
+      },
+      "insert": "\n"
+    },
+    {
+      "insert": "居中显示二"
+    },
+    {
+      "attributes": {
+        "align": "center"
+      },
+      "insert": "\n"
+    },
+    {
+      "insert": "居中显示3"
+    },
+    {
+      "attributes": {
+        "align": "center"
+      },
+      "insert": "\n\n"
+    },
+    {
+      "insert": "缩进一"
+    },
+    {
+      "attributes": {
+        "indent": 1
+      },
+      "insert": "\n"
+    },
+    {
+      "insert": "缩进一2"
+    },
+    {
+      "attributes": {
+        "indent": 1
+      },
+      "insert": "\n"
+    },
+    {
+      "insert": "恢复正文显示\n缩进二"
+    },
+    {
+      "attributes": {
+        "indent": 2
+      },
+      "insert": "\n\n\n"
+    },
+    {
+      "insert": "1927年4月12日和7月15日，汪精卫先后在南京和武汉发动“清共”行动后，中共中央在汉口召开了临时政治局常委会议，决定利用共产党掌握和影响下的昌举行武装起义，并指起义领导机关前敌委员会书记。"
+    },
+    {
+      "attributes": {
+        "indent": 2
+      },
+      "insert": "\n\n"
+    },
+    {
+      "attributes": {
+        "color": "#cc0000"
+      },
+      "insert": "八一建军节"
+    },
+    {
+      "insert": "是中国人民解放军建军纪念日，每年的八月一日举行，由中国人民革命军事委员会设立，为纪念中国工农红军成立的节日。1933年7月11日，中华苏维埃共和国临时中央政府根..."
+    },
+    {
+      "attributes": {
+        "textindent": 2
+      },
+      "insert": "\n"
+    },
+    {
+      "attributes": {
+        "link": "http://www.baidu.com/link?url=0bptKMs5DzB3WkaN_bYdw1WMdwdQFqXh8zzc3cb6dAfLdfpqjI93J_HwRIR0-fsRkYvXXl8JK7Ux-DcbbSd-Z2xf-LnZo5BOaHFNbKxSdzPDZN44KfKTadREWRKC5BOj-a2YnuVbXmSOMg9RMvr_qjVaqF75fGxU9dBNuz1UUiRtO30IoxgL_2T_kIgrPIh_1_7_7YjrGK22L0hUrxfA0K"
+      },
+      "insert": "节日来历"
+    },
+    {
+      "insert": " "
+    },
+    {
+      "attributes": {
+        "link": "http://www.baidu.com/link?url=0bptKMs5DzB3WkaN_bYdw1WMdwdQFqXh8zzc3cb6dAfLdfpqjI93J_HwRIR0-fsRkYvXXl8JK7Ux-DcbbSd-Z2xf-LnZo5BOaHFNbKxSdzPDZN44KfKTadREWRKC5BOj-a2YnuVbXmSOMg9RMvr_qjVaqF75fGxU9dBNuz1UUiRtO30IoxgL_2T_kIgrPIh_Iwj6bMb7EBdffOlLjn6Ksa"
+      },
+      "insert": "首个节日"
+    },
+    {
+      "insert": " "
+    },
+    {
+      "attributes": {
+        "link": "http://www.baidu.com/link?url=0bptKMs5DzB3WkaN_bYdw1WMdwdQFqXh8zzc3cb6dAfLdfpqjI93J_HwRIR0-fsRkYvXXl8JK7Ux-DcbbSd-Z2xf-LnZo5BOaHFNbKxSdzPDZN44KfKTadREWRKC5BOj-a2YnuVbXmSOMg9RMvr_qjVaqF75fGxU9dBNuz1UUiRtO30IoxgL_2T_kIgrPIh_6IxrteJ8xBROAEXEPgD7da"
+      },
+      "insert": "起义过程"
+    },
+    {
+      "insert": " "
+    },
+    {
+      "attributes": {
+        "link": "http://www.baidu.com/link?url=0bptKMs5DzB3WkaN_bYdw1WMdwdQFqXh8zzc3cb6dAfLdfpqjI93J_HwRIR0-fsRkYvXXl8JK7Ux-DcbbSd-Z2xf-LnZo5BOaHFNbKxSdzPDZN44KfKTadREWRKC5BOj-a2YnuVbXmSOMg9RMvr_qjVaqF75fGxU9dBNuz1UUiRtO30IoxgL_2T_kIgrPIh_U0bJcojNoVfA5x_KqhLVa_"
+      },
+      "insert": "诞生之地"
+    },
+    {
+      "insert": " "
+    },
+    {
+      "attributes": {
+        "link": "http://www.baidu.com/link?url=0bptKMs5DzB3WkaN_bYdw1WMdwdQFqXh8zzc3cb6dAfLdfpqjI93J_HwRIR0-fsRkYvXXl8JK7Ux-DcbbSd-Z2xf-LnZo5BOaHFNbKxSdzPDZN44KfKTadREWRKC5BOj-a2YnuVbXmSOMg9RMvr_qjVaqF75fGxU9dBNuz1UUiRtO30IoxgL_2T_kIgrPIh_DoMEO2t7Pvipobfke6RElK"
+      },
+      "insert": "军旗简介"
+    },
+    {
+      "insert": "\n\n"
+    },
+    {
+      "attributes": {
+        "align": "center"
+      },
+      "insert": "\n\n"
+    }
+  ]
+}

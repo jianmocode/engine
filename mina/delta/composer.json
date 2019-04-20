@@ -1,0 +1,27 @@
+{
+    "name": "mina/delta",
+    "description": "MINA Quill Delta Parser",
+    "require": {
+        "deanblackborough/php-quill-renderer":"^0.90.0",
+        "seld/jsonlint":"^1.6.1"
+    },
+    "homepage": "https://www.jianmo.ink",
+    "license": "MIT",
+    "type": "library",
+
+    "require-dev": {
+        "phpunit/phpunit": "4.0"
+    },
+    "authors": [
+        {
+            "name": "trheyi",
+            "email": "weiping@diancloud.com"
+        }
+    ],
+
+    "autoload": {
+        "psr-4": {
+          "Mina\\delta\\": "src/"
+        }
+    }
+}

@@ -1,0 +1,316 @@
+<?php use \Xpmse\Utils; ?>
+<div class="content" style="min-height: 600px;">
+    <form class="form-horizontal push-10-t js-panel-create" 
+        action="<?=R('baas-admin','card','save',['table'=>$table['name']])?>" method="post">
+        
+        <input 
+            type="hidden" id="_id" name="_id" 
+            value="<?=!empty($rs['_id'])?$rs['_id']:''?>" >
+
+
+
+
+        <?php 
+        $cnames = [
+            'card_id'=>"卡券 ID", 
+            'cname'=>'卡券名称', 
+            'consume_policy'=>'核销权限 ( :self 登录用户核销自己的, group:用户组名称 用户组拥有核销权限, user:用户ID 用户拥有核销权限; 多个用 "," 分割 )',
+            'card_type'=>'卡券类型 (GROUPON 团购;  CASH 代金券; DISCOUNT 折扣券;  GIFT 兑换券; GENERAL_COUPON    优惠券)',
+            'deal_detail'=>'团购详情 (团购券专用)',
+            'least_cost'=>'起用金额 (代金券专用)',
+            'reduce_cost' => '减免金额 (代金券专用)',
+            'discount'=>'打折额度 (折扣券专用; 百分比, 填30就是七折)',
+            'gift'=>'兑换内容的名称 (兑换券专用)',
+            'default_detail'=>'优惠详情 (优惠券专用)',
+            'base_info' => '卡券基本信息数据 (JSON格式数据)',
+            'advanced_info' => '卡券高级信息数据 (JSON格式数据)',
+            'card_status' => '卡券状态',
+            'path'=>'证书路径' 
+        ];
+        foreach($columns as $col ): ?>
+        <div class="form-group">
+            <div class="col-sm-12">
+                <div class="form-material">
+                    <?php if ( is_bool($rs[$col]) ) : ?>
+                    <input class="form-control" type="text" id="<?=$col?>" name="<?=$col?>" 
+                        value="<?=$rs[$col]?>"
+                        placeholder="请填写<?=$col?> ">
+
+                    <?php elseif ( is_numeric($rs[$col]) ) : ?>
+                    <input class="form-control" type="text" id="<?=$col?>" name="<?=$col?>" 
+                        value="<?=$rs[$col]?>"
+                        placeholder="请填写<?=$col?> ">
+
+                    <?php elseif 
+                        ( is_array($rs[$col]) ||  
+                          $cmaps[$col]['comment'] == '{__JSON__}' ) : ?>
+
+                    <textarea class="form-control" 
+                        id="<?=$col?>" name="<?=$col?>"
+                        data-type="JSON"
+                        rows="5"  placeholder="请填写<?=$col?>"><?=empty($rs[$col]) ? '' : htmlspecialchars(Utils::get($rs[$col]))?></textarea>
+
+                    <?php elseif ( empty($rs[$col]) ) : ?>
+                    <input class="form-control" type="text" id="<?=$col?>" name="<?=$col?>" 
+                        value="<?=$rs[$col]?>"
+                        placeholder="请填写<?=$col?> ">
+
+                    <?php else : ?>
+                    <input class="form-control" type="text" id="<?=$col?>" name="<?=$col?>" 
+                        value="<?=!empty($rs[$col])?$rs[$col]:''?>"
+                        placeholder="请填写<?=$col?> ">
+                    <?php endif; ?>
+                    <label for="material-text"><?=$cnames[$col]?></label>
+                </div>
+            </div>
+        </div>
+
+        <?php endforeach;?>
+    
+        <div class="form-group">
+            <div class="col-xs-12">
+                <button class="btn btn-minw btn-primary push-20-r" type="submit">保存卡券</button>
+               
+                <button class="btn btn-minw btn-primary pull-right change-type content-yuedu" type="button">阅读模式</button>
+            </div>
+        </div>
+        
+        <div class="form-group"></div>
+        <hr />
+        
+         <div class="form-group">
+            <div class="col-md-6">
+                <label for="material-gridl2">图片上传工具 (上传图片到微信CDN) </label>
+                <div class="input-group push-10-t">
+                    <input 
+                    class="form-control disabled" type="text" id="showImageURL" name="showImageURL" placeholder="通过下方控件上传后，访问地址会显示在这">
+                    <span class="input-group-btn">
+                        <button 
+                        data-clipboard-text="Copy Me!"
+                        class="btn btn-default copyImageURL" type="button">复制</button>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-xs-8">
+                 
+                 <div class="form-material">
+                     <div id="image_url" name="image_url" class="file-uploader rounded rounded-4"
+                          data-api = '<?=R("baas-admin","card","attachment", ["name"=>$rs["name"]])?>'
+                          data-type="attachment"
+                          data-title='上传图片到微信CDN'
+                          data-width="400px"
+                          data-height="150px"
+                          data-icon="fa fa-image" 
+                          data-allow-types="image/png,image/jpg,image/jpeg"
+                          data-placeholder="点击选择或拖入图片" 
+                          data-progress="yes"
+                          data-draggable="yes"
+                          data-maxsize="400"
+                          data-progress="yes"
+                          data-draggable="yes"
+                          data-src="<?=$rs['path']?>"
+                          data-path="<?=$rs['path']?>"
+
+                          event-delete="
+                            function( obj ) { 
+                               $('#showImageURL').val( '' );
+                              // console.log('on delete fired obj=', $(obj).attr('id')); 
+                            }
+                           "
+
+
+                          event-success="
+                              function( file, obj ) { 
+                                var resp = JSON.parse( file.xhr.response );
+                                var url = resp.url;
+                                $('#showImageURL').val( url );
+                                $('.copyImageURL').attr( 'data-clipboard-text',  url );
+            
+                              }
+                           "
+                          ></div>
+                 </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-xs-12">
+                <label for="material-gridl2"> 帮助文档 </label>
+                <div class="input-group push-10-t">
+                     <a  href="#" target="_blank" class="push-20-r">基本信息数据示例 (JSON) </a>
+                     <a  href="#" target="_blank" class="push-20-r">高级信息数据示例 (JSON) </a>
+                     <a  href="http://www.qqe2.com/" target="_blank" class="push-20-r"> JSON文档编辑器 </a>
+                     <a  href="https://mp.weixin.qq.com/advanced/wiki?t=t=resource/res_main&id=mp1451025056" target="_blank">微信卡券 API 文档 </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group"></div>
+
+    </form>
+</div>
+
+<script type="text/javascript">
+
+    $(function(){
+
+        var client = new ZeroClipboard( $('.copyImageURL'));
+        client.on( "ready", function( readyEvent ) {
+          client.on( "aftercopy", function( event ) {
+            App.notify( '复制成功！' );
+          });
+        });
+
+        App.initHelpers(['block-group','ajax-confirm']);
+
+        App.initHelpers('file-uploader', {
+            'home':'http://ui.chuanbolian.cn/upload',
+            'handler':'div[name="image_url"]'
+        });
+
+        $('.confirm-remove').on('success', function(event,data){
+            if ( data.code == 0 ) {
+                 App.notify( '删除成功' );
+                App.loading().hide();
+                setTimeout(function() {
+                    window.location = "<?=R('baas-admin','cert','index',['table'=>$table['name']])?>";
+                },3000);
+            }
+        });
+    });
+
+    $(function(){
+        $('.content-yuedu').click(function(event){
+            $('.yuedutype').removeClass('hide');
+            $('.xiugaitype').removeClass('show');
+            $('.yuedutype').addClass('show');
+            $('.xiugaitype').addClass('hide');
+        });
+    });
+    
+    // 表单验证
+    $(function(){
+        
+        $('.js-panel-create').validate({
+            errorClass: 'help-block text-right animated fadeInDown',
+            errorElement: 'div',
+            errorPlacement: function(error, e) {                
+                jQuery(e).parents('.form-group .form-material').append(error);
+            },
+            highlight: function(e) {
+                jQuery(e).closest('.form-group .form-material').parent().removeClass('has-error').addClass('has-error');
+                jQuery(e).closest('.help-block').remove();
+            },
+            unhighlight:function(e){
+                jQuery(e).closest('.form-group .form-material').parent().removeClass('has-error');
+                jQuery(e).closest('.help-block').remove();
+            },
+            success: function(e) {
+                jQuery(e).closest('.form-group .form-material').parent().removeClass('has-error');
+                jQuery(e).closest('.help-block').remove();
+            },
+
+            submitHandler: function(form) {
+
+                var self = this;
+                try {
+                    // 把from提交的内容进行截断,调用UserDataSubmit方法;
+                    DataSubmit(self,form,function callback(){
+                        App.notify( '操作成功' );
+                        App.loading().hide();
+                        setTimeout(window.location.reload(),3000);
+                    });
+
+                    return false;
+                    
+                } catch( e ){
+                    console.log( e);
+                    return false;
+                }
+
+                return true;
+            },
+            rules: {
+                '_id':{required:true}
+            },
+            
+            messages: {
+            },
+        });
+
+    })
+    
+
+    /**
+     * 提交表单 
+     * @param {[type]} validation [description]
+     * @param {[type]} form       [description]
+     */
+    function DataSubmit( validation, form , callback ) {
+        App.loading({message:'正在储存...'}).show();
+        var api = $(form).attr('action');
+        var next = $(form).attr('data-next');
+        var submits = $('button[type="submit"]', form);
+
+
+        $(submits).attr('disabled', 'disabled');
+        $(submits).addClass('disabled');
+
+        var data = {};
+        var formData =  $(form).serializeArray();
+        for( var i=0; i<formData.length; i++ ) {
+            var name = formData[i]['name'];
+            var value = formData[i]['value'];
+
+            if ( value != '' && $('textarea[name=' + name + ']').attr('data-type') == 'JSON' ) {
+                
+                console.log( (value == '') );
+
+                try {  // 验证 JSON 格式
+                    $.parseJSON(value); } catch(e) {
+                    App.loading().hide();
+                    App.notify(  name +  ' JSON: ' +   e.message, 'fa fa-times','danger');
+
+                    $(submits).removeAttr('disabled');
+                    $(submits).removeClass('disabled');
+                    return;
+                }
+
+                value = "__JSON_TEXT__|" + value;
+            }
+
+            if (value !== "") {
+                data[name] = value;
+            }
+        }
+
+       data = jQuery.extend(data, {});
+
+       $.post( api, data, function(data, textStatus, xhr) {
+
+            $(submits).removeAttr('disabled');
+            $(submits).removeClass('disabled');
+
+            if (data['code'] != 0  ){
+
+                data['content'] = data['content'] || data['message'];
+                App.notify( '操作失败 ('+ data['content'] + ')', 'fa fa-times','danger');
+                App.loading().hide();
+                return;
+            };
+
+            callback();
+            return;
+
+        },'json')
+
+    }
+</script>
+<style>
+    .mustbe{
+        color: red;
+    }
+</style>

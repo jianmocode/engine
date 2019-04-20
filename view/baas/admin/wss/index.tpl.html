@@ -1,0 +1,284 @@
+<style type="text/css">
+.breathe-eft{ 
+    -webkit-animation-timing-function: ease-in-out;
+    -webkit-animation-name: breathe;
+    -webkit-animation-duration: 1000ms;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-direction: alternate;
+}
+@-webkit-keyframes breathe {
+    0% { opacity: .2; }
+    100% { opacity: 1;}
+}
+
+</style>
+<div class="block-content">
+
+    <div class="block  block-themed ">
+        <div class="block-header bg-smooth-darker">
+          
+            <h3 class="block-title"> <i class="fa fa-arrow-right"></i> 
+                信道调试器
+            </h3>
+        </div>
+        <div class="block-content  tab-content" style="padding-top:0px;padding-bottom: 20px;">
+            
+            <p>
+                <div class="input-group">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button"><i class="fa fa-circle status  text-muted "></i></button>
+                    </span>
+                    <input class="form-control" 
+                        value="wss://<?=$domain?>/ws-server/" 
+                        type="text" id="host" name="host" placeholder="请输入 WebSocket 地址">
+                    <span class="input-group-btn">
+                        <button class="btn btn-primary connect " type="button"> 连接 </button>
+                        <button class="btn btn-danger cmdbtn " data-cmd="disconnect" type="button"> 断开 </button>
+                    </span>
+                </div>
+            </p>
+
+            <p>
+                <div class="input-group">
+                        <span class="input-group-btn ">
+                        <button class="btn btn-default" type="button">
+                            接口
+                        </button>
+                    </span>
+                    <input class="form-control" 
+                        value="/xpmsns/message/notice" 
+                        type="text" id="api" name="api" placeholder="API地址, 例如: /xpmsns/message/notice">
+                </div>
+                <div class="help-block">API接口地址, 例如: /xpmsns/message/notice</div>
+
+                <div class="input-group push-10-t">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button">
+                            方法
+                        </button>
+                    </span>
+                    <input class="form-control" 
+                        value="subscribe" 
+                        type="text" id="method" name="method" placeholder="方法名称, 例如: subscribe">
+                </div>
+                <div class="help-block">方法名称, 例如: subscribe</div>
+                
+                <div class="input-group  push-10-t">
+                    <span class="input-group-btn ">
+                        <button class="btn btn-default" type="button">
+                            参数
+                        </button>
+                    </span>
+                    <input class="form-control" 
+                        value="type=ping&display=1&size=1024" 
+                        type="text" id="args" name="args" placeholder="调用参数, 多个用&quot;&&quot;分割, 例如: type=ping&display=1&size=1024 ">
+                </div>
+                <div class="help-block ">调用参数, 多个用&quot;&&quot;分割, 例如: type=ping&display=true&size=1024</div>
+
+                <div class="push-10-t">
+                    <button class="btn btn-primary cmdbtn btn-small "> 发送请求 </button>
+                </div>
+            </p>
+
+            <h3 class="font-w300">输出日志</h3>
+            <pre class="pre-sh push-10-t" style="height:200px;"  data-toggle="slimscroll"><code class="logs javascript" style="padding:20px;min-height:200px;"><?=$log?></code></pre>
+        </div>
+        
+        <div class="block-content  tab-content" style="padding-top:0px;padding-bottom: 20px;">
+            <hr/>
+            <h3 class="font-w300">调用示例</h3>
+            <pre class="pre-sh push-10-t" style="height:auto;" ><code class="javascript" style="padding:20px;min-height:200px;">var host = "wss://<?=$domain?>/ws-server/";
+
+var ws = new WebSocket(host);
+
+ws.onmessage = function(event) {  
+    console.log( "服务端推送数据", event.data );
+};
+
+ws.onopen = function(event) {
+    console.log( "连接成功", event );
+}
+
+ws.onclose = function(event) {
+    console.log( "断开连接成功", event );
+}
+
+ws.onerror = function(e){
+    console.log( "出错了", event );
+}
+
+// 发送请求
+var api = "/xpmsns/message/notice";
+var method = "subscribe";
+var args = {
+    "type":"ping",
+    "display":true,
+    "size": 1024
+};
+ws.send( JSON.stringify({
+    "api":api,
+    "method":method,
+    "args":args
+}));
+
+// 断开连接
+ws.close();
+            </code></pre>
+        </div>
+    
+    </div>  <!-- END Block -->
+
+</div>
+
+
+<script type="text/javascript">
+var status = 'off';
+var socket = null;
+
+function log( content ) {
+    var html = $('.logs').html();
+        $('.logs').html( content + '\n' + html );
+}
+
+function setOffline() {
+     $('.status')
+        .addClass('text-muted')
+        .removeClass('text-success')
+        .removeClass('text-warning')
+        .removeClass('breathe-eft');
+
+    $('.cmdbtn').attr('disabled', 'disabled');
+    $('.cmdbtn').addClass('disabled');
+
+    $('.connect').removeAttr('disabled');
+    $('.connect').removeClass('disabled');
+
+
+    $('#host').removeAttr('disabled', 'disabled');
+    $('#host').removeClass('disabled');
+}
+
+function setOnline() {
+    $('.status')
+        .addClass('text-success')
+        .removeClass('text-muted')
+        .removeClass('text-warning')
+        .removeClass('breathe-eft');
+
+    $('.cmdbtn').removeAttr('disabled');
+    $('.cmdbtn').removeClass('disabled');
+
+    $('.connect').removeAttr('disabled');
+    $('.connect').removeClass('disabled');
+
+    $('#host').removeAttr('disabled', 'disabled');
+    $('#host').removeClass('disabled');
+}
+
+function setPending() {
+    setOffline();
+
+    $('#host').attr('disabled', 'disabled');
+    $('#host').addClass('disabled');
+
+    $('.connect').attr('disabled', 'disabled');
+    $('.connect').addClass('disabled');
+    
+
+    $('.status')
+        .removeClass('text-muted')
+        .removeClass('text-success')
+        .addClass('text-warning')
+        .addClass('breathe-eft');
+}
+
+
+
+function connect() {
+
+    setPending();
+    var host = $('#host').val() + '?time=' + new Date();
+
+        socket = new WebSocket( host );
+        
+        socket.onmessage = function(event) {  
+            console.log( "服务端推送数据", event.data );
+            var data = JSON.parse(event.data);
+            log("======websocket.onmessage======\n" + JSON.stringify(data, null, 2));
+        };
+
+        socket.onopen = function(event) {
+            console.log( "连接成功", event );
+            log("======websocket.onopen======\n" + JSON.stringify({code:0, message:"连接成功(onopen)"}, null, 2));
+            setOnline();
+        }
+
+        socket.onclose = function(event) {
+            console.log( "断开连接成功", event );
+            log("======websocket.onclose======\n" + JSON.stringify({code:0, message:"连接已断开(onclose)"}, null, 2));
+            setOffline();
+        }
+
+        socket.onerror = function(event){
+            console.log( "出错了", event );
+            log("======websocket.onerror======\n" + JSON.stringify({code:500, message:"出错了"}, null, 2));
+        }
+
+}
+
+
+
+$(function(){
+
+    App.initHelpers('slimscroll');
+    $('pre code').each(function(i, block) {
+		hljs.highlightBlock(block);
+	});
+    setOffline();
+
+    $('.connect').click(function(event) {
+        connect();    
+    });
+
+    $('.cmdbtn').click(function(event) {
+
+        var cmd = $(this).attr('data-cmd');
+        if ( cmd == 'disconnect' ){
+            socket.close()
+            return;
+        }
+
+        var api = $('#api').val();
+        var method = $('#method').val();
+        var args_txt = $('#args').val();
+        var args = {};
+
+        if ( args_txt != "" ) {
+            args = args_txt.split("&").reduce(function(prev, curr, i, arr) {
+                var p = curr.split("=");
+                prev[decodeURIComponent(p[0])] = decodeURIComponent(p[1]);
+                return prev;
+            }, {});
+        }
+
+        if ( api == "" || method == "" ) {
+            log("======input.error======\n" + JSON.stringify({code:400, message:"请填写接口API和调用方法METHOD"}, null, 2));
+            return;
+        }
+
+        var cmd = {
+            "api":api,
+            "method":method,
+            "args":args
+        };
+
+        log("======websocket.send======\n" + JSON.stringify(cmd, null, 2));
+        socket.send( JSON.stringify(cmd));
+    });
+
+});
+
+
+// conn.send('Hello Me!');
+
+</script>

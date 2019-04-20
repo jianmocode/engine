@@ -1,0 +1,231 @@
+<?php use \Xpmse\Utils; ?>
+<!-- 单行搜索框 开始 -->
+<!-- Page Content -->
+<div class="content" >
+    
+    <div class="block-group">
+        <!-- 添加客户 -->
+        <div 
+            id="customer-create"
+            class="block block-slider block-left " 
+            data-offset='80'
+            option-autoclose='0'
+            option-duration='500'
+            style="margin:0px;" 
+            >
+        </div>
+       <!-- 右侧弹出窗口 -->
+        <div 
+            id="window-left"
+            class="block block-slider block-left " 
+            data-offset='80'
+            option-autoclose='0'
+            option-duration='500'
+            style="margin:0px;" 
+        >
+        </div> 
+        <!-- 右侧弹出end -->
+        <div class="block">
+            <!-- tab开始 -->
+            <ul class="nav nav-tabs nav-tabs-alt" data-toggle="tabs">
+                <li class="active"> 
+                    <a id="tabs-document" href="#tabs-content-all"  class="font-w300 tabs-menu"> 
+                       <i class="fa fa-th-list push-5-r"></i> 
+                       <span class="font-w600"> 证书管理 </span>
+                    </a>
+                </li> 
+                <li class="pull-right">
+
+                  
+                </li> 
+
+
+            </ul>
+            <!-- TAB内容开始 -->
+            <div class="block-content tab-content" style="min-height:600px;">
+                <div class="tab-pane hide" id="tab-pane-error" >
+                    <div class="alert alert-danger push-50-l push-50-r push-20-t ">
+                        <h3 class="font-w300 push-15">载入失败</h3>
+                        <p>{HTML}</p>
+                    </div>
+                    <div class="row"  style="min-height:300px;" ></div>
+                </div>
+                <div class="tab-pane active" id="tabs-status-0">
+                    <div class="row items-push remove-margin">
+                        <?php if(empty($rs) || $total == 0 ) :?>
+
+                            <span class="push-20-r">没有找到数据 </span>
+                          <?php else: ?>
+                      
+
+                        <!-- 客户列表 表单 -->
+                        <div class="tab-pane active" id="tabs-content-all">
+                            <!-- 列表页 -->
+                            <table class="js-table-checkable table table-hover">
+                                <thead>
+                                    <th class="font-w300" style="width:120px;" >ID</th>
+
+                                    <?php 
+                                    $i = 0; $cnames = ['path'=>'证书路径','name'=>"证书键", 'cname'=>'证书名称'];
+                                    foreach( $columns as $col ) :  $i++; if ($i<$maxcol) : ?>
+                                    <th class="font-w300" ><?=$cnames[$col]?></th>
+                                    <?php endif; endforeach; ?>
+
+                                    <th class="font-w300" style="width:200px;" >修改时间</th>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($rs as $row) :?>
+                                    <tr class="list-read"   type="button"  data-toggle="block-group" data-block="#window-left">
+
+                                    <td class="font-w300 _id" ><?=$row['_id']?></td>
+
+                                    <?php 
+                                    $i = 0; 
+                                    foreach( $columns as $col ) :  $i++; if ($i<$maxcol) : ?>
+                                    <td class="font-w300" >    
+                                    <?php 
+                                        if ( is_bool($row[$col]) ) {
+                                            echo json_encode($row[$col]);
+                                        } else if ( is_numeric($row[$col]) ) {
+                                            echo json_encode($row[$col]);
+
+                                        } else if ( empty($row[$col]) ) {
+                                            echo "<span class='text-danger'>NULL</span>";
+                                        } else if ( is_array($row[$col]) ) {
+                                            Utils::out( $row[$col] ); 
+                                        } else {
+                                            echo $row[$col];
+                                        }
+                                    ?>
+                                    </td>
+                                    <?php endif; endforeach; ?>
+
+                                    <td class="font-w300" style="width:120px;"><?=$row['updated_at']?></td>
+    
+                                    </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+
+                                <tfoot>
+                                    <!-- 分页 -->
+                                    <tr><td colspan="<?=$maxcol+4?>">
+                                            
+                                        <a  target="_blank" 
+                                            class="btn btn-primary  push-20-t  btn-sm font-w300 " 
+                                            href="http://partners.qcloud.com/invitation/37360299583e2904ee602" >
+                                            <i class="fa fa-plus"></i> 免费申请 HTTPS 证书 
+                                        </a>
+
+                                        <a  target="_blank" 
+                                            class="btn btn-primary push-20-l  push-20-t btn-sm font-w300 " 
+                                            href="https://pay.weixin.qq.com/index.php/core/cert/api_cert" >
+                                            <i class="fa fa-download"></i> 微信支付证书下载
+                                        </a>
+                                        
+                                        <nav class="pull-right">
+                                            <ul class="pagination ">
+                                                
+                                                <?php foreach ($page as $num) :?>
+                                                <li class="<?php if ((int)($num)===$cur) {
+
+                                                        echo "active task-work-page";
+                                                           
+                                                        }?>">
+                                                    <a href="<?=R('baas-admin','cert', 'index', 
+                                                    ['table'=>$table['name'], 'page'=>$num,'keyword'=>$keyword,'order'=>$order,'mode'=>'r'])?>"><?=$num;?></a>
+                                                </li>
+                                                 <?php endforeach; ?>
+
+                                            </ul>
+                                        </nav>
+                                    </td></tr>
+                                    <!-- 分页结束 -->
+                                </tfoot>
+                                <?php endif ?>
+                            </table>
+                            <!-- 列表页结束 -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+
+    $(function(){
+
+        App.initHelpers([ 'select2', 'slimscroll','ajax-confirm', 'ajax-submit','tab','block-group']);
+        $('.mobadminxiugai').on('success', function(event,data){
+            // 判断是否成功
+            if (data==true) {
+                App.notify( '删除成功' );
+                }else{
+                App.notify( '删除失败', 'fa fa-times','danger');   
+            };
+        });
+    })
+
+    // 防止重复启动
+    $(function(){
+        $('.data-create').click(function(event) {
+            $('#window-left').close();
+        });
+    })
+
+    /**
+     * 搜索方法
+     * @return {[type]} [description]
+     */
+    $(function(){
+        // 搜索按钮点击
+        $('.ser-task').click(function(){
+            sourseek();
+        });
+    })
+
+
+    // 提交get请求
+    function sourseek(){
+       // 获取查询内容
+        var keyword =  $('.search-content').val();
+        var url ="<?=R('ReportSearch','index',['page'=>'1','type'=>'r','order'=>'ct','keyword'=>""])?>"+keyword;
+        window.location.href=url; 
+    }
+
+    // 创建按钮启动
+    $(function(){
+        $('.data-create-material').click(function(){
+            $('#customer-create').remote({
+                url:"<?=R('baas-admin','cert','panel',['type'=>'update','table'=>$table['name'],'_id'=>''])?>",
+                // 载入页面
+                success: function( html, xhr ) {
+                    $('#customer-create').html(html);
+                },
+                // 如果报错返回错误
+                error: function( xhr, status, statusText ) {
+
+                },
+            });
+        });
+
+        // 打开发送报告(阅读)
+        $('.list-read').click(function(){
+
+            var _id =$(this).find('._id').html();
+            $('#window-left').remote({
+                url:"<?=R('baas-admin','cert','panel',['type'=>'read','table'=>$table['name'],'_id'=>''])?>"+_id,
+                // 载入页面
+                success: function( html, xhr ) {
+                    $('#window-left').html(html);
+                },
+                // 如果报错返回错误
+                error: function( xhr, status, statusText ) {
+
+                },
+            });
+        })
+    })
+</script>
+
+

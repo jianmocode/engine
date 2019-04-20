@@ -1,0 +1,121 @@
+<?php if ( is_array($schedule['data']) && count($schedule['data']) >0 ): ?>
+
+<!-- 信息过滤(高级搜索)栏位 -->
+<div class="row items-push remove-margin">
+    
+    <div class="col-xs-5">
+        <span class="text-muted"> 当前共 <?=$schedule['total']?> 项计划任务 </span>
+    </div> <!-- END col-xs-5 -->
+    <div class="col-xs-7">
+        <a href='javascript:search("page",1);' class="pull-right">刷新</a>
+    </div>
+</div> <!-- END 信息过滤(高级搜索)栏位 -->
+
+<table class="js-table-checkable table table-hover remove-margin">
+    <thead>
+        <tr>
+            <th class="text-center" style="width:5%;max-width:120px;"> 编号 </th>
+            <th class="font-w300" style="width:40%;">任务</th>
+            <th class="font-w300" style="width:15%;">应用</th>
+            <th class="font-w300" style="width:15%;">运行计划</th>
+            <th class="font-w300" style="width:15%;">下次运行时刻</th>
+            <th class="font-w300" style="width:15%;">状态</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php 
+        $status = [
+            'pending'=>['name'=>'运行', 'class'=>'text-danger', 'icon'=>'<i class="fa fa-refresh fa-spin"></i>'],
+            'waiting'=>['name'=>'等待', 'class'=>'text-muted', 'icon'=>'<i class="fa fa-clock-o"></i>'],
+            'done'=> ['name'=>'完毕', 'class'=>'text-success', 'icon'=>'<i class="fa fa-check"></i>']
+        ];
+        foreach($schedule['data'] as $t) :
+        $s = $t['status'];
+        ?>
+        <tr>
+            <td>#<?=substr( $t['task_id'], 0, 8)?></td>
+            <td><?=$t['name']?></td>
+            <td><?=$t['app']['app_name']?></td>
+            <td>
+                <?=$t['schedule']?>
+            </td>
+             <td>
+                <p class="remove-margin"><?=date('Y年m月d日', strtotime($t['created_at']))?></p>
+                <p  class="remove-margin">@<?=date('H:i:s', strtotime($t['created_at']))?></p>
+            </td>
+            <td>
+                <span class=" <?=$status[$s]['class']?>"> 
+                    <?=$status[$s]['icon']?>
+                    <?=$status[$s]['name']?>
+                </span>
+            </td>
+        </tr>
+        <?php endforeach;?>
+    </tbody>
+
+    <tfoot>
+    <tr><td colspan="6"> <nav class="pull-right">
+
+        <ul class="pagination">
+            <?php if ($schedule['prev'] !== false): ?>
+            <li>
+                <a href="javascript:search('page', '<?=$schedule['prev']?>' )">
+                    <i class="fa fa-angle-double-left"></i>
+                </a>
+            </li>
+            <?php endif;?>
+
+            <?php for( $i=1; $i<=$schedule['last']; $i++) :?>
+            <li class="<?=($i==$schedule['curr'])? 'active': ''?>" >
+                <a href="javascript:search('page', '<?=$i?>' )"><?=$i?></a>
+            </li>
+            <?php endfor; ?>
+
+            <?php if ($schedule['next'] !== false): ?>
+            <li>
+                <a href="javascript:search('page', '<?=$schedule['next']?>' )">
+                    <i class="fa fa-angle-double-right"></i>
+                </a>
+            </li>
+            <?php endif;?>
+
+        </ul>
+    </nav></td></tr>
+</tfoot>
+
+</table>
+
+<?php else: ?>
+
+<div class="form-group row">
+    <div class="col-xs-12">
+    当前没有计划任务
+    </div>
+</div>
+
+<?php endif; ?>
+
+<script type="text/javascript">
+
+var $_GET = <?=json_encode($query)?>;
+var $_HOME ='<?=R("core-system", "task", "schedule")?>';
+
+function search( key, value ) {
+
+    if ( key !== undefined ) {
+        $_GET[key] = value;
+
+        if ( value == undefined  || value == '') {
+            delete $_GET[key];
+        }
+
+        if ( key != 'page' ) {
+            $_GET['page'] = 1;
+        }
+    }
+
+    var url =  $_HOME + '?' + $.param($_GET);
+    $('#task-tabs').tabRemote('tabs-schedule', url);
+    $('#task-tabs').tabGet('tabs-schedule').trigger('click');
+}
+</script>

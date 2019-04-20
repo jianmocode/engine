@@ -1,0 +1,167 @@
+        <?php include_once(tpl('common/web/head')); ?>
+
+        <!-- foot JS CODE-->
+        <?php include_once(tpl('common/web/foot')); ?>
+
+    
+        <!-- foot end -->
+
+        <!-- Page Container -->
+        <!--
+            Available Classes:
+
+            'enable-cookies'             Remembers active color theme between pages (when set through color theme list)
+
+            'sidebar-l'                  Left Sidebar and right Side Overlay
+            'sidebar-r'                  Right Sidebar and left Side Overlay
+            'sidebar-mini'               Mini hoverable Sidebar (> 991px)
+            'sidebar-o'                  Visible Sidebar by default (> 991px)
+            'sidebar-o-xs'               Visible Sidebar by default (< 992px)
+
+            'side-overlay-hover'         Hoverable Side Overlay (> 991px)
+            'side-overlay-o'             Visible Side Overlay by default (> 991px)
+            'side-scroll'                Enables custom scrolling on Sidebar and Side Overlay instead of native scrolling (> 991px)
+            'header-navbar-fixed'        Enables fixed header
+        -->
+        <div id="page-container" class="sidebar-l sidebar-o side-scroll header-navbar-fixed <?=$_SIDEBAR_MINI?> main-sidebar">
+           
+           <!-- 左侧菜单-->
+           <?php include_once(tpl('common/web/menu')); ?>
+           <!-- 左侧菜单 结束-->
+
+ 		   <!-- Header Overlay-->
+           <?php include_once(tpl('common/web/header')); ?>
+           <!-- END Header  Overlay-->
+
+            <!-- Main Container -->
+            <main id="main-container" class="width-sidebar">
+                <!-- Page Content -->
+                <div class="content">
+                     <div class="row">
+                        <div class="col-sm-5 col-lg-3">
+                             <div class="collapse navbar-collapse remove-padding" id="inbox-nav">
+                                <!-- Inbox Menu -->
+                                <div class="block">
+                                    <div class="block-header bg-gray-lighter">
+                                        <ul class="block-options">
+                                            <li>
+                                                <a  href="<?=R('core-dept','default','deptpanel', ['_dept_id'=>$curr['_id']])?>"  >
+                                                    <i class="fa fa-pencil"></i> 添加部门
+                                                </a>
+                                            </li>
+                                        </ul>
+                                        <h3 class="block-title">企业通讯录</h3>
+                                    </div>
+                                    <div id="treeview5" class="text-primary"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-7 col-lg-9">
+                            <!-- Message List -->
+                            <div class="block">
+                                <div class="block-header bg-gray-lighter">
+                                    <ul class="block-options">
+                                        
+                                        <!-- <li>
+                                            <button type="button" data-toggle="block-option" data-action="refresh_toggle" data-action-mode="demo">
+                                                <i class="fa fa-refresh"></i> 刷新
+                                            </button>
+                                        </li> -->
+
+
+                                        <li class="push-10-l">
+                                            <a  href="<?=R('core-dept','default','deptpanel', ['_id'=>$curr['_id']])?>" data-toggle="block-option" >
+                                            <i class="fa fa-bookmark"></i> 管理部门 </a>
+                                        </li>
+
+                                        <li class="push-10-l">
+                                            <a  href="<?=R('core-dept','default','userpanel', ['_dept_id'=>$curr['_id']])?>" data-toggle="block-option" >
+                                                <i class="fa fa-plus"></i> 添加员工 
+                                            </a>
+                                        </li>
+                                     
+                                    </ul>
+                                    <div class="block-title text-normal">
+                                        <?=$curr['name']?>
+                                    </div>
+                                </div>
+                      <ul class="nav-users  block-content block-taglist block-taglist-sortable block-taglist-push-20 block-taglist-push-20-t sortable ">
+
+                                    <?php if ($users['total'] == 0 ) : ?>
+                                        <p class="push-20-t push-20-l"> <?=$curr['name']?>暂无员工</p>
+                                    <?php endif; ?>
+    
+                                    <?php foreach ($users['data'] as $user ) : ?>
+                                    <li class="push-20-l text-left" style="min-width:160px; width:20%;">
+                                        <a href="<?=R('core-dept','default', 'userpanel',['_id'=>$user['_id']])?>"  style="border-bottom:none;" >
+                                            
+                                            <img class="img-avatar" src="<?=$user['avatarUrl']?>" alt="">
+                                            <?=$user['name']?>
+                                            <div class="font-w400 text-muted"><small><?=(isset($user['position']))?$user['position']:'无职务信息'?></small></div>
+                                        </a>
+                                    </li>
+                                    <?php endforeach; ?>
+                                </ul>
+                                
+                               
+                                <nav class="push-15-t push-20-l push-15-b row">
+                                     <?php if ( isset($users['pages']) && is_array($users['pages']) && count($users['pages']) > 0 ) : ?>
+                                     <ul class="pagination">
+                                         <li class="<?php if ($users['prev'] == false): ?>  disabled <?php endif;?>">
+                                             <a href="?page=<?=$users['prev']?>" ><i class="fa fa-angle-double-left"></i></a>
+                                         </li>
+                                         <?php foreach ($users['pages'] as $pg ) : ?>
+                                         <li class="<?php if ($users['curr'] === $pg): ?> active <?php endif;?>">
+                                             <a href="?page=<?=$pg?>"  > <?=$pg?> </a>
+                                         </li>
+                                         <?php endforeach; ?>
+                                         <li class="<?php if ($users['next'] == false): ?>  disabled <?php endif;?>">
+                                             <a href="?page=<?=$users['next']?>"  ><i class="fa fa-angle-double-right"></i></a>
+                                         </li>
+                                     </ul>
+                                     <?php endif; ?>
+                                </nav>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- END Page Content -->
+
+            </main>
+            <!-- END Main Container -->
+
+             <!-- Footer Overlay-->
+           <?php include_once(tpl('common/web/footer')); ?>
+           <!-- END Footer Overlay-->
+        </div>
+        <!-- END Page Container -->
+     
+        
+        <!-- Page JS Code -->
+        <script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/bootstrap-treeview/bootstrap-treeview.js"></script>
+        <script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/jquery-sortable/sortable.js"></script>
+
+        <script>
+            $(function () {
+                App.initHelpers('sortable',{
+                    'onSort':function(evt){
+                        // console.log( evt );
+                    },
+                });
+            });
+
+
+            $('#treeview5').treeview({
+              expandIcon: 'glyphicon glyphicon-chevron-right',
+              collapseIcon: 'glyphicon glyphicon-chevron-down',
+              nodeIcon: 'glyphicon glyphicon-bookmark',
+              enableLinks: true,
+              data: <?=$depts?>
+            });
+
+        </script>
+
+    </body>
+</html>

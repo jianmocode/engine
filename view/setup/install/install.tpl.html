@@ -1,0 +1,137 @@
+<?php 
+$_SESSION['_setup:random'] = gen_string(8);
+include_once(tpl('setup/head')); 
+
+?>
+
+<!-- Install Content -->
+<div class="content overflow-hidden">
+
+    <div class="row">
+         <div class="col-lg-6 col-lg-offset-3  col-md-6 col-md-offset-3  col-sm-6 col-sm-offset-3 p push-15-t">
+             <!-- Install Block -->
+             <div class="block block-themed block-shadow block-radius">
+				<div class="block-content block-content-full block-content-narrow text-center push-30-t">	
+                    
+                    <!-- Install Status -->
+                    <div class="js-pie-chart pie-chart push-30-t push-30 statusBar" 
+                    	data-percent="1" 
+                    	data-line-width="4" 
+                    	data-size="150" data-bar-color="#70b9eb" data-track-color="#eeeeee" data-scale-color="#fff">
+                        <span>
+                        	<i class="iconfont icon-xpmse text-muted" style="font-size:72px;"> </i>
+                        </span>
+                    </div> <!-- Install Status END -->
+
+                    <div class="text-muted push-30 statusText content-mini"> 
+                    	正在安装 1% 
+                    </div>
+                    <div class="push-30 nextButton hidden "> 
+                    	<a class="btn btn-minw btn-rounded btn-primary" href="/_a" > 进入系统 </a>
+                    </div>
+                    <div class="push-5"> &nbsp; </div>
+				</div>
+             </div>
+        </div>
+    </div>
+</div>
+
+<?php include_once(tpl('setup/foot')); ?>
+<script src="/static/assets/js/plugins/easy-pie-chart/jquery.easypiechart.min.js"></script>
+<script type="text/javascript">
+
+var qsFlag = true;
+var random = '<?=$_SESSION['_setup:random']?>'; // 防止重复提交
+
+// 安装完毕
+function installComplete() {
+    qsFlag = false;
+    updateStatus(100, '安装完成');
+	$('.iconfont', '.statusBar').removeClass('text-muted').addClass('text-primary');
+	$('.statusText').addClass('hidden');
+	$('.nextButton').removeClass('hidden');
+}
+
+function installFailue( message ) {
+
+    message = message || '未知错误';
+    qsFlag = false;
+    updateStatus(100, '安装失败');
+    $('.iconfont', '.statusBar').removeClass('text-muted').addClass('text-danger');
+    $('.statusText').html( message  );
+    // $('.statusText').addClass('hidden');
+    // $('.nextButton').removeClass('hidden');
+}
+
+
+// 更新显示状态
+function updateStatus( percent, message ) {
+	message = message || '正在安装';
+	$('.statusBar').data('easyPieChart').update( percent );
+	$('.statusText').html( message + ' ' + percent + '%' )
+}
+
+
+// 查询安装进度
+function queryStatus( init ) {
+    init = init || '1';
+    var api = '<?=$homeroot?>/_a/?c=init&a=setupStatus';    
+    $.post(api, {random: random, init:init}, function(  resp, textStatus, xhr ) {
+
+        if( typeof resp['p'] != 'undefined' ) {
+            message = resp['message'] || '正在安装';
+            if ( resp['p'] > 100 )  resp['p'] = 100;
+
+            if (resp['p'] < 100 && resp['p'] > 0 ) {
+                if ( qsFlag ) {
+                    updateStatus(resp['p'], message);
+                    setTimeout(function(){queryStatus('0')}, 800 );
+                }
+            } else {
+                installComplete();
+            }
+        }
+
+    }, 'json')
+    .error( function(xhr, status, statusText ){
+        console.log( xhr, status );
+        
+    })
+}
+
+// 运行初始化脚本
+function initSetup() {
+    initFlag = true;
+    var api = '<?=$homeroot?>/_a/?c=init&a=setup';    
+    $.post(api, {random: random}, function(  resp, textStatus, xhr ) {
+        if( typeof resp['status'] != 'undefined' ) {
+            if ( resp['status'] == 'success' ) {
+                installComplete();
+                return;
+            }
+        }
+        // Failure
+        
+        var message = resp['message'] || '未知错误';
+        installFailue( message );
+
+    }, 'json')
+    .error( function(xhr, status, statusText ){
+        
+        console.log( xhr, status );
+
+        // Failure
+        installFailue( statusText );
+    })
+}
+
+
+
+$(function () {
+    App.initHelpers('easy-pie-chart');
+    initSetup();  // 系统初始化
+    queryStatus();  // 查询状态
+});
+
+</script>
+<?php include_once(tpl('setup/footer')); ?>

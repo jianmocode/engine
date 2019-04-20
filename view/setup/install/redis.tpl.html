@@ -1,0 +1,171 @@
+<?php include_once(tpl('setup/head')); ?>
+
+<!-- Install Content -->
+<div class="content overflow-hidden">
+
+    <div class="row">
+         <div class="col-lg-6 col-lg-offset-3  col-md-6 col-md-offset-3  col-sm-6 col-sm-offset-3 p push-15-t">
+             <!-- Step Form Content -->
+             <div class="block block-shadow block-radius">
+                <div class="block-header">
+
+                    <h3 class="block-title font-w300 pull-right text-muted push-10-t push-5-r "> 
+                       <?=$currIdx?>/<?=$total?>
+                    </h3>
+
+                    <h3 class="block-title font-w300  push-10-t push-5-l" style="text-transform:none"> 
+                        <i class="iconfont icon-xpmse push-5-l"></i> 
+                        安装向导
+                        <i class="fa fa-angle-right"></i> 
+                        Redis 服务器
+                    </h3>
+                </div>
+
+				<div class="block-content block-content-full block-content-narrow text-center" style="padding-left: 10%;padding-right: 10%;">   
+                     <form 
+                        action=""
+                        id="redis-server-form"
+                        method="post" class="form-horizontal" >
+
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon font-w400" style="min-width:100px;"> Host </span>
+                                <input id="host" name="host" class="form-control" type="text"  
+                                    value="<?=setupController::V('redis','host', '127.0.0.1')?>"
+                                    placeholder="Redis 服务器Host" >
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon font-w400" style="min-width:100px;"> Port </span>
+                                <input id="port" name="port"  class="form-control" type="text" 
+                                    value="<?=setupController::V('redis','port', '6379')?>"
+                                placeholder="Redis 服务器端口">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon font-w400" style="min-width:100px;"> DB </span>
+                                <input id="db" name="db"  class="form-control" type="text" 
+                                    value="<?=setupController::V('redis','db', '1')?>"
+                                    placeholder="Redis 数据库" >
+                            </div>
+                        </div>
+                        
+                        <!--
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon font-w400" style="min-width:100px;"> User </span>
+                                <input id="user" name="user"  class="form-control" type="text" placeholder="Redis 服务器用户名">
+                            </div>
+                        </div> -->
+
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon font-w400" style="min-width:100px;"> Password </span>
+                                <input id="password" name="password"   class="form-control" type="text" 
+                                      value="<?=setupController::V('redis','password')?>"
+                                  placeholder="Redis 服务器密码">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+
+                            <button 
+                                class="btn btn-primary pull-left font-w300 push-15-r tryit se-action"
+                                data-action="/setup.php?a=tryit&se=redis"
+                                data-form="#redis-server-form"
+                                type="button" > 
+                                连接测试
+                            </button>
+    
+                            <span class="pull-left tryit-status hidden" > <i class="fa fa-refresh fa-spin"></i> 正在连接 Redis 服务器 </span>
+                            
+                            <?php if ( !empty($next)) :?>
+                            <button class="btn btn-primary pull-right font-w300 saveit se-action" 
+                                data-action="/setup.php?a=saveit&se=redis"
+                                data-form="#redis-server-form"
+                                type="button">  
+                                下一步  <i class="fa fa-angle-double-right"></i> 
+                            </button>
+                            <?php endif; ?>
+                            
+                            <?php if ( !empty($prev)) :?>
+                            <a class="btn btn-default pull-right font-w300 push-15-r se-action" href="/setup.php?s=<?=$prev?>"> 
+                                <i class="fa fa-angle-double-left"></i> 上一步   
+                            </a>
+                            <?php endif; ?>
+                            
+                        </div>
+
+                     </form>
+				</div>
+             </div> <!-- Step Form Content -->
+        </div>
+    </div>
+</div>
+
+<?php include_once(tpl('setup/foot')); ?>
+<script src="/static/assets/js/plugins/easy-pie-chart/jquery.easypiechart.min.js"></script>
+<script src="/static/js/setup.js"></script>
+<script type="text/javascript">
+$(function(){
+
+    // 连接测试按钮
+    seActionInit('.tryit', function( status, resp ) {
+        // console.log( status, resp );
+
+        if ( status == 'success') {
+            App.notify('连接成功!');
+        } else {
+            message = resp['message'] || '连接失败';
+            App.notify(message, 'fa fa-times','danger');
+        }
+
+    }, {
+        'status':'.tryit-status',
+        'action':'.se-action',
+        'doing':'<i class="fa fa-refresh fa-spin"></i> 正在连接 Redis 服务器 ',
+        'mute':true
+    });
+
+
+    // 下一步按钮
+    seActionInit('.saveit', function( status, resp ) {
+        var next = '<?=$next?>';
+        if ( status == 'success') {
+            if ( next !== '') {
+                window.location = '/setup.php?s=' + next;
+            } else {
+                window.location = '/';
+            }
+
+        } else {
+            message = resp['message'] || '保存失败';
+            App.notify( '保存失败 | ' + message, 'fa fa-times','danger');
+        }
+
+    }, {
+        'status':'.tryit-status',
+        'action':'.se-action',
+        'doing':'<i class="fa fa-refresh fa-spin"></i> 正在保存信息 ',
+        'mute':true
+    });
+
+
+    /*
+    $('.tryit').click(function(event) {
+        App.notify('失败了。。。。', 'fa fa-times','danger');
+    });
+    // App.initHelpers(['notify']);
+
+    // App.loading({message:'正在保存排序...'}).show();
+    // App.loading().hide();
+    //*/ 
+});
+</script>
+
+<?php include_once(tpl('setup/footer')); ?>

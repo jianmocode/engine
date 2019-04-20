@@ -1,0 +1,53 @@
+<?php
+    use \Xpmse\Loader\App as App;
+?>
+<div class="content">
+    <div class="block">
+        <div class="block-content tab-content">
+                <table class="table table-striped">
+                <?php if (is_array($data) && $total > 0 ) : ?>
+                    <thead>
+                        <tr>
+                            <th class="text-center" style="width: 50px;">#</th>
+                            <th>主人</th>
+                            <th>手机号</th>
+                            <th class="hidden-xs" style="width: 160px;">创建时间</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <?php 
+                        foreach ($data as $hi) : ?>
+                        <tr>
+                            <td class="text-center"><?=$hi['_id']?></td>
+                            <td><?=$hi['name']?></td>
+                            <td class="hidden-xs">
+                                <?=$hi['mobile']?>
+                            </td>
+                            <td class="text-center">
+                               <?=$hi['created_at']?>
+                            </td>
+
+                        </tr>
+                        <?php 
+                        endforeach; ?>                    
+                    </tbody>
+                <?php endif; ?>
+
+                    <tfoot>
+                        <tr><td colspan="5" >
+                            <span class="text-primary pull-right  push-20-t"> 共<?=$total?>条 </span>
+                            <?php if ( $total == 0) :?>
+                            <a 
+                                class="btn btn-primary btn-small push-20-t"
+                                href="<?=App::NR('default','faker')?>" 
+                                target="_blank" 
+                            >生成数据</a>
+                            <?php endif;?>
+                        </td></tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div> <!-- END block-content -->
+    </div><!-- End Block -->
+</div> <!-- End Page Content -->

@@ -1,0 +1,62 @@
+<?php 
+include_once(tpl('setup/head')); 
+$license_md = file_get_contents(AROOT.'/LICENSE.html');
+$license_html = $license_md;
+
+?>
+
+<!-- Install Content -->
+<div class="content overflow-hidden">
+
+    <div class="row">
+         <div class="col-lg-6 col-lg-offset-3  col-md-6 col-md-offset-3  col-sm-6 col-sm-offset-3 p push-15-t">
+             <!-- Step Form Content -->
+             <div class="block block-shadow block-radius">
+                <div class="block-header"></div>
+				<div class="block-content block-content-full block-content-narrow" style="padding-left: 10%;padding-right: 10%;">   	
+
+                    <p class="lead"> 简墨用户使用协议 </p>
+                    <div class="nice-copy " 
+                        data-toggle="slimscroll"  
+                        data-height="screen-height"
+                        data-offset='360' >
+                        <?=$license_html?>
+                    </div>
+
+                    <form action="base_forms_elements.html" method="post" class="form-horizontal" onsubmit="return false;">
+                        <div class="form-group text-center push-30-t">
+                            <a class="btn btn-primary font-w300 disabled " disabled  href="/setup.php?s=<?=$next?>">  
+                               我已阅读并接受用户使用协议<span class="timer"></span>
+                            </a>
+                        </div>
+                    </form>
+
+				</div>
+
+             </div> <!-- Step Form Content -->
+        </div>
+    </div>
+</div>
+
+<?php include_once(tpl('setup/foot')); ?>
+<script src="/static/assets/js/plugins/easy-pie-chart/jquery.easypiechart.min.js"></script>
+<script type="text/javascript">
+
+$(function(){
+    var time = 0;
+    App.initHelpers('slimscroll');
+    function timer() {
+        $('.timer').html(' ( ' + time + ' ) ');
+        if ( time > 0 ) {
+            time = time - 1;
+            setTimeout(function(){ timer(); }, 1000);
+        } else {
+            $('.timer').html('');
+            $('.timer').parent().removeClass('disabled').removeAttr('disabled');
+        }
+    }
+
+    timer();
+});
+</script>
+<?php include_once(tpl('setup/footer')); ?>

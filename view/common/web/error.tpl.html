@@ -1,0 +1,85 @@
+<?php include_once(tpl('core/account/web/head')); ?>
+
+          <!-- Error Content -->
+        <div class="content bg-white text-center">
+            <div class="row">
+                <div class="col-lg-12">
+                    <!-- Error Titles -->
+                    <h1 class="font-w300 text-danger"><?=htmlspecialchars($message)?></h1>
+                    <h4 class="font-w300  push-50 push-30-t "><?=$file?> 第<?=$line?>行</h4>
+                    <!-- END Error Titles -->
+                </div>
+
+                  <table class="js-table-sections table table-hover text-left">
+
+
+                        <tbody class="js-table-sections-header ">
+                             <tr>
+                                 <td style="width:32px;" class="text-center" >
+                                     <i class="fa fa-angle-right"></i>
+                                 </td>
+                                 <td class="font-w600"><?=htmlspecialchars($message)?>
+                                  <span class="font-w300 text-muted push-15-l">
+                                         <?=$file?> 第<?=$line?>行
+                                     </span>
+                                 </td>
+                             </tr>
+                        </tbody>
+                        <tbody>
+                            <tr>
+                                <td></td>
+                                <td class="text-muted">
+                                    <pre style="background:#fff;border:none;"><?=htmlspecialchars(print_r($error,true))?></pre>
+                                </td>
+                            </tr>
+                        </tbody>
+
+                       
+                        <?php foreach($trace as $idx=>$t ) :?>
+                         <tbody class="js-table-sections-header">
+                             <tr>
+                                 <td style="width:32px;" class="text-center" >
+                                     <i class="fa fa-angle-right"></i>
+                                 </td>
+                                 <td class="font-w600">
+                                      <?php if(isset($t['class'])):?>
+                                            <?=$t['class']?>::
+                                      <?php endif?>
+                                     <?=$t['function']?>
+                                     <span class="font-w300 text-muted push-15-l">
+                                         <?=$t['file']?>  第<?=$t['line']?>行
+                                     </span>
+                                 </td>
+                             </tr>
+                         </tbody>
+                         <tbody>
+                            <tr>
+                                <td></td>
+                                <td class="text-muted">
+                                    <pre style="background:#fff;border:none;"><?=htmlspecialchars(print_r($t,true))?></pre>
+                                </td>
+                            </tr>
+                        </tbody>
+                        <?php endforeach; ?>
+
+
+
+                    </table>
+
+            </div>
+        </div>
+        <!-- END Error Content -->
+
+        <!-- Error Footer -->
+        <div class="content pulldown text-muted text-center">
+            为什么会这样?<br>
+            <a class="link-effect" href="http://JianMoApp.com" target="_blank">查阅XpmSE开发文档</a>
+        </div>
+        <!-- END Error Footer -->
+
+        <?php include_once(tpl('core/account/web/foot')); ?>
+        <script type="text/javascript">
+            App.initHelpers('table-tools');
+        </script>
+
+<?php include_once(tpl('core/account/web/footer')); ?>

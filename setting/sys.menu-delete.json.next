@@ -1,0 +1,150 @@
+{
+  "dashboard":{
+    "group": "控制台",
+    "display": false,
+    "apps": {
+      "dashboard":{
+        "name": "dashboard",
+        "cname": "控制台",
+        "icon": "si-speedometer",
+        "icontype": "si",
+        "display": false,
+        "menu": {
+          "default/index": {
+            "name": "控制台",
+            "icon": "si-speedometer",
+            "icontype": "si",
+            "namespace": "core-dashboard",
+            "controller": "default",
+            "action": "index",
+            "permission": "boss,admin,manager,user",
+            "display":true
+          }
+        }
+      }
+    }
+  },
+  
+  "apps":{
+    "group": "应用",
+    "display": true,
+    "auto":"_apps_menu"
+  },
+
+  "company":{
+    "group": "公司",
+    "display": true,
+    "apps": {
+      "department":{
+        "name": "department",
+        "cname": "企业通讯录",
+        "icon": "si-notebook",
+        "icontype": "si",
+        "display": false,
+        "menu": {
+          "default/index": {
+            "name": "企业通讯录",
+            "icon": "si-notebook",
+            "icontype": "si",
+            "namespace": "core-dept",
+            "controller": "default",
+            "action": "index",
+            "permission": "boss,admin,manager,user",
+            "display":true
+          }
+        }
+      },
+
+      "account":{
+        "name": "account",
+        "cname": "账号安全",
+        "display": true,
+        "icon": "si-info",
+        "icontype": "si",
+        "menu": {
+          "default/userprofile": {
+            "name": "账号资料",
+            "namespace": "core-dept",
+            "controller": "default",
+            "action": "userprofile",
+            "permission": "boss,admin,manager,user",
+            "display":true
+          },
+          "default/security": {
+            "name": "安全中心",
+            "namespace": "core-dept",
+            "controller": "default",
+            "action": "security",
+            "permission": "boss,admin,manager,user",
+            "display":true
+          }
+        }
+      }
+    }
+  },
+
+  "system":{
+    "group": "系统",
+    "display": true,
+    "permission": "admin",
+    "apps": {
+      "appmanager":{
+        "name": "appmanager",
+        "cname": "应用管理",
+        "icon": "si-grid",
+        "icontype": "si",
+        "display": false,
+        "menu": {
+          "appmanager/index": {
+            "name": "应用管理",
+            "icon": "si-grid",
+            "icontype": "si",
+            "namespace": "core-system",
+            "controller": "appmanager",
+            "action": "index",
+            "permission": "admin",
+            "display":true
+          }
+        }
+      },
+      "aclmanager":{
+        "name": "aclmanager",
+        "cname": "权限管理",
+        "icon": "si-magic-wand",
+        "icontype": "si",
+        "display": false,
+        "menu": {
+          "aclmanager/index": {
+            "name": "权限管理",
+            "icon": "si-magic-wand",
+            "icontype": "si",
+            "namespace": "core-system",
+            "controller": "aclmanager",
+            "action": "index",
+            "permission": "admin",
+            "display":true
+          }
+        }
+      },
+      "system":{
+        "name": "system",
+        "cname": "系统设置",
+        "icon": "si-settings",
+        "icontype": "si",
+        "display": false,
+        "menu": {
+          "default/settings": {
+            "name": "系统设置",
+            "icon": "si-settings",
+            "icontype": "si",
+            "namespace": "core-system",
+            "controller": "setting",
+            "action": "index",
+            "permission": "admin",
+            "display":true
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,337 @@
+<?php 
+use \Xpmse\Loader\App; 
+use \Xpmse\Utils;
+use \Xpmse\T;
+?>
+<?php include_once(tpl('common/web/head')); ?>
+        
+<!-- Page JS Plugins CSS -->
+<link rel="stylesheet" href="<?=\Xpmse\Conf::G('general/static')?>/assets/js/plugins/slick/slick.min.css">
+<link rel="stylesheet" href="<?=\Xpmse\Conf::G('general/static')?>/assets/js/plugins/slick/slick-theme.min.css">
+<link rel="stylesheet" href="<?=\Xpmse\Conf::G('general/static')?>/assets/js/plugins/highlightjs/github-gist.min.css">
+<link rel="stylesheet" href="<?=\Xpmse\Conf::G('general/static')?>/assets/js/plugins/highlightjs/styles/darkula.css">
+
+
+<!-- foot JS CODE-->
+<?php include_once(tpl('common/web/foot')); ?>
+<!-- foot end -->
+
+<!-- Page Container -->
+<!--
+    Available Classes:
+
+    'enable-cookies'             Remembers active color theme between pages (when set through color theme list)
+
+    'sidebar-l'                  Left Sidebar and right Side Overlay
+    'sidebar-r'                  Right Sidebar and left Side Overlay
+    'sidebar-mini'               Mini hoverable Sidebar (> 991px)
+    'sidebar-o'                  Visible Sidebar by default (> 991px)
+    'sidebar-o-xs'               Visible Sidebar by default (< 992px)
+
+    'side-overlay-hover'         Hoverable Side Overlay (> 991px)
+    'side-overlay-o'             Visible Side Overlay by default (> 991px)
+    'side-scroll'                Enables custom scrolling on Sidebar and Side Overlay instead of native scrolling (> 991px)
+    'header-navbar-fixed'        Enables fixed header
+-->
+<div id="page-container" class="sidebar-l sidebar-o side-scroll header-navbar-fixed <?=$_SIDEBAR_MINI?> main-sidebar">
+   
+   <!-- 左侧菜单-->
+   <?php include_once(tpl('common/web/menu')); ?>
+   <!-- 左侧菜单 结束-->
+
+    <!-- Header Overlay-->
+   <?php include_once(tpl('common/web/header')); ?>
+   <!-- END Header  Overlay-->
+
+    <!-- Main Container -->
+    <main id="main-container" class="width-sidebar">
+
+        
+<div class="content">
+
+	<!-- Search Section -->
+	<div class="block block-transparent">
+		<div class="row" >
+			<div  class="col-lg-8 col-md-8 col-sm-8">
+				<div class="input-group input-group-lg">
+					<div class="input-group-addon font-w300"> 页面检索 </div> 
+					<input class="js-icon-search form-control keyword" type="text" placeholder="输入关键词" value="<?=$query['keywords']?>">
+					<span class="input-group-btn">
+						<button class="btn btn-primary font-w300 search" type="button"><i class=" si si-magnifier"></i> 搜索 </button>
+					</span>
+				</div>
+			</div>
+
+			<div class="col-lg-4 col-md-4  col-sm-4"></div>
+		</div>
+	</div> <!-- END Search Section -->
+
+	<div class="block-group">
+		<div class="block">
+			<ul class="nav nav-tabs nav-tabs-alt" data-toggle="tabs">
+				<li class="active"> 
+					<a id="tabs-document" href="#tabs-status-0"  class="font-w300 tabs-menu"> 
+					   <i class="fa  fa-th-list push-5-r"></i> 页面列表
+					</a>
+				</li> 
+				<li class="pull-right">
+					<a href="#" type="button" class="except" data-toggle="block-option" data-action="fullscreen_toggle"></a>
+				</li> 
+			</ul>
+
+			<div class="block-content tab-content">
+				 <div class="tab-pane hide" id="tab-pane-error" >
+					<div class="alert alert-danger push-50-l push-50-r push-20-t ">
+						<h3 class="font-w300 push-15">载入失败</h3>
+						<p>{HTML}</p>
+					</div>
+					<div class="row"  style="min-height:300px;" ></div>
+				</div>
+
+				<div class="tab-pane active" id="tabs-status-0"  style="min-height:500px;" >
+
+					<!-- 信息过滤(高级搜索)栏位 -->
+					<div class="row items-push remove-margin">
+						
+						<div class="col-xs-5">
+							<span class="text-muted">共找到 <?=intval($response['total'])?> 条页面</span>
+						</div> <!-- END col-xs-5 -->
+						
+						<div class="col-xs-7">
+
+							<!-- 批量管理链接 -->
+							<a class="btn btn-default btn-xs pull-right  push-20-l hidden" type="button">
+								<i class="glyphicon glyphicon-list-alt"></i> 批量修改 
+							</a> <!-- END 批量管理链接 -->
+							
+							<!-- 结果集排序 -->
+							<div class="btn-group pull-right push-20-l" role="group">  
+								<button class="btn btn-default btn-xs dropdown-toggle" 
+										type="button" data-toggle="dropdown" > 
+									<i class="glyphicon glyphicon-list-alt"></i>
+									<!-- 当前排序 -->
+									<?php if ( $query['order'] == 'orderby_created_at_desc') :?>
+										创建时间倒序
+									<?php elseif ( $query['order'] == 'orderby_updated_at_desc') :?>
+										更新时间倒序
+									<?php else:?>
+										排序方式
+									<?php endif;?>
+									<!-- 当前排序 -->
+									<span class="caret"></span> 
+								</button>
+								<ul class="dropdown-menu dropdown-menu-right" style="min-width: 87px;">
+									<li class="dropdown-header"> 排序方式</li>
+									<li>
+										<a href="javascript:search('order','orderby_created_at_desc')">
+										   创建时间倒序
+										</a>
+									</li>
+									<li>
+										<a href="javascript:search('order','orderby_updated_at_desc')">
+										   更新时间倒序
+										</a>
+									</li>
+									<li>
+										<a href="javascript:search('order','')"> 默认排序 </a>
+									</li>
+								</ul>
+							</div> <!-- END 结果集排序 -->
+						
+							<!-- 类型过滤 
+							<div class="btn-group pull-right push-20-l" role="group">  
+								<button class="btn btn-default btn-xs dropdown-toggle" type="button" data-toggle="dropdown" >
+									<i class="glyphicon glyphicon-list-alt"></i> 
+									<?=($query['type'] == 'increase') ? '增加' : '' ?>
+									<?=($query['type'] == 'decrease') ? '减少' : '' ?>
+									<?=(empty($query['type'])) ? '类型' : '' ?>
+									<span class="caret"></span> 
+								</button>
+
+								<ul class="dropdown-menu dropdown-menu-right"  style="min-width: 87px;">
+									<li class="dropdown-header">类型</li>
+									<li>
+										<a href="javascript:search('type','')">
+										   全部
+										</a>
+									</li>
+									<li >
+										<a href="javascript:search('type','increase')">
+										   增加
+										</a>
+									</li>
+									<li >
+										<a href="javascript:search('type','decrease')">
+										   减少
+										</a>
+									</li>
+								</ul>
+                            </div> 
+                            END 类型过滤 -->
+
+
+						</div><!-- END col-xs-7 -->
+
+					</div> <!-- END 信息过滤(高级搜索)栏位 -->
+					
+					<?php if ($response['total'] > 0): ?>
+					<!-- 页面列表 -->
+					<table class="js-table-checkable table table-hover remove-margin">
+						<thead>
+							<tr>
+								<th class="font-w300" width="16%"> 别名 </th>
+                                <th class="font-w300" width="16%"> 名称 </th>
+                                <th class="font-w300" width="32%"> 入口 </th>
+                                <th class="font-w300" width="6%"> 适配 </th>
+								<th class="font-w300" width="6%"> 项目 </th>
+								<th class="font-w300" width="6%"> 机构 </th>
+								<th class="font-w300" width="18%"> 最后更新 </th>
+							</tr>
+						</thead>
+
+						<tbody>
+                            <?php 
+                            $methodStyle = [
+                                "GET" => "success",
+                                "POST" => "warning",
+                                "DELETE" => "danger",
+                            ];
+
+                            $adaptStyle = [
+                                "desktop" => "primary",
+                                "mobile" => "warning",
+                                "wechat" => "success",
+                            ];
+
+                            foreach ($response['data'] as $rs) :?>
+							<tr data-toggle="block-group" 
+								onclick="window.location='<?=R('core-system', 'pages', 'detail', ['id'=>$rs['_id']])?>'" >
+								<td class="font-w300">
+									<?php $v=null; $v=T::s("{{slug}}", $rs ); echo empty($v) ? T::s("", $rs ) : $v; ?>
+								</td>
+								<td class="font-w300">
+                                    <?php $v=null; $v=T::s("{{cname}}", $rs ); echo empty($v) ? T::s("", $rs ) : $v; ?>
+                                </td>
+                                <td class="font-w300">
+                                    <?php foreach($rs["entries"] as $entry):?>
+                                    <div>
+                                        <label class="text-<?=$methodStyle[$entry["method"]]?>"><?=$entry["method"]?></label>
+                                        <label class="text-muted"> <?=$entry["router"]?></label>
+                                    </div>
+                                    <?php endforeach;?>
+                                </td>
+                                <td class="font-w300">
+                                    <?php foreach($rs["adapt"] as $adapt):?>
+                                    <div class="font-s12"> 
+                                        <label class="text-<?=$adaptStyle[$adapt]?>"><?=$adapt?></label>
+                                    </div>
+                                    <?php endforeach;?>
+								</td>
+								<td class="font-w300">
+									<?php $v=null; $v=T::s("{{project}}", $rs ); echo empty($v) ? T::s("", $rs ) : $v; ?>
+								</td>
+								<td class="font-w300">
+									<?php $v=null; $v=T::s("{{instance}}", $rs ); echo empty($v) ? T::s("", $rs ) : $v; ?>
+								</td>
+								<td class="font-w300">
+                                    <?php $v=null; $v=T::s("{{updated_at ? updated_at : created_at}}", $rs ); echo empty($v) ? T::s("", $rs ) : $v; ?>
+								</td>
+							</tr>
+							<?php endforeach;?>
+
+						</tbody>
+
+						<tfoot>
+							<tr><td colspan="7"> <nav class="pull-right">
+
+								<ul class="pagination">
+									<?php if ($response['prev'] !== false): ?>
+									<li>
+										<a href="javascript:search('page', '<?=$response['prev']?>' )">
+											<i class="fa fa-angle-double-left"></i>
+										</a>
+									</li>
+									<?php endif;?>
+
+									<?php for( $i=1; $i<=$response['last']; $i++) :?>
+									<li class="<?=($i==$response['curr'])? 'active': ''?>" >
+										<a href="javascript:search('page', '<?=$i?>' )"><?=$i?></a>
+									</li>
+									<?php endfor; ?>
+
+									<?php if ($response['next'] !== false): ?>
+									<li>
+										<a href="javascript:search('page', '<?=$response['next']?>' )">
+											<i class="fa fa-angle-double-right"></i>
+										</a>
+									</li>
+									<?php endif;?>
+
+								</ul>
+							</nav></td></tr>
+						</tfoot>
+					</table><!-- END 页面列表 -->
+					<?php else: // 无数据时呈现 ?>
+					<span class="push-15-l text-muted"> 
+                        未找到页面。
+                        构建页面示例项目: <a href="https://github.com/trheyi/mina-demo" target="_blank">https://github.com/trheyi/mina-demo</a>
+					</span>
+					<?php endif; // 如果没有数据则不显示 ?>
+			
+				</div> <!-- END Tab-pane -->
+
+			</div>
+		</div> <!-- END Block -->
+	</div> <!-- END block-group -->
+</div> <!-- END Pagecontent -->
+
+<script type="text/javascript">
+var $_GET = <?=empty($query) ? '{}' :json_encode($query)?>;
+var $_HOME ='<?=R("core-system", "pages", "index")?>';
+if (  $_GET !== null ) {
+	delete $_GET['select'];
+}
+
+function search( key, value ) {
+
+	if ( key !== undefined ) {
+
+		$_GET[key] = value;
+
+		if ( value == undefined  || value == '') {
+			delete $_GET[key];
+		}
+
+		if ( key != 'page' ) {
+			$_GET['page'] = 1;
+		}
+	}
+
+	var url =  $_HOME + '?' + $.param($_GET);
+	window.location = url;
+
+}
+$(function() {
+	App.initHelpers(['select2', 'slimscroll', 'ajax-confirm', 'table-tools']);
+	$('.search').click(function(){
+		var keyword = $('.keyword').val();
+		search('keywords', keyword);
+	});
+});
+
+</script>
+
+
+
+</main><!-- END Main Container -->
+
+           <!-- Footer Overlay-->
+           <?php include_once(tpl('common/web/footer')); ?>
+           <!-- END Footer Overlay-->
+        </div>
+        <!-- END Page Container -->
+
+        <script src="<?=\Xpmse\Conf::G('general/static')?>/assets/js/plugins/slick/slick.min.js"></script>
+        <script src="<?=\Xpmse\Conf::G('general/static')?>/assets/js/plugins/highlightjs/highlight.pack.js"></script>
+    </body>
+</html>

@@ -1,0 +1,179 @@
+        <?php include_once(tpl('common/web/head')); ?>
+
+        <!-- foot JS CODE-->
+        <?php include_once(tpl('common/web/foot')); ?>
+        <!-- foot end -->
+
+        <div id="page-container" class="sidebar-l sidebar-o side-scroll header-navbar-fixed <?=$_SIDEBAR_MINI?> main-sidebar">
+           
+           <!-- 左侧菜单-->
+           <?php include_once(tpl('common/web/menu')); ?>
+           <!-- 左侧菜单 结束-->
+
+ 		   <!-- Header Overlay-->
+           <?php include_once(tpl('common/web/header')); ?>
+           <!-- END Header  Overlay-->
+
+            <!-- Main Container -->
+            <main id="main-container" class="width-sidebar">
+                <!-- Page Content -->
+                <div class="content">
+
+                    <!-- App List  -->
+                    <div class="col-sm-5 col-lg-3">
+                        <div class="collapse navbar-collapse remove-padding" id="block-applist" >
+                            <!-- App List Block -->
+                            <div class="block" >
+                                <!-- App List Menu -->
+                                <div class="block-header bg-gray-lighter" >
+                                    
+                                    <ul class="block-options" >
+                                        <li>
+                                            <a  href="<?=R('core-system','appmanager','index')?>"  >
+                                                <i class="fa fa-plus"></i> 添加应用
+                                            </a>
+                                        </li>
+                                        <button
+                                            id="applist-update"
+                                            data-action="<?=R('core-system','aclmanager','updateorder')?>"
+                                            data-param-data=""
+                                            class="btn btn-xs btn-danger ajax-submit font-w300  push-10-l  hidden"> 保存 </button>
+                                    </ul>
+                                    
+                                    <h3 class="block-title">应用列表</h3>
+                                </div>  <!-- END App List Menu -->
+
+                                <!-- App List UL -->
+                                <div class="block-content remove-padding" >
+                                    <ul class="nav nav-pills nav-stacked push applist-sort" 
+                                        data-toggle="slimscroll" 
+                                        data-height="screen-height"
+                                        data-offset='225'
+                                        >
+
+                                        <li <?php if(empty($current)) :?> class="active" <?php endif ?>  data-id="-1" >
+                                            <a href="<?=R('core-system','aclmanager','index')?>">
+                                               <i class="iconfont icon-xpmse  push-5-r"></i> <span class="font-w300"> 系统功能 </span>
+                                            </a>
+                                        </li>
+                                        
+                                        <?php foreach( $apps as $app ) :?>
+
+                                        <li <?php if($current == $app['appid']) :?> class="active" <?php endif ?>   data-id="<?=$app['appid']?>">
+                                            <a href="<?=R('core-system','aclmanager','index', ['appid'=>$app['appid']])?>">
+                                               <i class="<?=$app['icontype']?> <?=$app['icon']?> push-5-r"></i> <span class="font-w300"> <?=$app['cname']?> </span>
+                                            </a>
+                                        </li>
+                                        <?php endforeach;?>
+                                    </ul>
+                                </div>  <!-- END App List UL -->
+                            </div> <!-- END App List Block -->
+                        </div> <!-- END navbar-collapse -->
+                    </div> <!-- EMD App List  -->
+
+                    <!-- App Tab Form  -->
+                    <div class="col-sm-7 col-lg-9">
+                        <div class="block">
+                            <ul class="nav nav-tabs nav-tabs-alt" data-toggle="tabs">
+                                <li class="active">  <!-- 手机不显示 -->
+                                    <a href="#tabs-menu" data-remote="<?=R('core-system','aclmanager','tabsMenu', ['appid'=>$current])?>">菜单权限</a>
+                                </li>
+
+                                <li>
+                                    <a href="#tabs-func" data-remote="<?=R('core-system','aclmanager','tabsFunc', ['appid'=>$current])?>">功能权限</a>
+                                </li>
+
+                                <li>
+                                    <a href="#tabs-api" data-remote="<?=R('core-system','aclmanager','tabsApi', ['appid'=>$current])?>">接口授权</a>
+                                </li>
+                                
+                            </ul>
+
+                            <!-- TAB内容开始 -->
+                            <div class="block-content tab-content">
+
+                                <div class="tab-pane hide" id="tab-pane-error" >
+                                    <div class="alert alert-danger push-50-l push-50-r push-20-t ">
+                                        <h3 class="font-w300 push-15">载入失败</h3>
+                                        <p>{HTML}</p>
+                                    </div>
+                                    <div class="row"  style="min-height:300px;" ></div>
+                                </div>
+
+                                <!-- 菜单权限 -->
+                                <div class="tab-pane active" id="tabs-menu">
+                                    <?=RUN('core-system','aclmanager','tabsMenu', ['appid'=>$current])?>
+                                </div><!-- END 菜单权限 -->
+
+                                <!-- 功能权限 -->
+                                <div class="tab-pane" id="tabs-func"></div>
+
+                                <!-- 接口权限 -->
+                                <div class="tab-pane" id="tabs-api"></div>
+
+                            </div>
+                        </div>
+                    </div> <!-- END App Tab Form  -->
+                </div>
+                <!-- END Page Content -->
+            </main>
+            <!-- END Main Container -->
+
+           <!-- Footer Overlay-->
+           <?php include_once(tpl('common/web/footer')); ?>
+           <!-- END Footer Overlay-->
+            
+
+           <!-- Page JS Code -->
+           <script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/jquery-ui/jquery-ui.min.js"></script>
+           <script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/jquery-validation/jquery.validate.min.js"></script>
+           <script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/jquery-tags-input/jquery.tagsinput.min.js"></script>
+           <script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/jquery-tags-input/jquery.tagsinput2.js"></script>
+           <script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/dropzonejs/dropzone.min.js"></script>
+           <script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/cropper/cropper.min.js"></script>
+           <script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/select2/select2.full.js"></script>
+           <script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/jquery-sortable/sortable.min.js"></script>
+
+        </div>
+        <!-- END Page Container -->
+
+        <script type="text/javascript">
+            App.initHelpers(['slimscroll','ajax-submit']);
+            App.initHelpers('sortable',{  // 资料类型排序
+                id: '.applist-sort',
+                dataIdAttr: 'data-id',
+                'onSort':function(evt){
+                    $('#applist-update','#block-applist').removeClass('hidden').show().hide().fadeIn('slow');
+                },
+            });
+
+            $('#applist-update','#block-applist').on('before', function() {
+                // var typelist = $('.type-sort').toArray();
+                var list = $('.applist-sort').sortable('toArray') ;
+                if ( $.isArray(list) ) {
+                    $(this).attr('data-param-data', list.join(',') );
+                }
+                App.loading({message:'正在保存排序...'}).show();
+            });
+
+            $('#applist-update','#block-applist').on('success', function(event,data) {
+                App.loading().hide();
+                $('#applist-update','#block-applist').addClass('hidden').hide(); 
+            })
+
+            $('#applist-update','#block-applist').on('error', function(event,data) {
+
+                var  message = '保存排序失败';
+                if ( typeof data['message'] === 'string') {
+                    message = message + '( ' + data['message'] + ')';
+                 }
+
+                App.loading().hide();
+                App.notify(message, 'fa fa-times','danger');
+            });
+
+        </script>
+
+
+    </body>
+</html>

@@ -1,0 +1,211 @@
+<div class="block-content">
+
+    <!-- Panel Group -->
+    <div id="conf" class="panel-group">
+
+        <!-- Redis 配置 -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <a class="accordion-toggle" data-toggle="collapse" width="80%" data-parent="#conf" href="#conf_redis"> 内存缓存 </a>
+                    <span class="text-success pull-right">
+                        <i class="fa fa-check-circle"></i>
+                    </span>
+                </h3>
+            </div>
+            <div id="conf_redis" class="panel-collapse collapse in">
+                <form id="CustTypeFormStep1Form" 
+                        class="js-validation-CustTypeFormStep1 form-horizontal" 
+                        action="<?=R('default','dotype_create_step1')?>" method="post" >
+                <div class="panel-body">
+                    <div class="form-group ">
+                        <div class="col-lg-12 push-20-t ">
+                             <div class="form-material  push-30-l push-30-r">
+                                 <input class="form-control" type="text" id="company" name="company" value="127.0.0.1" placeholder="">
+                                 <label for="name">Redis Host</label>
+                             </div>
+                        </div>
+                    </div>
+                    <div class="form-group ">
+                        <div class="col-lg-12 ">
+                             <div class="form-material  push-30-l push-30-r">
+                                 <input class="form-control" type="text" id="company" name="company" value="6379" placeholder="">
+                                 <label for="name">Redis Port</label>
+                             </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group ">
+                        <div class="col-lg-12 ">
+                             <div class="form-material  push-30-l push-30-r">
+                                 <input class="form-control" type="text" id="company" name="company" value="" placeholder="">
+                                 <label for="name">Redis PassWord</label>
+                             </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group ">
+                        <div class="col-lg-12 ">
+                             <div class="form-material  push-30-l push-30-r">
+                                 <input class="form-control" type="text" id="company" name="company" value="" placeholder="">
+                                 <label for="name">Redis Socket </label>
+                             </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-lg-12 push-30-l push-30-r">
+                            <button class="btn btn-primary font-w300" type="submit"> 
+                                <i class="fa fa-save push-5-r"></i> 验证并保存 
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                </form>
+            </div>
+        </div> <!-- END Redis 配置 -->
+
+
+        <!-- 存储服务 配置 -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <a class="accordion-toggle" data-toggle="collapse" width="80%" data-parent="#conf" href="#conf_stor">对象存储</a>
+                    <span class="text-success pull-right">
+                        <i class="fa fa-check-circle"></i>
+                    </span>
+                </h3>
+            </div>
+            <div id="conf_stor" class="panel-collapse collapse">
+                <form id="CustTypeFormStep1Form" 
+                        class="js-validation-CustTypeFormStep1 form-horizontal" 
+                        action="<?=R('default','dotype_create_step1')?>" method="post" >
+                <div class="panel-body">
+                    <div class="form-group ">
+                        <div class="col-lg-12 push-20-t ">
+                             <div class="form-material  push-30-l push-30-r">
+                                 <input class="form-control" type="text" id="company" name="company" value="127.0.0.1" placeholder="">
+                                 <label for="name">HOST</label>
+                             </div>
+                        </div>
+                    </div>
+                    <div class="form-group ">
+                        <div class="col-lg-12 ">
+                             <div class="form-material  push-30-l push-30-r">
+                                 <input class="form-control" type="text" id="company" name="company" value="6379" placeholder="">
+                                 <label for="name">PORT</label>
+                             </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-lg-12 push-30-l push-30-r">
+                            <button class="btn btn-primary font-w300" type="submit"> 
+                                <i class="fa fa-save push-5-r"></i> 验证并保存 
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                </form>
+            </div>
+        </div> <!-- END 存储服务配置 -->
+
+
+        <!-- SuperTable 配置 -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <a class="accordion-toggle" data-toggle="collapse" width="80%" data-parent="#conf" href="#conf_tab"> 数据库和搜索 </a>
+                    <span class="text-success pull-right">
+                        <i class="fa fa-check-circle"></i>
+                    </span>
+                </h3>
+            </div>
+            <div id="conf_tab" class="panel-collapse collapse">
+                <form id="CustTypeFormStep1Form" 
+                        class="js-validation-CustTypeFormStep1 form-horizontal" 
+                        action="<?=R('default','dotype_create_step1')?>" method="post" >
+                <div class="panel-body">
+                    <div class="form-group ">
+                        <div class="col-lg-12 push-20-t ">
+                             <div class="form-material  push-30-l push-30-r">
+                                 <input class="form-control" type="text" id="company" name="company" value="127.0.0.1" placeholder="">
+                                 <label for="name">HOST</label>
+                             </div>
+                        </div>
+                    </div>
+                    <div class="form-group ">
+                        <div class="col-lg-12 ">
+                             <div class="form-material  push-30-l push-30-r">
+                                 <input class="form-control" type="text" id="company" name="company" value="6379" placeholder="">
+                                 <label for="name">PORT</label>
+                             </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-lg-12 push-30-l push-30-r">
+                            <button class="btn btn-primary font-w300" type="submit"> 
+                                <i class="fa fa-save push-5-r"></i> 验证并保存 
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                </form>
+            </div>
+        </div> <!-- END SuperTable 配置 -->
+
+        <!-- SuperTable 配置 -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <a class="accordion-toggle" data-toggle="collapse" width="80%" data-parent="#conf" href="#conf_log"> 日志存储 </a>
+                    <span class="text-success pull-right">
+                        <i class="fa fa-check-circle"></i>
+                    </span>
+                </h3>
+            </div>
+            
+            <div id="conf_log" class="panel-collapse collapse">
+                <form id="CustTypeFormStep1Form" 
+                        class="js-validation-CustTypeFormStep1 form-horizontal" 
+                        action="<?=R('default','dotype_create_step1')?>" method="post" >
+                <div class="panel-body">
+                    <div class="form-group ">
+                        <div class="col-lg-12 push-20-t ">
+                             <div class="form-material  push-30-l push-30-r">
+                                 <input class="form-control" type="text" id="company" name="company" value="127.0.0.1" placeholder="">
+                                 <label for="name">HOST</label>
+                             </div>
+                        </div>
+                    </div>
+                    <div class="form-group ">
+                        <div class="col-lg-12 ">
+                             <div class="form-material  push-30-l push-30-r">
+                                 <input class="form-control" type="text" id="company" name="company" value="6379" placeholder="">
+                                 <label for="name">PORT</label>
+                             </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-lg-12 push-30-l push-30-r">
+                            <button class="btn btn-primary font-w300" type="submit"> 
+                                <i class="fa fa-save push-5-r"></i> 验证并保存 
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                </form>
+            </div>
+        </div> <!-- END SuperTable 配置 -->
+
+        <div class="row push-20-t"></div>
+
+    </div> <!-- END Panel Group -->
+
+</div>
+
+<script type="text/javascript"></script>
+
+

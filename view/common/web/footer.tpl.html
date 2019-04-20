@@ -1,0 +1,26 @@
+<!-- 页面通知-->
+<a id="_notify" class="js-notify" data-notify-type="success" data-notify-from="top" data-notify-align="right" data-notify-icon="fa fa-check" data-notify-message="操作成功!"></a>
+
+<!-- btn-ajax-post 操作确认对话框 Modal id="_btn-ajax-confirm" -->
+<?php include_once(tpl('common/web/btn-ajax-post.confirm.mod')); ?>
+
+<!-- btn-ajax-post 全局状态提醒 Modal id="_fullscreen-loading" -->
+<?php include_once(tpl('common/web/fullscreen-loading.mod')); ?>
+
+<!-- 图片裁切插件 id="_image-crop-modal" -->
+<?php include_once(tpl('common/web/imagecrop.mod')); ?>
+
+
+<footer id="page-footer" class="content-mini content-mini-full font-s12 bg-gray-lighter clearfix">
+    <a href="https://www.jianmo.ink"
+        class="text-muted pull-right" target="_blank" >
+        <i class="iconfont icon-jm"></i> 简墨  - 信息形於简墨 
+    </a>
+</footer>
+
+
+<script type="text/javascript">
+$(function(){ // Loading
+    App.initHelpers(['notify']);
+});
+</script>

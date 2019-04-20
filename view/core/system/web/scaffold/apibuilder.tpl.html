@@ -1,0 +1,441 @@
+<style type="text/css">
+	.CodeMirror { margin-top: 30px;}
+</style>
+<form>
+<div class="form-group">
+    <div class="col-lg-2 col-xs-2 col-sm-2 col-md-2">
+ 		<div class="form-material">
+			<input class="form-control" type="text" 
+                            id="apiname" 
+                            name="apiname" value="<?=$apiname?>" placeholder="">
+			<label for="apiname">API控制器名称</label>
+ 		</div>
+	</div>
+	
+	<div class="col-lg-2 col-xs-2 col-sm-2 col-md-2">
+ 		<div class="form-material">
+			<input class="form-control" type="text" 
+                            id="srcname" 
+                            name="srcname" value="<?=$srcname?>" placeholder="">
+
+			<label for="srcname">资源名称</label>
+ 		</div>
+	</div>
+
+	<div class="col-lg-2 col-xs-2 col-sm-2 col-md-2">
+ 		<div class="form-material">
+			<input class="form-control" type="text" 
+                            id="srccname" 
+                            name="srccname" value="<?=$srccname?>" placeholder="">
+                            
+			<label for="srccname">资源中文名称</label>
+ 		</div>
+	</div>
+
+	<div class="col-lg-3 col-xs-3 col-sm-3 col-md-3">
+		<div class="form-material">
+	 		<select class="js-select2 form-control" id="querykeys" name="querykeys" style="width: 100%;" data-placeholder="请选择可查询主键..." multiple>
+	            <option></option><!-- Required for data-placeholder attribute to work with Select2 plugin -->
+				<option value="_id" <?php if ( in_array('_id', $querykeys) ) : ?> selected <?php endif; ?>>_id (数据表ID)</option>
+				<?php foreach ($columns as $key => $type) : 
+					if ( ( $type->get('required') and $type->get('unique') == '1') ) :
+				?>
+				<option 
+					<?php if ( in_array($key, $querykeys) ) : ?> selected <?php endif; ?>
+					value="<?=$key?>"
+				
+				><?=$key?> (<?=$type->get('screen_name')?>)</option>
+				<?php 
+				 endif;
+				endforeach; ?>
+	        </select>
+			<label for="querykeys">可查询主键</label>
+ 		</div>
+	</div>
+
+	<div class="col-lg-2 col-xs-2 col-sm-2 col-md-2">
+		<div class="form-material">
+			<button class="btn btn-sm btn-primary building" type="button">生成代码</button>
+ 		</div>
+	</div>
+</div>
+
+
+<div class="form-group">
+<div class="col-lg-12 col-xs-12 col-sm-12 col-md-12">
+
+<textarea id="apicode" name="apicode" class="codejson">
+<?='<?php'."\n"?>
+/**
+ * <?=$srccname?> REST API
+ * 本程序由脚手架自动生成 @<?=time()?> 
+ *
+ * /<?=$_APP?>/controller/<?=ucfirst(strtolower($apiname))?>.php
+ *
+ */
+require_once('loader/Controller.php');
+require_once('loader/App.php');
+require_once('lib/Utils.php');
+require_once('lib/Tuan.php');
+
+use \Xpmse\Loader\App as App;
+use \Xpmse\Utils as Utils;
+use \Xpmse\Tuan as Tuan;
+use \Xpmse\Excp as Excp;
+use \Xpmse\Conf as Conf;
+
+
+class <?=$apiname?>Controller extends \Xpmse\Loader\Controller {
+	
+	function __construct() {
+	}
+
+	
+	/**
+	 * 根据主键读取一条<?=$srccname?>  
+	 * @api  /apps/<?=$_APP?>/<?=strtolower($srcname)?>/get
+	 *
+<?php foreach ($querykeys as $key):?>
+	 * @query|@data $<?=$key?> <?php if (isset($columns[$key])) :?><?=$columns[$key]->get('screen_name')?><?php endif;?>  
+<?php endforeach;?>
+     *
+	 * @return Array <?=$srcname?>   
+	 * 
+	 * @package.json: 
+	 * "register_api": {
+	 * 		...
+	 * 		"/<?=strtolower($srcname)?>/get": {
+	 *			"name":"读取<?=$srccname?>",
+	 *			"controller":"<?=strtolower($apiname)?>",
+	 *			"action":"get",
+	 *			"public":false
+	 *		},
+	 *  	...
+	 *  }
+     *
+	 * @example:
+	 *	$tuan = new Tuan;
+<?php foreach ($querykeys as $key):?>
+	 *	$resp = $tuan->call('/apps/<?=$_APP?>/<?=strtolower($srcname)?>/get', ['<?=$key?>'=>'value'] );
+<?php endforeach;?>
+	 */
+	function get() {
+		
+<?php 
+$ifids = [];
+foreach ($querykeys as $idkey) :
+$ifids[] = "\${$idkey} === null";
+?>
+		$<?=$idkey?> = (isset($this->data['<?=$idkey?>'])) ? $this->data['<?=$idkey?>'] : null;
+		$<?=$idkey?> = (!empty($<?=$idkey?>) && isset($this->query['<?=$idkey?>'])) ? $<?=$idkey?> : $this->query['<?=$idkey?>'];
+<?php endforeach; ?>
+		
+		if ( <?=implode(' && ', $ifids)?> ) {
+			throw new Excp("请输入 <?=implode(' 或 ', $querykeys)?> ", 500, [ 'data'=>$this->data,'query'=>$this->query]);
+		}
+
+		$data = null;
+<?php foreach ($querykeys as $idkey) : ?>		
+		if ( !empty($<?=$idkey?>) && $data==null  ) {
+			$data = App::OM('<?=$stname?>')->getLine("WHERE <?=$idkey?>='$<?=$idkey?>' LIMIT 1");
+		}
+<?php endforeach?>
+
+		if ( $data  === null ) {
+			throw new Excp("<?=$srccname?>不存在", 404, [ 'data'=>$this->data,'query'=>$this->query]);
+		}
+
+		echo json_encode($data);
+	}
+
+
+
+
+    /**
+	 * 创建<?=$srccname?>  
+	 * @api  /apps/<?=$_APP?>/<?=strtolower($srcname)?>/create
+	 *
+	 * @data <?=$srccname?>数据 
+     *
+	 * @return Array <?=$srcname?>   
+	 * 
+	 * @package.json: 
+	 * "register_api": {
+	 * 		...
+	 * 		"/<?=strtolower($srcname)?>/create": {
+	 *			"name":"创建<?=$srccname?>",
+	 *			"controller":"<?=strtolower($apiname)?>",
+	 *			"action":"create",
+	 *			"public":false
+	 *		},
+	 *  	...
+	 *  }
+     *
+	 * @example:
+	 *	$tuan = new Tuan;
+	 *	$resp = $tuan->call('/apps/<?=$_APP?>/<?=strtolower($srcname)?>/create', [], ['<key>'=>'<value>',...] );
+	 */
+	function create() {
+		$<?=$stname?> = App::OM('<?=$stname?>');
+		$resp = $<?=$stname?>->create($this->data);
+		if ( $resp  === false ) {
+			throw new Excp("创建<?=$srccname?>失败", 500, ['errors'=>$<?=$stname?>->errors, 'data'=>$this->data,'query'=>$this->query]);
+		}
+
+		echo json_encode($resp);
+	}
+
+
+
+
+	/**
+	 * 根据主键删除一条<?=$srccname?>  
+	 * @api  /apps/<?=$_APP?>/<?=strtolower($srcname)?>/delete
+	 *
+<?php foreach ($querykeys as $key):?>
+	 * @query|@data $<?=$key?> <?php if (isset($columns[$key])) :?><?=$columns[$key]->get('screen_name')?><?php endif;?>  
+<?php endforeach;?>
+     *
+	 * @return Array <?=$srcname?>   
+	 * 
+	 * @package.json: 
+	 * "register_api": {
+	 * 		...
+	 * 		"/<?=strtolower($srcname)?>/delete": {
+	 *			"name":"删除<?=$srccname?>",
+	 *			"controller":"<?=strtolower($apiname)?>",
+	 *			"action":"delete",
+	 *			"public":false
+	 *		},
+	 *  	...
+	 *  }
+     *
+	 * @example:
+	 *	$tuan = new Tuan;
+<?php foreach ($querykeys as $key):?>
+	 *	$resp = $tuan->call('/apps/<?=$_APP?>/<?=strtolower($srcname)?>/delete', ['<?=$key?>'=>'value'] );
+<?php endforeach;?>
+	 */
+	function delete() {
+
+		$<?=$stname?> = App::OM('<?=$stname?>');
+<?php 
+$ifids = [];
+foreach ($querykeys as $idkey) :
+$ifids[] = "\${$idkey} === null";
+?>
+		$<?=$idkey?> = (isset($this->data['<?=$idkey?>'])) ? $this->data['<?=$idkey?>'] : null;
+		$<?=$idkey?> = (!empty($<?=$idkey?>) && isset($this->query['<?=$idkey?>'])) ? $<?=$idkey?> : $this->query['<?=$idkey?>'];
+<?php endforeach; ?>
+		
+		if ( <?=implode(' && ', $ifids)?> ) {
+			throw new Excp("请输入 <?=implode(' 或 ', $querykeys)?> ", 500, [ 'data'=>$this->data,'query'=>$this->query]);
+		}
+
+
+		if ($_id === null ) {
+<?php foreach ($querykeys as $idkey) : if($idkey !== '_id') : ?>		
+			if ( !empty($<?=$idkey?>) && $_id==null  ) {
+				$_id = $<?=$stname?>->getVar('_id', "WHERE <?=$idkey?>='$<?=$idkey?>' LIMIT 1");
+			}
+<?php endif; endforeach?>
+			if ( $_id  === null ) {
+				throw new Excp("<?=$srccname?>不存在", 404, [ 'data'=>$this->data,'query'=>$this->query]);
+			}
+		}
+
+
+		$resp = $<?=$stname?>->delete($_id, true);
+		if ( $resp  === false ) {
+			throw new Excp("删除<?=$srccname?>失败", 500, ['errors'=>$<?=$stname?>->errors,'data'=>$this->data,'query'=>$this->query]);
+		}
+
+		echo json_encode(['code'=>0, 'message'=>'删除成功']);
+	}
+
+
+
+	/**
+	 * 根据主键更新一条<?=$srccname?>  
+	 * @api  /apps/<?=$_APP?>/<?=strtolower($srcname)?>/update
+	 *
+<?php foreach ($querykeys as $key):?>
+	 * @query|@data $<?=$key?> <?php if (isset($columns[$key])) :?><?=$columns[$key]->get('screen_name')?><?php endif;?>  
+<?php endforeach;?>
+     * @data <?=$srccname?>数据 
+     *
+	 * @return Array <?=$srcname?>   
+	 * 
+	 * @package.json: 
+	 * "register_api": {
+	 * 		...
+	 * 		"/<?=strtolower($srcname)?>/update": {
+	 *			"name":"删除<?=$srccname?>",
+	 *			"controller":"<?=strtolower($apiname)?>",
+	 *			"action":"update",
+	 *			"public":false
+	 *		},
+	 *  	...
+	 *  }
+     *
+	 * @example:
+	 *	$tuan = new Tuan;
+<?php foreach ($querykeys as $key):?>
+	 *	$resp = $tuan->call('/apps/<?=$_APP?>/<?=strtolower($srcname)?>/update', ['<?=$key?>'=>'value'],['<key>'=>'<value>',...] );
+<?php endforeach;?>
+	 */
+	function update() {
+
+		$<?=$stname?> = App::OM('<?=$stname?>');
+<?php 
+$ifids = [];
+foreach ($querykeys as $idkey) :
+$ifids[] = "\${$idkey} === null";
+?>
+		$<?=$idkey?> = (isset($this->data['<?=$idkey?>'])) ? $this->data['<?=$idkey?>'] : null;
+		$<?=$idkey?> = (!empty($<?=$idkey?>) && isset($this->query['<?=$idkey?>'])) ? $<?=$idkey?> : $this->query['<?=$idkey?>'];
+<?php endforeach; ?>
+		
+		if ( <?=implode(' && ', $ifids)?> ) {
+			throw new Excp("请输入 <?=implode(' 或 ', $querykeys)?> ", 500, [ 'data'=>$this->data,'query'=>$this->query]);
+		}
+
+
+		if ($_id === null ) {
+<?php foreach ($querykeys as $idkey) : if($idkey !== '_id') : ?>		
+			if ( !empty($<?=$idkey?>) && $_id==null  ) {
+				$_id = $<?=$stname?>->getVar('_id', "WHERE <?=$idkey?>='$<?=$idkey?>' LIMIT 1");
+			}
+<?php endif; endforeach?>
+			if ( $_id  === null ) {
+				throw new Excp("<?=$srccname?>不存在", 404, [ 'data'=>$this->data,'query'=>$this->query]);
+			}
+		}
+
+
+		$resp = $<?=$stname?>->update($_id, $this->data);
+		if ( $resp  === false ) {
+			throw new Excp("更新<?=$srccname?>失败", 500, ['errors'=>$<?=$stname?>->errors, 'data'=>$this->data,'query'=>$this->query]);
+		}
+
+		echo json_encode($resp);
+	}
+
+	
+
+	
+	/**
+	 * 查询<?=$srccname?>  
+	 * @api  /apps/<?=$_APP?>/<?=strtolower($srcname)?>/list
+	 *
+	 * @data <?=$srccname?>查询条件  @see supertable vquery 
+     *
+	 * @return Array [
+	 *		'data'=>[], //记录数组 
+	 *		'total'=>$resp->total(),  //记录总数
+	 *		'currTotal'=>$resp->currTotal(), //当前页记录总数
+	 *		'perpage'=>$resp->perpage(),  // 每页显示数量
+	 *		'currPage'=>$resp->currPage(),  //当前页码
+	 *      'pages'=>$resp->pages(),   //所有页码
+	 *		'nextPage'=>$resp->nextPage()]    //下一页页码
+	 * 
+	 * @package.json: 
+	 * "register_api": {
+	 * 		...
+	 * 		"/<?=strtolower($srcname)?>/list": {
+	 *			"name":"查询<?=$srccname?>",
+	 *			"controller":"<?=strtolower($apiname)?>",
+	 *			"action":"find",
+	 *			"public":false
+	 *		},
+	 *  	...
+	 *  }
+     *  
+     *
+	 * @example:
+	 *	$tuan = new Tuan;
+	 *	$resp = $tuan->call('/apps/<?=$_APP?>/<?=strtolower($srcname)?>/list', ['page'=>1,'perpage'=>30], ['<condition>'=>'<value>',...] );
+	 */
+	function find(){
+	
+		$article = App::OM('<?=$stname?>');
+		$page = (isset($this->query['page']))? intval($this->query['page']) : 1;
+		$perpage = (isset($this->query['perpage']))? intval($this->query['perpage']) : 20;
+		$resp = $article->vquery($this->data, $page, $perpage);
+
+		echo json_encode([
+			'data'=>$resp->toArray(), 
+			'total'=>$resp->total(), 
+			'currTotal'=>$resp->currTotal(),
+			'perpage'=>$resp->perpage(), 
+			'pages'=>$resp->pages(), 
+			'currPage'=>$resp->currPage(), 
+			'nextPage'=>$resp->nextPage()]);
+	}
+
+}
+</textarea>
+</div>
+</div>
+</form>
+
+
+<script type="text/javascript">
+
+var cms = [];
+/**
+ * 初始化 jsoninput 字符串
+ * @return {[type]} [description]
+ */
+function init_jsoninput() {
+    var objs = document.getElementsByClassName('codejson');
+    for( var i=0; i<objs.length; i++ ) {
+        var rows = parseInt($(objs[i]).attr('rows'));
+            if ( rows == 0 ){
+                 rows = 8;   
+            }
+
+        var height = $(document.body).height() - 260;
+        cms[i] = CodeMirror.fromTextArea(objs[i], {
+            mode:  "application/x-httpd-php", // "text/x-mysql", //mode: "javascript",
+            keyMap: "sublime",
+            autoCloseBrackets: true,
+            matchBrackets: true,
+            showCursorWhenSelecting: true,
+          	lineNumbers:true,    
+          	theme: "monokai",
+            tabSize: 4
+        });
+        cms[i].setSize(null, height);
+    }
+}
+
+</script>
+
+<script type="text/javascript">
+$(function(){
+	init_jsoninput();
+	App.initHelpers(['select2']);
+
+	$('.building').click(function(event) {
+		var apiname = $('input[name="apiname"]').val();
+		var srcname = $('input[name="srcname"]').val();
+		var srccname = escape($('input[name="srccname"]').val());
+		var querykeys = $('select[name="querykeys"]').val();
+
+
+
+		var url = '<?=R('core-system','scaffold', 'apibuilder',['model_name'=>$_GET['model_name']])?>' 
+				+ '&apiname='+ apiname 
+				+ '&srcname='+srcname 
+				+ '&querykeys='+querykeys
+				+ '&srccname='+srccname;
+
+		console.log(url);
+		
+		$('#tabs_apibuilder').attr('data-remote', url  );
+		$('#tabs_apibuilder').trigger('click');
+
+	});
+});
+</script>

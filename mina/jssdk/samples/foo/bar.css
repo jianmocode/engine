@@ -1,0 +1,9 @@
+body.deepblue .wrapper .content h1 {
+  font-size: 42px;
+  font-weight: 300;
+  color: #545454;
+}
+body.deepblue .wrapper .content p {
+  padding: 20px;
+  font-size: 18px;
+}

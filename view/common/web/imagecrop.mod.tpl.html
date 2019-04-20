@@ -1,0 +1,50 @@
+<!-- 图片裁切弹窗 -->
+<div class="modal fade" id="_image-crop-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-lg modal-dialog">
+        <div class="modal-content">
+            <!-- Upload Form -->
+            <input type="hidden" value="" />
+            <div class="block block-themed block-transparent">
+                <div class="block-header bg-primary">
+                    <ul class="block-options">
+                        <li>
+                            <button data-dismiss="modal" type="button"><i class="si si-close"></i></button>
+
+                        </li>
+                    </ul>
+                    <h3 class="block-title font-w300">裁切图片</h3>
+                </div>
+
+                <div class="block-content">
+                    <div class="alert alert-danger hide" aria-hidden="true">
+                        <button type="button" class="close"  aria-hidden="true">&times;</button>
+                        <p>Opps, an error occured</a>!</p>
+                    </div>
+
+                    <h5 class="font-w300">图片控件测试</h5>
+                    <div class="row  push-15-t push-15-l">
+                        <div class="col-xs-6">
+                            <div class="imgcrop-container" style="height:auto;">  <img src=""> </div>
+                        </div>
+
+                        <div class="col-xs-6">
+                            <div class="imgcrop-preview" ></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END Apps Block -->
+
+            <div class="modal-footer">
+                <form method="POST" action=""> 
+                    <button class="btn btn-sm btn-default font-w300 cancel" type="button" data-dismiss="modal"> <i class="fa fa-close"></i> 放弃修改</button>
+                    <button class="btn btn-sm btn-primary font-w300 save" type="button"><i class="fa fa-check"></i> 保存更改 </button>
+                    <input type="hidden" class="path" value="">
+                    <input type="hidden" class="url" value="">
+                    <input type="hidden" class="home" value="">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 图片裁切弹窗 END -->

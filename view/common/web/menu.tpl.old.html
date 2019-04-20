@@ -1,0 +1,153 @@
+            <!-- Sidebar -->
+            <nav id="sidebar">
+                <!-- Sidebar Scroll Container -->
+                <div id="sidebar-scroll">
+                    <!-- Sidebar Content -->
+                    <!-- Adding .sidebar-mini-hide to an element will hide it when the sidebar is in mini mode -->
+                    <div class="sidebar-content">
+                        <!-- Side Header -->
+                        <div class="side-header side-content" style="padding-top:12px; padding-left:8px;padding-right:5px;">
+                            <!-- Layout API, functionality initialized in App() -> uiLayoutApi() -->
+                           <!--  <button class="btn btn-link text-gray pull-right hidden-md hidden-lg" type="button" data-toggle="layout" data-action="sidebar_close">
+
+                                <i class="fa fa-times"></i>
+                            </button> -->
+
+                            <!-- Themes functionality initialized in App() -> uiHandleTheme() -->
+                            <div class="btn-group pull-right visible-lg">
+                                <button class="btn btn-link text-gray" data-toggle="layout" data-action="sidebar_mini_toggle" type="button">
+                                    <i class="si si-pin"></i>
+                                </button>
+                            </div>
+
+                            <div class="btn-group">
+                                <!-- <a href="#" class="group-logo dropdown-toggle h5 " data-toggle="dropdown" > -->
+                                    <?php if (!empty($_LOGO['60'])) :  ?>
+                                        <img src="<?=$_LOGO['60']?>" width="42" height="42" >
+                                    <?php else: ?>
+                                        <img src="<?=\Xpmse\Conf::G("general/static")?>/defaults/images/logo/blue-128.png" width="42" height="42" >
+                                    <?php endif; ?>
+                                    <!-- <span class="push-10-l"><?=$_SHORT?><span class="caret"></span> </span> -->
+                                    <span class="push-10-l"><?=$_SHORT?> <!-- <span class="caret"></span> -->  </span>
+                                <!-- </a> -->
+
+                                 <!-- 
+    
+                                <ul class="dropdown-menu dropdown-menu">
+                                    <li>
+                                        <a tabindex="-1" href="<?=R('core-dept','default','index')?>">企业通讯录</a>
+                                    </li>
+                                   
+                                    <li>
+                                        <a tabindex="-1" href="javascript:void(0)">系统信息</a>
+                                    </li>
+                                     
+                                </ul>-->
+                            </div>
+                        </div>
+                        <!-- END Side Header -->
+
+                        <!-- Side Content -->
+                        <div class="side-content">
+                            <ul class="nav-main"> <!-- MENU BEGIN -->
+                    
+                                <?php
+                                    foreach ($_MENU as $g ) { ?>
+
+                                    <?php if ($g['display'] === true && $g['count'] > 0) { ?> 
+                                        <li class="nav-main-heading"><span class="sidebar-mini-hide"><?=$g['group']?></span></li>
+                                    <?php } // END GROUP ?>
+
+                                    <?php 
+
+                                        if ( isset($g['apps']) && is_array($g['apps']) ) {
+                                        foreach ($g['apps'] as $app ) {  // APP LIST 
+
+                                        //==== APP DISPLAY head ====================
+                                        if ($app['display']) {  // APP DISPLAY head
+                                                $open = "";
+                                                if ($app['open']) {
+                                                    $open = 'class="open"';
+                                                }
+                                            ?>
+                                            <li <?=$open?> >
+                                                <a class="nav-submenu" data-toggle="nav-submenu" href="#">
+                                                    <i class="<?=$app['icontype']?> <?=$app['icon']?>"></i><span class="sidebar-mini-hide"><?=$app['cname']?></span>
+                                                </a>
+
+                                                <ul>
+                                            <?php } // END  APP DISPLAY head 
+                                        //==== END APP DISPLAY head ====================
+                                            ?>
+                                            
+                                                <?php  
+                                                    // SUBMENU LIST
+                                                    foreach ($app['menu'] as $m) {
+
+                                                        if ( !$m['display'] ) {
+                                                            continue;
+                                                        }
+
+                                                        $active = "";
+                                                        $icon = "";
+                                                        $n = ( isset($m['namespace']))? $m['namespace']:null;
+                                                        $c = $m['controller'];
+                                                        $a = $m['action'];
+                                                        $q = (isset($m['query'])) ? $m['query'] : [];
+                                                        $target = isset($m['target'])  ? "target=\"". $m['target'] . "\"": "";
+
+                                                        if ( !isset($m['namespace']) ) {
+                                                            $app_name = $app['name'];
+                                                            $app_id = $app['id'];
+                                                            $app_c = $m['controller'];
+                                                            $app_a = $m['action'];
+                                                            $url = $m['link'];
+
+                                                            // $url = R('core-app','route','index', array_merge([
+                                                            //     'app_id'=> $app_id,
+                                                            //     'app_name' => $app_name,
+                                                            //     'app_c'=>$app_c,
+                                                            //     'app_a'=>$app_a
+                                                            // ], $q));
+
+                                                        } else {
+                                                            $url = R( $m['namespace'], $m['controller'], $m['action'] );
+                                                        }
+
+                                                       
+                                                        if ( $m['active'] ) {
+                                                            $active ='class="active"';
+                                                        }
+
+                                                        if ( isset($m['icon']) ) {
+                                                            $icon = "<i class=\"{$m['icontype']} {$m['icon']}\"></i>";
+                                                        }
+                                                ?>
+                                                 <li>
+                                                    <a href="<?=$url?>" <?=$target?>  <?=$active?> >
+                                                       <?=$icon?><span class="sidebar-mini-hide"><?=$m['name']?></span></a>
+                                                 </li>
+                                                <?php } // END SUBMENU LIST  ?>
+
+                                    
+                                    <?php 
+                                    //==== APP DISPLAY foot ====================
+                                    if ($app['display']) {  // APP DISPLAY foot?>
+                                            </ul>
+                                        </li>
+                                    <?php }// END APP DISPLAY foot 
+                                    //==== END  APP DISPLAY foot ====================   ?>
+                                        
+                                <?php   } } // END APP LIST
+                                } // END MENU LIST ?>
+                            
+                            </ul><!-- MENU END  -->
+
+                        </div>
+                        <!-- END Side Content -->
+                    </div>
+                    <!-- Sidebar Content -->
+                </div>
+                <!-- END Sidebar Scroll Container -->
+            </nav>
+            <!-- END Sidebar -->

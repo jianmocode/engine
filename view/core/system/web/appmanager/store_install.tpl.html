@@ -1,0 +1,60 @@
+<div class="block block-themed remove-margin">
+	<div class="block-header bg-primary">
+		<ul class="block-options">
+			<li>
+				 <button type="button" onclick="$('#_app_browser').modal('hide');"><i class="fa fa-times"></i></button>
+			</li>
+		</ul>
+		<h3 class="block-title"> <i class="fa fa-arrow-right"></i> 安装 <?=$app['cname']?> </h3>
+	</div>
+	<div class="block-content" style="padding-top:10px;padding-bottom: 10px;">
+		<div class="list-group-item clearfix" style="border: 0px;">
+			<a class="item item-rounded pull-left push-10-r bg-info" href="<?=$app['homepage']?>" target="_blank">
+				<?php if ($app['icontype']=="img") : ?>
+					<img src="<?=$app['image']['light']?>" style="width:48px;height:48px;" >
+				<?php else:  ?>
+					<i class="<?=$app['icontype']?> <?=$app['icon']?> text-white-op"></i>
+				<?php endif;  ?>
+			</a>
+
+			<div class="push-5 clearfix pull-right " style="min-width:300px;width:90%;">
+				<div class="text-danger pull-right font-s16 status-text">
+					<?=sprintf('%.2f', $app['price']/100);?> 元/<?=$app['unit']?>
+				</div>
+				<a class="font-w600 font-s16" href="<?=$app['homepage']?>" target="_blank"><?=$app['cname']?></a>
+				<span class="text-muted font-s16"><?=$app['version']?></span>
+				<div class="font-s14 text-muted push-5-t app-intro" style="min-height: 36px;">
+					<?=$app['detail']?>
+				</div>
+			</div>
+		</div>
+		
+
+		<div class="content content-full bg-white" style="min-height:320px;">
+         	
+         	<div class="alert alert-warning alert-dismissable">
+				<p>应用目录不可写入，请参照以下提示手动安装应用。</p>
+			</div>
+
+			<h4 class="font-w300">手动安装 <?=$app['cname']?> <?=$app['version']?>  </h4>
+         	<pre class="pre-sh push-10-t"><code class="bash" style="padding:20px 40px 20px 40px;">
+# 第一步: 登录服务器，运行以下命令，进入容器
+docker exec -it &lt;容器名称&gt; /bin/bash
+
+# 第二步: 在容器中，运行以下命令
+xpm install <?=$app['org']?>/<?=$app['name']?>
+
+         	 </code></pre>
+
+        </div>
+	</div>
+</div>
+
+
+<script type="text/javascript">
+$(function(){
+	$('pre code').each(function(i, block) {
+		hljs.highlightBlock(block);
+	});
+});
+</script>

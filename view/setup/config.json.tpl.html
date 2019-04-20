@@ -1,0 +1,180 @@
+{	
+	
+	"general" : {
+		"at":"<?=date('Y-m-d H:i:s')?>",
+		"company": "<?=$sys['company']?>",
+		"name": "<?=$sys['name']?>",
+		"short": "<?=$sys['short']?>",
+        "logo": "<?=$sys['logo']['default']?>",
+        "fav": "<?=$sys['logo']['32']?>",
+		"domain": "<?=$domain?>",
+		"homepage": "<?=$homepage?>",
+		"static": "<?=$static?>",
+		"apphost": "<?=$app['home']?>",
+		"password_login": true,
+		"default_login": "password"
+	},
+	"api":{
+		"host": "<?=$api?>",
+		"appid": "<?=$appid?>",
+		"appsecret": "<?=$appsecret?>"
+	},
+	"log": {
+		"server":{
+			"file":"<?=$stor['private_root']?>/application.log",
+			"local":"sentryLc",
+			"remote":"sentryRemote"
+		},
+		"option":{
+			"file_report":true,
+			"remote_report":false,
+			"local_report":false,
+			"report_levels":["info","debug","notice","warning","error","critical","alert","emergency"]
+		}
+	},
+
+	"mem": {
+		"redis": {
+			"host": "<?=$redis['host']?>",
+			"port": "<?=$redis['port']?>",
+			"password": "<?=$redis['password']?>",
+			"db": "<?=$redis['db']?>",
+			"socket": null
+		}
+	},
+
+	"storage": {
+		"local": {
+			"bucket":{
+				"public":{
+					"root":"<?=$stor['public_root']?>",
+					"home":"/static-file"
+				},
+				"private":{
+					"root": "<?=$stor['private_root']?>",
+					"home": "/core-storage/private/url?file="
+				}
+			}
+		}
+	},
+
+	"dingtalk": {
+		"enabled": true,
+		"corpid": "",
+		"corpsecret": "",
+		"ssosecret": "",
+		"sync":{ 
+			"option":"dingtalk",
+			"admin":false
+		},
+		"login": true
+	},
+
+	"wechat": {
+
+		"option": {
+			"enabled": true,
+			"login": "web",
+			"menu": false
+		},
+		
+		"web": {
+			"appid":"",
+			"secret":"",
+			"redirect_uri":"<?=$homepage?>/?c=wechat&a=authback&goto="
+		},
+
+		"public": {
+			"appid":"",  
+			"secret":"", 
+			"redirect_uri":"<?=$homepage?>/?c=wechat&a=authback&goto=",
+			"token":"",
+			"encodingaeskey":"",
+			"admin":""
+		}
+	},
+
+	"alidayu":{
+		"default": {
+			"key":"",
+			"secret":""
+		}
+	},
+
+	"supertable": {
+		"storage": {
+			"engine":"Mysql",
+			"prefix":"<?=$tab['st_prefix']?>",
+			"option":{
+				"db_name": "<?=$tab['st_dbname']?>",
+				"master": [{
+					"host": "<?=$tab['st_host']?>",
+					"port": "<?=$tab['st_port']?>",
+					"user": "<?=$tab['st_user']?>",
+					"pass": "<?=$tab['st_pass']?>"
+				}],
+				"slave": [{
+					"host": "<?=$tab['st_host']?>",
+					"port": "<?=$tab['st_port']?>",
+					"user": "<?=$tab['st_user']?>",
+					"pass": "<?=$tab['st_pass']?>"
+				}]
+			}
+		},
+
+		"search": {
+			"engine":"Elasticsearch",
+			"index":"<?=$tab['es_index']?>",
+			"signleindex":true,
+			"signlesheet":true,
+			"option":{
+				"hosts":["<?=$tab['es_host']?>:<?=$tab['es_port']?>"],
+				"connectionClass":"\\Elasticsearch\\Connections\\CurlMultiConnection",
+				"logging":false
+			}
+		},
+
+		"path": {
+			"type":"{APP_ROOT}/lib/supertable/types",
+			"templete":"{APP_ROOT}/view/supertable",
+			"assets":"{APP_STATIC_HOME}/supertable"
+		},
+		
+		"type": {
+			"public": {
+				"groups":{
+					"文本格式":{
+						"InlineText":"单行文本",
+						"BaseNested":"多行文本"
+					}
+				},
+				"map":{
+					"InlineText":"单行文本",
+					"BaseNested":"多行文本"
+				},
+				"list":["InlineText","BaseNested"]
+			}
+		},
+		
+		"cache":{
+			"engine": "redis",
+			"option": {
+				"host":"<?=$redis['host']?>",
+				"port":"<?=$redis['port']?>",
+				"prefix":"supertable:",
+				"db":3
+			}
+		}
+	},
+
+	"defaults":{
+		"storage":{
+			"public":"local://public",
+			"public_upload_home":"/static-file",
+			"private":"local://private",
+			"private_upload_home":"/core-storage/private/url?file="
+		}
+	},
+
+	"debug": {}
+}

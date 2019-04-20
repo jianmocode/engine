@@ -1,0 +1,216 @@
+-- @see https://openresty.org/en/dynamic-routing-based-on-redis.html
+-- 调试选项 lua_code_cache off
+-- 路由动态配置文档 
+
+ngx.var.target = ""
+
+-- 查找数组中是否存在数值
+function in_array(b,list)
+  if not list then
+    return false  
+  end 
+  if list then
+      for k, v in pairs(list) do
+      	-- ngx.log(ngx.ERR, ' in_array:b='.. b .. ' T:' .. type(b) ..'| v=' .. v .. ' T:' .. type(v) .. ' TableName' .. type(v.tableName)  )	
+        if v == b then
+         -- ngx.log(ngx.ERR, ' in_array:result=true' )	
+         return true
+        end
+      end
+      return false
+  end
+end 
+
+
+-- Redis Key
+local pre = "_core:RTMAP:"
+local const = {}
+	  const['database'] = 1   		  -- Redis Datebase Index
+	  const['hash']= pre.."HASH:"    -- 地址映射 RTMAP:HASH:Uri => Rewrite URL ( 优先级 高 )
+	  const['rule'] = pre.."RULE"     -- 匹配规则 ( 优先级 中 )
+	  const['home'] = pre.."HOME"     -- 系统访问地址
+	  const['allow'] = pre.."ALLOW"   -- 允许绑定域名清单
+	  const['cache'] = pre.."CACHE:"   -- 缓存路径
+
+
+
+local uri = ngx.var.request_uri
+
+-- 创建Redis CJSON 对象
+local cjson = require "cjson"
+local redis = require "resty.redis"
+	  redis:add_commands('select')
+local red = redis:new()
+	  red:set_timeout(1000) -- 1 second timeout
+
+
+-- 连接 Redis
+local ok, err = red:connect("192.168.1.176", 6379)
+if not ok then
+    ngx.log(ngx.ERR, "failed to connect to redis: ", err)
+    return ngx.exit(500)
+end
+
+-- 选择 Redis 数据库
+local ok, err = red:select(const.database)
+if not ok then
+    ngx.log(ngx.ERR, "failed to select redis db : db" .. const.database , err)
+    return ngx.exit(500)
+end
+
+
+-- 读取 系统访问地址
+local home, err = red:get(const.home)
+if home == ngx.null then
+    ngx.log(ngx.ERR, "Redis Key=" .. const.home .. " home is null. Error is:" , err)
+    return ngx.exit(403)
+end
+
+-- 读取 已绑定域名列表
+local allow, err = red:get(const.allow)
+if allow == ngx.null then
+    ngx.log(ngx.ERR, "Redis Key=" .. const.allow .. " allow is null. Error is:" , err)
+    return ngx.exit(403)
+end
+
+-- 解析允许域名列表
+local domains, err = cjson.decode( allow )
+if #domains < 1  then
+	ngx.log(ngx.ERR, "Redis Key=" .. const.allow .. " allow is null. Error is:" , err)
+    return ngx.exit(500)
+end
+
+-- 验证 domain 是否允许访问
+if in_array( ngx.var.host, domains ) == false then 
+	return ngx.exit(403)
+end
+
+
+-- 读取 HASH 规则
+local reuri, err = red:get(const.hash..uri)
+if reuri ~= ngx.null then
+    ngx.var.target = home .. reuri  -- 转向Hash地址
+    return ngx.null
+end
+
+
+-- 读取 Rewrite 规则
+local rulesjson, err = red:get(const.rule)
+if rulesjson == ngx.null then
+    ngx.log(ngx.ERR, " Rule Not Setting");
+    return ngx.exit(404)
+end
+
+-- 解析 Rewrite 规则
+local rules, err = cjson.decode( rulesjson )
+if #rules < 1  then
+    return ngx.exit(404)
+end
+
+-- 匹配 Rewrite 规则
+for idx, rule in pairs(rules) do
+
+	if not rule.re then
+   		ngx.log(ngx.ERR, " Rule re Error idx=" .. idx );
+   		return ngx.exit(500)
+	end
+
+	if not rule.uri then
+   		ngx.log(ngx.ERR, " Rule uri Error idx=" .. idx );
+   		return ngx.exit(500)
+	end
+
+	if not rule.cache then
+   		rule.cache = -1;
+	end
+
+	-- local reuri,n, err = ngx.re.sub( uri, "^/(id)/([0-9]+).html$", "[$1$2]");
+	-- local reuri,n, err = ngx.re.gsub( uri, rule.re, rule.uri, "i" );
+	-- local reuri,n, err = ngx.re.gsub( "/id/193.html?nocache", "/id/([0-9a-z.]+)", "/[$1]", "i" );
+
+	local m = ngx.re.match(uri, rule.re)
+
+	if m then 
+		local reuri = rule.uri
+		for i=1, #m do			
+			reuri, n, err = ngx.re.gsub(reuri, "\\$" .. i, m[i], "i") 
+		end
+
+
+		ngx.log( ngx.DEBUG, 
+		" \nMATCH INFO:".. 
+			"\n\trule.re = " .. rule.re .. 
+			" \n\trule.uri = " .. rule.uri .. 
+			" \n\turi = " .. uri .. 
+			" \n\treuri = " .. reuri .. 
+		"\nMATCH INFO END\n"  );
+
+
+		-- 从缓存中读取数据
+		if rule.cache > 0 then
+			local nocache = ngx.re.match(uri, "nocache$") -- 检查是否关闭缓存
+			if not nocache then
+				local content, err = red:get(const.cache..reuri)
+				local content_type, err = red:get(const.cache..reuri.."_type")
+				if content_type == ngx.null then
+					content_type = 'text/html'
+				end
+				if content ~= ngx.null then
+					ngx.header.content_type = content_type
+				    ngx.say(content)
+				    ngx.log( ngx.DEBUG, " \nLOAD FROM CACHE: \n\treuri = " .. reuri ..  "\n\tcontent_type = " .. content_type ..  "\nLOAD FROM CACHE END\n" );
+				    return ngx.null
+				end
+			end
+		end
+
+		-- 直接转向到指定地址
+		ngx.var.target = home .. reuri  -- 转向Rewrite
+		ngx.log( ngx.DEBUG, " \nLOAD DIRECT: \n\ttarget = " .. ngx.var.target .. "\nLOAD DIRECT END\n");
+		return ngx.null
+
+	end
+
+end
+
+
+if ngx.var.target == "" then
+	ngx.log( ngx.DEBUG, " \nURI NOT BIND: \n\thome = " .. home .. "\n\turi = " .. uri .. "\nURI NOT BIND END\n");
+	ngx.var.target = home .. uri
+	return ngx.null
+end
+
+return ngx.exit(404)
+
+-- ngx.say( 'stringis ',  domain == ngx.null , 'Typeof Domain: ',  type(domain) , ' VS ', type('null') )
+-- ngx.say( '<br/>')
+-- ngx.say( domain)
+-- ngx.say( const.rule )
+-- ngx.say( const.domain )
+
+-- 读取匹配规则 ( json_text )
+-- local rule, err = red:get(key)
+-- if not host then
+--     ngx.log(ngx.ERR, "failed to get redis key: ", err)
+--     return ngx.exit(500)
+-- end
+
+
+-- ngx.say(uri)
+
+-- local uri = ngx.re.sub(ngx.var.uri, "^(.*)", "$1", "o");
+
+-- local uri = ngx.re.sub(ngx.var.uri, "^/test/(.*)", "$1", "o")
+-- ngx.say('http://dev.JianMoApp.com/?n=core-dept&c=account&a=login&uri=', uri)
+-- ngx.say( ngx.var.http_user_agent );
+-- ngx.say( ngx.var.target );
+-- ngx.redirect('http://dev.JianMoApp.com', ngx.HTTP_MOVED_TEMPORARILY)
+
+
+-- local res = ngx.location.capture("/?n=core-dept")
+-- if res.status == 200 then
+--     ngx.say('ok')
+-- end
+
+-- local uri = ngx.re.sub(ngx.var.uri, "^/test/(.*)", "$1", "o")
+-- ngx.redirect('http://dev.JianMoApp.com/?n=core-dept&c=account&a=login&uri=' + uri);

@@ -1,0 +1,132 @@
+
+@text-color: #646464;
+@gray-light: #f3f3f3；
+@brand-danger: #d26a5c;
+@brand-warning-light: #fdf3e5;
+@text-color-dark: #545454;
+@link-color: #5c90d2;
+@gray-light: #f3f3f3;
+
+
+@hot-border: #d4d4d4;
+@hot-border-light: #d1d1d1;
+@hot-border-dark: #ababab;
+@hot-border-color: #73a2e3;
+
+@hot-bg: #ffffff;
+@hot-bg-light: #f7f7f7;
+@hot-bg-lighten: #fbfbfb;
+@hot-bg-lighter: #f0f0f0;
+@hot-bg-container: #f5f5f5;
+@hot-bg-dark: #ebebeb;
+
+@hot-font: @text-color;
+@hot-font-light: @gray-light;
+@hot-font-dark: @text-color-dark;
+@hot-font-deepdark:#232323;
+@hot-font-color: @link-color;
+
+
+.webtable {
+	width: 100%;
+	min-height: 460px;
+}
+
+
+.webtable-block {
+	background:@hot-bg-container;
+}
+.webtable-header {
+	background:@hot-bg-lighter;
+	padding: 15px 15px;
+}
+
+.webtable-header  .block-title {
+	line-height: 34px;
+}
+
+.webtable-header  .block-options {
+	line-height: 46px;
+} 
+
+
+.webtable-header .status {
+	line-height:18px;
+}
+
+.webtable-content, .webtable-footer {
+	background:@hot-bg-container;
+}
+
+.webtable-footer nav {
+	max-height: 64px;
+}
+
+.webtable-header > .block-options > li > button.highlight {
+	color: @hot-font-deepdark;
+}
+
+.webtable-header > .block-options > li > button  {
+	display: inline-block;
+}
+.webtable-header > .block-options > li > button > i {
+	font-size: 18px;
+	line-height: 24px;
+}
+
+.handsontable td:first-of-type, .handsontable.htRowHeaders thead tr th:nth-child(2){
+  border-left: none;
+}
+
+
+.handsontable td.htInvalid {
+	color: #ffffff;
+	background: #d26a5c !important;
+}
+
+.handsontable th {
+  background: @hot-bg-dark !important;
+  color: @hot-font;
+  font-weight: 400;
+}
+
+.ht_clone_top_left_corner th {
+   border: 1px solid @hot-border-light !important;
+   border-left: none !important;
+}
+
+// 表格左标题栏右边
+.ht_clone_left th {
+  border-right: 1px solid @hot-border-dark !important;
+  border-left: none !important;
+}
+
+// 表格正文左边
+.ht_clone_top th {
+  border-bottom: 1px solid @hot-border-dark !important;
+  border-top: 1px solid @hot-border-light !important;
+  border-right: 1px solid @hot-border-light !important;
+}
+
+.ht_master tr > td {
+	border-bottom: 1px solid @hot-border !important;
+	border-right: 1px solid @hot-border !important;
+}
+
+// 表格右边
+.handsontable td:last-child, .ht_clone_top th:last-child{
+	border-right: none !important;
+}
+
+.handsontable .currentRow {
+	background:@hot-bg-lighten !important;
+}
+
+.handsontable .currentCol {
+	background:@hot-bg-lighten !important;
+}
+
+.handsontable td.htSearchResult {
+	background:@brand-warning-light !important;
+	/*color: #fff !important;*/
+}

@@ -1,0 +1,177 @@
+{	
+	
+	"general" : {
+		"company": "北京云道天成有限公司",
+		"name": "XpmSE BaaS平台",
+		"short": "XpmSE",
+		"logo": {
+			"default": "local://public::/2016/01/27/145387705023152.png_fit_150_150",
+			"fav": "local://public::/2016/01/27/145387705023152.png_fit_150_150",
+			"192":"local://public::/2016/01/27/145387705023152.png_fit_150_150",
+			"180":"local://public::/2016/01/27/145387705023152.png_fit_150_150",
+			"160":"local://public::/2016/01/27/145387705023152.png_fit_150_150",
+			"152":"local://public::/2016/01/27/145387705023152.png_fit_150_150",
+			"144":"local://public::/2016/01/27/145387705023152.png_fit_150_150",
+			"120":"local://public::/2016/01/27/145387705023152.png_fit_150_150",
+			"114":"local://public::/2016/01/27/145387705023152.png_fit_150_150",
+			"96":"local://public::/2016/01/27/145387705023152.png_fit_150_150",
+			"90":"local://public::/2016/01/27/145387705023152.png_fit_150_150",
+			"76":"local://public::/2016/01/27/145387705023152.png_fit_150_150",
+			"72":"local://public::/2016/01/27/145387705023152.png_fit_150_150",
+			"60":"local://public::/2016/01/27/145387705023152.png_fit_150_150",
+			"57":"local://public::/2016/01/27/145387705023152.png_fit_150_150",
+			"50":"local://public::/2016/01/27/145387705023152.png_fit_150_150",
+			"32":"local://public::/2016/01/27/145387705023152.png_fit_150_150",
+			"24":"local://public::/2016/01/27/145387705023152.png_fit_150_150",
+			"16":"local://public::/2016/01/27/145387705023152.png_fit_150_150"
+		},
+		"domain": "i.JianMoApp.com",
+		"homepage": "http://i.JianMoApp.com",
+		"static": "http://i.JianMoApp.com/static",
+		"apphost": "http://local.xpmapp.com",
+		"password_login": true,
+		"default_login": "password",
+		"api": "http://dev.JianMoApp.com/api/v1",
+		"appid": "tdm7c841a9e71bca1a",
+		"appsecret": "e0c9c85d5ddcad1ab2c0444acb5cd43c"
+	},
+
+	"log": {
+		"server":{
+			"file":"/data/web/application.log",
+			"local":"http://45d8ca576a36431098233dfc9cdfed70:e2d6def2153842018668ac54a17bb906@dev.JianMoApp.com:9000/1",
+			"remote":"http://963228db9d05449e95e519dd32933c86:47eea771b86b46c1bd99e1f322136ba7@dev.JianMoApp.com:9000/2"
+		},
+		"option":{
+			"file_report":true,
+			"remote_report":false,
+			"local_report":true,
+			"report_levels":["info","debug","notice","warning","error","critical","alert","emergency"]
+		}
+	},
+
+	"mem": {
+		"redis": {
+			"host": "127.0.0.1",
+			"port": "6379",
+			"db":1,
+			"password": null,
+			"socket": null
+		}
+	},
+
+	"storage": {
+		"local": {
+			"bucket":{
+				"public":{
+					"root":"/data/stor/public",
+					"home":"http://cdn.dev.JianMoApp.com"
+				},
+				"private":{
+					"root": "/data/stor/private",
+					"home": "http://dev.JianMoApp.com/?n=core-storage&c=private&e=local&a=url&file="
+				}
+			}
+		}
+	},
+
+	"dingtalk": {
+		"enabled": true,
+		"corpid": "ding1e6ffbc1132cd405",
+		"corpsecret": "PoxTToZCO3iU7EVoCp1gHaqvODUg7gSE0qbRgTTyFFfmnLLhzjcMnEBlEbb8deaq",
+		"ssosecret": "kXfN2AP9v-jcetCm-4SaG6pVHGUCkQggrEyXHe7VV8f6iejyv8WDhUrn6qghOqRG",
+		"sync":{ 
+			"option":"dingtalk",
+			"admin":false
+		},
+		"login": true
+	},
+
+	"wechat": {
+
+		"option": {
+			"enabled": true,
+			"login": "web",
+			"menu": false
+		},
+		
+		"web": {
+			"appid":"wx91f73dfcbbe64776",
+			"secret":"5d6b3120ecc1a98d7df7d7e085d65670",
+			"redirect_uri":"http://dev.JianMoApp.com/?c=wechat&a=authback&goto="
+		},
+
+		"public": {
+			"appid":"wxf427d2cb6ac66d2c",  
+			"secret":"f393e0169885f0bca7d7d07604a5205c", 
+			"redirect_uri":"http://dev.JianMoApp.com/?c=wechat&a=authback&goto=",
+			"token":"HIMAOMAO1321",
+			"encodingaeskey":"mkCa7CzfqXs1pfZpEPHcmoSDxWwt08FOwZWcVEdWHbc",
+			"admin":"XpmSE"
+		}
+	},
+
+	"alidayu":{
+		"default": {
+			"key":"23332506",
+			"secret":"c52e8ce43d7b75cdef8885dc6c33c28"
+		}
+	},
+
+	"supertable": {
+		"storage": {
+			"engine":"Mysql",
+			"prefix": "xs_",
+			"option":{
+				"db_name": "xpmse",
+				"master": [{
+					"host": "127.0.0.1",
+					"port": "3307",
+					"user": "root",
+					"pass": "123456"
+				}],
+				"slave": [{
+					"host": "127.0.0.1",
+					"port": "3307",
+					"user": "root",
+					"pass": "123456"
+				}]
+			}
+		},
+
+		"search": {
+			"engine":"Elasticsearch",
+			"index":"devtuan",
+			"signleindex":true,
+			"signlesheet":true,
+			"option":{
+				"hosts":["127.0.0.1:9200"],
+				"connectionClass":"\\Elasticsearch\\Connections\\CurlMultiConnection",
+				"logging":false
+			}
+		},
+		
+		"cache":{
+			"engine": "redis",
+			"option": {
+				"host":"127.0.0.1",
+				"port":"6379",
+				"prefix":"spt_tdm_",
+				"db":3
+			}
+		}
+	},
+
+	"defaults":{
+		"storage":{
+			"public":"local://public",
+			"public_upload_home":"http://cdn.dev.JianMoApp.com",
+			"private":"local://private",
+			"private_upload_home":"http://dev.JianMoApp.com/?n=core-storage&c=private&e=local&a=url&file="
+		}
+	},
+
+	"debug": {
+		"xhprof": "http://xhprof.JianMoApp.com/index.php"
+	}
+}

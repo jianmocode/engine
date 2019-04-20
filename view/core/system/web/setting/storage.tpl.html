@@ -1,0 +1,143 @@
+<div class="block-content">
+    <form id="storage-form" 
+          class="js-validation-CustTypeFormStep1 form-horizontal" 
+          action="" method="post" >
+        <div class="form-group ">
+            <div class="col-lg-6">
+                <div class="form-material  push-30-l push-30-r">
+                    <div class="form-material">
+                        <select class="js-select2 form-control" id="department"  style="width: 100%;" data-placeholder="存储引擎" name="engine">
+                            <option></option><!-- Required for data-placeholder -->
+                            <option>本地存储</option>
+                        </select>
+                        <label for="department">存储引擎</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+   
+        <div class="form-group">
+            <div class="col-lg-6">
+                <div class="form-material push-30-l push-30-r">
+                     <input class="form-control" type="text" id="public_home" name="public_home" value="<?=$company?>" placeholder="请填写访问地址">
+                     <label for="name">访问地址</label>
+                 </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="form-material push-30-l push-30-r">
+                     <input class="form-control" type="text" id="public_root" name="public_root" value="<?=$company?>" placeholder="请填写公开目录">
+                     <label for="name">公开目录</label>
+                 </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-lg-6">
+                <div class="form-material push-30-l push-30-r">
+                     <input class="form-control" type="text" id="composer" name="composer" value="<?=$company?>" placeholder="请填写访问地址">
+                     <label for="name">访问地址</label>
+                 </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="form-material push-30-l push-30-r">
+                     <input class="form-control" type="text" id="private_root" name="private_root" value="<?=$company?>" placeholder="请填写秘密目录">
+                     <label for="name">秘密目录</label>
+                 </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-lg-2">
+                <div class="form-material push-30-l push-30-r">
+                    <button  id="ID_14671172870094912_1" 
+                        type="button" 
+                        data-form="#storage-form"
+                        data-action="<?=R('core-system', 'settingapi','tryit', ['se'=>'storage'])?>"
+                        class="btn btn-primary font-w300 push-20-r tryit se-action">
+                       <span class="tryit"><i class="fa fa-refresh"></i> 校验配置</span>
+                        <span class="pull-left tryit-status hidden" > <i class="fa fa-refresh fa-spin"></i> 正在校验</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="col-lg-2">
+                <div class="form-material push-30-l push-30-r">
+                    <button  id="ID_14671172870094912_1" 
+                        type="button"
+                        data-form="#storage-form"
+                        data-action="<?=R('core-system', 'settingapi','saveit', ['se'=>'general','id'=>$data['id']])?>"
+                        class="btn btn-primary font-w300  push-20-r saveit">
+                        <i class="fa fa-plus push-5-r"></i> 
+                        保存资料
+                    </button>
+                 </div>
+            </div>
+        </div>
+
+    </form>
+</div>
+
+<script type="text/javascript">
+$(function(){
+
+    //DatePicker && image-crop
+    App.initHelpers(['datepicker', 'image-crop', 'select2']);
+
+
+})
+</script>
+<script>
+$(function(){
+        // 连接测试按钮
+        seActionInit('.tryit',function( status, resp )  {
+
+                if ( status == 'success') {
+                   
+                    App.notify('校验成功!');
+
+                }  else {
+
+                    message = resp['message'] || '校验失败';
+                    App.notify(message, 'fa fa-times','danger');
+                }
+        }, {
+            'status':'.tryit-status',
+            'action':'.se-action',
+            'hidden':'.tryit',
+            'doing':'<i class="fa fa-refresh fa-spin"></i> 正在校验, 可能花费数秒钟... ',
+            'mute':false
+        });
+
+})
+$(function(){
+        
+        // 保存
+        seActionInit('.saveit',function( status, resp )  {
+
+                if( status=='success') {
+                   
+                    App.notify('保存成功!');
+
+                    $('.general').click();
+
+                }else  if ( status == 'error' ) {
+
+                    App.notify( '保存失败 | 警告:' + resp, 'fa fa-times','danger');
+                 }else if ( status == 'warning' ) {
+
+                    App.notify(resp, 'fa fa-times','danger');
+                 }else{
+
+                     App.notify('保存失败!','fa fa-times','danger');
+                 }
+        },{
+            'status':'.tryit-status',
+            'action':'.se-action',
+            'hidden':'.tryit',
+            'doing':'<i class="fa fa-refresh fa-spin"></i> 正在校验, 可能花费数秒钟... ',
+            'mute':false
+        });
+})
+
+</script>
+

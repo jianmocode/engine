@@ -1,0 +1,173 @@
+
+<?php 
+use \Xpmse\Loader\App as App; 
+use \Xpmse\Utils as Utils;
+?>
+<div class="content">
+	
+	<div class="row">
+		<div class="col-xs-8">
+			<ol class="breadcrumb  font-s14">
+				<li> <i class="fa fa-codepen"></i> 项目列表  </li>
+			</ol>
+		</div>
+	
+        <div class="col-xs-4 text-right  font-s14">
+            <a href="javascript:importForm();" class="push-10-r"> <i class="fa fa-upload"></i> 导入 </a>
+			<a href="javascript:create();" class="push-10-r"> <i class="fa fa-plus"></i> 新建 </a>
+		</div>
+	</div>
+
+	<div class="block push-20-t">
+			
+		<div class="block-wizard-header">
+			<ul class="col-xs-9">
+				<li class="active" > <a href="#"> 项目列表 </a> </li>
+			</ul>
+		</div>
+		<div class="block-content  block-wizard-content block-content-full row">
+			<!-- 文章列表 -->
+			<?php if($historys['total'] > 0 ): // 如果没有数据则不显示 ?>
+			<table class="table remove-margin">
+
+				<thead>
+					<tr>
+						<th class="font-w300" style="width:15%;max-width:120px;"> 编号</th>
+						<th class="font-w300" style="width:25%;">项目名称</th>
+						<th class="font-w300" style="width:15%;">创建时间</th>
+						<th class="font-w300" style="width:15%;">更新时间</th>
+						<th class="font-w300" style="width:30%;">操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php
+					foreach ($historys['data'] as $rs) :
+					?>
+					<tr>
+						<td ><?=$rs['history_id']?></td>
+
+						<td><?=$rs['name']?></td>
+						<td> 
+							<?=$rs['created_at']?>
+						</td>
+						<td> 
+							<?=$rs['updated_at']?>
+						</td>
+						<td> 
+                            <a href="<?=R('mina', 'codemaker', 'edit', ['id'=>$rs['history_id']])?>" class="btn btn-sm btn-primary push-10-r"> 编辑 </a>
+                            <a href="javascript:create('<?=$rs['history_id']?>');" class="btn btn-sm btn-primary push-10-r"> 复制 </a>
+                            <a href="<?=R('mina', 'codemaker', 'export', ['id'=>$rs['history_id']])?>" target="_blank" class="btn btn-sm btn-primary push-10-r"> 导出 </a>
+							<button  
+
+								confirm-title="删除项目"
+	                            confirm-content="您确定删除项目(<?=$rs['name']?> <?=$rs['history_id']?>)吗?"
+	                            confirm-dismiss = "取消"
+	                            confirm-submit= "确定"
+	                            data-param-id="<?=$rs['history_id']?>" 
+	                            confirm-action="<?=R('mina','codemaker', 'removeProject')?>"
+
+	                            event-before="
+									function( btn, modal ) {
+									}
+								"
+
+								event-done="
+									function( data, btn, modal) {
+										console.log('done');
+										return true;
+									}
+								"
+	                            event-success="
+									function(btn, modal) {
+										console.log('success');
+										window.location.reload();
+									}
+								"
+
+								event-error="
+									function( data, btn, modal) {
+										console.log('error');
+										return true;
+									}
+								"
+								class="btn btn-sm btn-danger ajax-confirm"> 删除 </button>
+						</td>
+					</tr>
+					<?php endforeach;?>
+				</tbody>
+
+				<tfoot>
+					<tr><td colspan="8"> <nav class="pull-right">
+
+						<ul class="pagination">
+							<?php if ($historys['prev'] !== false): ?>
+							<li>
+								<a href="javascript:search('page', '<?=$historys['prev']?>' )">
+									<i class="fa fa-angle-double-left"></i>
+								</a>
+							</li>
+							<?php endif;?>
+
+							<?php for( $i=1; $i<=$historys['last']; $i++) :?>
+							<li class="<?=($i==$historys['curr'])? 'active': ''?>" >
+								<a href="javascript:search('page', '<?=$i?>' )"><?=$i?></a>
+							</li>
+							<?php endfor; ?>
+
+							<?php if ($historys['next'] !== false): ?>
+							<li>
+								<a href="javascript:search('page', '<?=$historys['next']?>' )">
+									<i class="fa fa-angle-double-right"></i>
+								</a>
+							</li>
+							<?php endif;?>
+
+						</ul>
+					</nav></td></tr>
+				</tfoot>
+
+			</table><!-- END 文章列表 -->
+			<?php else: // 无数据时呈现 ?>
+			<span class="push-15-l"> 
+				<a href="javascript:create();"> <i class="fa fa-plus"></i> 新建项目 </a>
+			</span>
+			<?php endif; // 如果没有数据则不显示 ?>
+		</div><!-- END block-content -->
+	</div> <!-- END Block -->
+</div> <!-- END Pagecontent -->
+
+<script type="text/javascript">
+var $_GET = {};
+var $_HOME ='<?=R('mina','codemaker','history')?>';
+if (  $_GET !== null ) {
+	delete $_GET['select'];
+}
+
+function search( key, value ) {
+
+	if ( key !== undefined ) {
+		$_GET[key] = value;
+
+		if ( value == undefined  || value == '') {
+			delete $_GET[key];
+		}
+
+		if ( key != 'page' ) {
+			$_GET['page'] = 1;
+		}
+	}
+
+	var url =  $_HOME + '?' + $.param($_GET);
+	window.location = url;
+
+}
+$(function() {
+	App.initHelpers(['select2', 'slimscroll', 'ajax-confirm']);
+	$('.search').click(function(){
+		var keyword = $('.keyword').val();
+		search('keyword', keyword);
+	});
+
+});
+
+</script>

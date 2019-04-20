@@ -1,0 +1,386 @@
+<link rel="stylesheet" href="<?=\Xpmse\Conf::G('general/static')?>/assets/js/plugins/codemirror/lib/codemirror.css">
+<link rel="stylesheet" href="<?=\Xpmse\Conf::G('general/static')?>/assets/js/plugins/codemirror/addon/fold/foldgutter.css">
+<link rel="stylesheet" href="<?=\Xpmse\Conf::G('general/static')?>/assets/js/plugins/codemirror/addon/dialog/dialog.css">
+<link rel="stylesheet" href="<?=\Xpmse\Conf::G('general/static')?>/assets/js/plugins/codemirror/theme/monokai.css">
+
+<script src="<?=\Xpmse\Conf::G('general/static')?>/assets/js/plugins/codemirror/lib/codemirror.js"></script>
+<script src="<?=\Xpmse\Conf::G('general/static')?>/assets/js/plugins/codemirror/addon/search/searchcursor.js"></script>
+<script src="<?=\Xpmse\Conf::G('general/static')?>/assets/js/plugins/codemirror/addon/search/search.js"></script>
+<script src="<?=\Xpmse\Conf::G('general/static')?>/assets/js/plugins/codemirror/addon/dialog/dialog.js"></script>
+<script src="<?=\Xpmse\Conf::G('general/static')?>/assets/js/plugins/codemirror/addon/edit/matchbrackets.js"></script>
+<script src="<?=\Xpmse\Conf::G('general/static')?>/assets/js/plugins/codemirror/addon/edit/closebrackets.js"></script>
+<script src="<?=\Xpmse\Conf::G('general/static')?>/assets/js/plugins/codemirror/addon/comment/comment.js"></script>
+<script src="<?=\Xpmse\Conf::G('general/static')?>/assets/js/plugins/codemirror/addon/wrap/hardwrap.js"></script>
+<script src="<?=\Xpmse\Conf::G('general/static')?>/assets/js/plugins/codemirror/addon/fold/foldcode.js"></script>
+<script src="<?=\Xpmse\Conf::G('general/static')?>/assets/js/plugins/codemirror/addon/fold/brace-fold.js"></script>
+
+<script src="<?=\Xpmse\Conf::G('general/static')?>/assets/js/plugins/codemirror/mode/javascript/javascript.js"></script>
+<script src="<?=\Xpmse\Conf::G('general/static')?>/assets/js/plugins/codemirror/mode/shell/shell.js"></script>
+<script src="<?=\Xpmse\Conf::G('general/static')?>/assets/js/plugins/codemirror/mode/sql/sql.js"></script>
+<script src="<?=\Xpmse\Conf::G('general/static')?>/assets/js/plugins/codemirror/mode/python/python.js"></script>
+<script src="<?=\Xpmse\Conf::G('general/static')?>/assets/js/plugins/codemirror/mode/go/go.js"></script>
+<script src="<?=\Xpmse\Conf::G('general/static')?>/assets/js/plugins/codemirror/mode/php/php.js"></script>
+<script src="<?=\Xpmse\Conf::G('general/static')?>/assets/js/plugins/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+<script src="<?=\Xpmse\Conf::G('general/static')?>/assets/js/plugins/codemirror/mode/xml/xml.js"></script>
+<script src="<?=\Xpmse\Conf::G('general/static')?>/assets/js/plugins/codemirror/mode/css/css.js"></script>
+<script src="<?=\Xpmse\Conf::G('general/static')?>/assets/js/plugins/codemirror/mode/sass/sass.js"></script>
+<script src="<?=\Xpmse\Conf::G('general/static')?>/assets/js/plugins/codemirror/mode/vue/vue.js"></script>
+<script src="<?=\Xpmse\Conf::G('general/static')?>/assets/js/plugins/codemirror/mode/textile/textile.js"></script>
+<script src="<?=\Xpmse\Conf::G('general/static')?>/assets/js/plugins/codemirror/mode/clike/clike.js"></script>
+<script src="<?=\Xpmse\Conf::G('general/static')?>/assets/js/plugins/codemirror/mode/markdown/markdown.js"></script>
+<script src="<?=\Xpmse\Conf::G('general/static')?>/assets/js/plugins/codemirror/keymap/sublime.js"></script>
+<script type="text/javascript">
+	var selectTemplateUrl = "<?=R('mina', 'codemaker', 'selectTemplate', ['code_id'=>$code_id])?>";
+	var getCodeUrl = "<?=R('mina', 'codemaker', 'getCode', ['code_id'=>$code_id])?>";
+	var setOptionUrl ="<?=R('mina', 'codemaker', 'setOption', ['code_id'=>$code_id, 'page'=>''])?>";
+
+
+	var current = <?=json_encode($history)?>;  // 当前数据
+	var options = <?=json_encode($options)?>;  // 配置项信息
+	var processes = <?=json_encode($process)?>;  // 流程控制
+	var validationOption = <?=$validation?>;  // 数据验证配置
+
+	var __code_id =  current.code_id || "<?=$code_id?>";
+	var __history_id = current.history_id;
+</script>
+
+<style type="text/css">
+
+	.CodeMirror {
+		height: auto;
+	}
+
+	.form-horizontal {
+		padding-top: 20px;
+		padding-bottom: 40px;
+	}
+</style>
+
+<div class="content">
+	
+	<div class="row">
+		<div class="col-xs-8">
+			<ol class="breadcrumb	font-s14">
+				<li> <a href="<?=R('mina', 'codemaker', 'history')?>"> <i class="fa fa-codepen"></i> 项目列表 </a> </li>
+				<li> <?=$history['name']?> ( <?=$history['history_id']?> )	</li>
+			</ol>
+		</div>
+		<div class="col-xs-4 text-right	font-s14">
+			<a href="javascript:create();" class="push-10-r"> <i class="fa fa-plus"></i> 新建 </a>
+		</div>
+	</div>
+
+	<div class="block push-20-t">
+
+		<div class="block-wizard-header">
+			<ul class="col-xs-8">
+				<li class="active" > <a href="<?=R('mina', 'codemaker', 'selectTemplate', ['code_id'=>$code_id])?>"> 第一步: 选择母版 </a> </li>
+				<li class="active" > <a href="javascript:void(0);">第二步: 设定选项</a></li>
+				<li>第三步: 生成代码</li>
+			</ul>
+		</div>
+
+		<div class="block-content block-wizard-content	block-content-full row js-draggable-items">
+
+			
+			<div class="col-xs-2">
+				
+				<!-- 配置流程页面 -->
+				<div class="list-group block-wizard-nav">
+					<?php foreach($options["pages"] as $idx=>$pa ): ?>
+					<a	class="list-group-item <?=($pa['active']) ? 'active' : ''?> <?=(!$pa['activable']) ? 'disabled' : ''?>" 
+						href="<?=R('mina', 'codemaker', 'setOption', ['code_id'=>$code_id, 'page'=>$idx])?>" 
+						name="page-<?=$idx?>"
+						data-link="<?=R('mina', 'codemaker', 'setOption', ['code_id'=>$code_id, 'page'=>$idx])?>"
+					>
+						<i class="<?=$pa['icon-type']?> <?=$pa['icon']?> push-5-r"></i> <?=$pa["name"]?>
+					</a>
+					<?php endforeach; ?>
+				</div> <!-- END 配置流程页面 -->
+			</div>
+			
+			<!-- 当前配置界面 -->
+			<form 
+				class="form-horizontal form-lg option-form col-xs-10 draggable-column" 
+				action="<?=R('mina', 'codemaker', 'saveOption', ['code_id'=>$code_id, 'page'=>$page])?>" 
+				data-action="保存<?=$curr['name']?>"
+			>
+				<?php foreach($form as $form_group ) : ?>
+					<?=$form_group?>
+				<?php endforeach; ?>
+			</form> <!-- END 当前配置界面 -->
+
+		</div>
+	</div> <!--	END Block	-->
+</div> <!-- END content -->
+
+<!-- 功能操作面板-->
+<div class="block block-quickpanel" style="margin-bottom: 20px;" >
+	<div class="block-quickpanel-content" >
+		<div class="row">
+			<div class="col-xs-12 text-center" style="padding:20px;">
+				
+				<button class="fn-action fn-save btn btn-primary btn-lg btn-minw push-20-r"> <i class="fa fa-save"></i> 保存	</button>
+
+				<a class="fn-action fn-make btn btn-primary btn-lg btn-minw push-20-r <?=(!$process['complete']) ? 'disabled' : ''?>" 
+					href="<?=R('mina', 'codemaker', 'getCode',['code_id'=>$code_id,'page'=>$page])?>"
+				> <i class="fa fa-code"></i> 生成 </a>
+
+				
+				<a class="fn-action fn-prev btn btn-primary btn-lg btn-minw push-20-r " 
+					href="<?=($process['prev'] === false) ? R('mina', 'codemaker', 'selectTemplate', ['code_id'=>$code_id]) : R('mina', 'codemaker', 'setOption', ['code_id'=>$code_id, 'page'=>$process['prev']]) ?>" > 
+					<i class="fa fa-angle-double-left"></i> 上一步	</a>
+				
+				<a class="fn-action fn-next btn btn-primary btn-lg btn-minw <?=($process['next'] === false && !$process['complete']) ? 'disabled' : ''?>" 
+					href="<?=($process['islast']) ? R('mina', 'codemaker', 'getCode',['code_id'=>$code_id,'page'=>$page]) : R('mina', 'codemaker', 'setOption', ['code_id'=>$code_id, 'page'=>$process['next']])?>"
+				> 下一步 <i class="fa fa-angle-double-right"></i> </a>
+			</div>
+		</div>
+	</div>
+	<div class="bg-primary text-white text-center bottom-line"></div>	 
+</div><!-- END 功能操作面板-->
+
+
+<script type="text/javascript">
+
+	/**
+	 * 离开页面-检查是否保存
+	 */
+	function unsavedAlert(e) {
+		var message = "数据尚未保存, 离开后数据可能丢失。",
+		e = e || window.event;
+		// For IE and Firefox
+		if (e) {
+			e.returnValue = message;
+		}
+		// For Safari
+		return message;
+	};
+
+
+
+	/**
+	 * 刷新流程导航
+	 * @param  {[type]} name [description]
+	 * @return {[type]}      [description]
+	 */
+	function processUpdate() {
+
+		// 遍历所有流程
+		for ( var pg in options["pages"] ) {
+			var activable = options["pages"][pg]['activable'];
+			if ( activable === true ) {
+				$('[name=page-'+pg+']').attr('href', setOptionUrl + pg );
+				$('[name=page-'+pg+']').removeClass('disabled');
+			} else {
+				$('[name=page-'+pg+']').attr('href', '#' );
+				$('[name=page-'+pg+']').addClass('disabled');
+			}	
+		}
+
+		// 上一步
+		if ( processes['prev'] !== false ){
+			$('.fn-prev').attr('href', setOptionUrl + processes['prev'] );
+			$('.fn-prev').removeClass('disabled');
+		} else {
+			$('.fn-prev').attr('href', selectTemplateUrl );  // 选择模板页
+			$('.fn-prev').removeClass('disabled');
+		}
+
+		// 下一步
+		if ( processes['next'] !== false ){
+			$('.fn-next').attr('href', setOptionUrl + processes['next'] );
+			$('.fn-next').removeClass('disabled');
+
+		} else if (  processes['islast'] !== false ) {  // 生成代码页
+			
+			$('.fn-next').attr('href', getCodeUrl);
+			$('.fn-next').removeClass('disabled');
+
+		} else if (  processes['complete'] !== false ) {  // 生成代码页
+			$('.fn-make').attr('href', getCodeUrl);
+			$('.fn-make').removeClass('disabled');
+		} else {
+			$('.fn-next').attr('href', '#');
+			$('.fn-next').addClass('disabled');
+		}
+
+	}
+
+	function pending( message ) {
+		$('.fn-action')
+			.addClass('disabled')
+			.attr('disabled', 'disabled');
+
+		App.loading({message:message}).show();
+	}
+
+	function success( message, data) {
+		window.onbeforeunload = null; // 清除离开提醒
+		App.notify( message );
+
+		// 更新 options 
+		options = data['options'];
+		processes = data['process'];
+		current = data['history'];
+
+		processUpdate();
+
+	}
+
+	function failure( message,  validation ) {
+		validation = validation  || null;
+		message = message || null;
+
+		if ( typeof message == 'object' ) {
+			try {
+				message = fliter( message );
+				validation.showErrors(message);
+			} catch( e ) {
+				console.log( e );
+			}
+			return;
+		}
+
+		if ( message != null ) {
+			App.notify( message, 'fa fa-times', 'danger' );
+		}
+	}
+
+	function done() {
+		App.loading().hide();
+		$('.fn-action')
+			.removeClass('disabled')
+			.removeAttr('disabled');
+	}
+
+
+	/**
+	 * 提交数据
+	 */
+	function save( form, validation ) {
+		
+		var data = $(form).serializeData( true );
+		var name = $(form).attr("data-action");
+		var api = $(form).attr("action");
+		pending( name + "中, 请稍候...");
+		if ( data == false ) {
+			done();
+			return false;
+		}
+
+		
+
+		$.post( api, data, function( data, textStatus, xhr) {
+
+			done();
+
+			if ( typeof data['code'] === 'string' ) {
+				data['code'] = parseInt( data['code'] );
+			}
+
+			// 返回数据异常
+			if ( typeof data['code'] === 'number' && data['code'] !== 0 ) {
+
+				if ( typeof data['extra'] == 'object' && typeof data['extra']['errors'] == 'object'  ) {
+					data['errors']  = data['extra']['errors']  
+				}
+
+				// 通报错误信息
+				if ( typeof data['errors'] == 'object' ) {
+					failure( data['errors'], validation );
+					return;
+				}
+
+				var message = data['message'] || "未知错误";
+				failure( message, validation );
+				return;
+			}
+
+			// 数据更新成功
+			success( name + '操作成功', data );
+
+		}, 'json')
+
+		.error(function( xhr, status, message) {
+			done();
+			failure("保存失败, 网络错误 ( " + xhr.status + ' ' + message+" )");
+		});
+
+		return false;
+	}
+
+	
+
+	$(function(){
+
+		/**
+		 * + Match 方法
+		 */
+		$.validator.addMethod( "match", function( value, element, param ) {
+			var exp = new RegExp( param );
+			return this.optional( element ) || exp.test(value)
+		}, "您输入的信息格式错误。" );
+
+
+		/**
+		 * 数值验证
+		 */
+		var $validation = $('.option-form').validate({
+			errorClass: 'text-left help-block help-error',
+			errorElement: 'div',
+			errorPlacement: function(error, e) {
+				var tips = $('.help-block', $(e).parent().parent() );
+				tips.parent().append(error);
+				$(e).closest('.help-block').append(error);
+			},
+			highlight: function(e) {
+				$(e).parent().parent().removeClass('has-error').addClass('has-error');
+			},
+			unhighlight:function(e){
+				$(e).parents('.form-group').removeClass('has-error');
+				$(e).closest('.help-error').remove();
+			},
+			success: function(e) {
+				$(e).parents('.form-group').removeClass('has-error');
+				$(e).closest('.help-error').remove();
+			
+			},
+			submitHandler: function(form) {
+				var resp = save( form, this );
+				return resp;
+			},
+			ignore: '.ignore',
+			rules: validationOption["rules"],
+			messages: validationOption["messages"]
+		});
+
+
+		/**
+		 * 取消选择
+		 */
+		$('a.disabled').attr('href', '#');
+
+		/**
+		 * 初始化控件
+		 */
+		App.initHelpers(['select2',	'ajax-confirm', 'slimscroll', 'draggable-items']);
+
+		/**
+		 * 保存事件
+		 */
+		$('.fn-save').click(function(){
+			$('.option-form').submit();
+		});
+
+
+		/**
+		 * 如果数据变化
+		 */
+		$('.option-form').change(function() {
+			// 打开关闭提醒
+			window.onbeforeunload = unsavedAlert;
+		});
+
+	});
+</script>

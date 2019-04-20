@@ -1,0 +1,28 @@
+{
+	"data": {
+		"article":{
+			"api":"/article/detail",
+			"query":{
+				"article_id":"{{_get.id}}"
+			}
+		},
+		"page":{
+			"api":"/site/page",
+			"data":{
+				"name":"{{_post.name}}"
+			}
+		},
+		"hots":"/article/hots"
+	},
+	
+	"entrys":[
+		"/news/{{_get.id}}",
+		"/topic/{{_get.id}}"
+	],
+
+	"align":{
+		"mobile":"/mobile/article/detail",
+		"wxapp":"/article/detail",
+		"pad":false
+	}
+}

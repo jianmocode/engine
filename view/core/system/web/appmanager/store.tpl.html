@@ -1,0 +1,150 @@
+<?php if ($online != 1) : ?>
+<div class="block block-transparent">
+	无法连接应用商店， 请稍后重试。 <a href="<?=R('core-system','appmanager', 'storeRefresh')?>"><i class="fa fa-refresh"></i> 刷新 </a>
+</div>
+<?php else: ?>
+<div class="block block-transparent remove-margin">
+	<div class="block-header">
+		<ul class="block-options">
+			<li>
+				<a  href="<?=R('core-system','appmanager', 'storeRefresh')?>"
+					class="btn btn-xs btn-default pull-right font-s13 ajax-submit scan-submit "
+					name="error" id="error" type="submit" >
+					<i class="fa fa-refresh"></i> 刷新
+				 </a>
+			</li>
+		</ul>
+		<h3 class="block-title"> 在售应用/服务 </h3>
+	</div>
+</div>
+
+<ul class="list list-simple list-li-clearfix">
+	<?php foreach($apps['data'] as $rs ) : ?>
+	<li class="col-lg-6">
+		<div class="list-group-item  push-15-t clearfix">
+			<a class="item item-rounded pull-left push-10-r bg-info" href="<?=$rs['homepage']?>" target="_blank">
+				 <?php if ($rs['icontype']=="img") : ?>
+                    <img src="<?=$rs['image']['light']?>" style="width:48px;height:48px;" >
+                <?php else:  ?>
+                    <i class="<?=$rs['icontype']?> <?=$rs['icon']?> text-white-op"></i>
+                <?php endif;  ?>
+
+			</a>
+
+			<div class="push-5 clearfix col-lg-8 col-md-8 col-sm-8 col-xs-8" style="min-width:300px;">
+				<div class="text-default pull-right font-s12 status-text">
+					<?=sprintf('%.2f', $rs['price']/100);?> 元/<?=$rs['unit']?>
+				</div>
+				<a class="font-w600" href="<?=$rs['homepage']?>" target="_blank"><?=$rs['cname']?></a>
+				
+				<span class="text-muted"> <?=$rs['version']?> </span>
+				<div class="font-s13 text-muted push-5-t app-intro" style="min-height: 36px;">
+					<?=$rs['intro']?>
+				</div>
+			</div>
+
+			<div class="pull-right text-center" style="min-width:60px; width:60px;">
+				<input type="hidden" name="appid" value="<?=$rs['appid']?>"> </input>
+				<?php if ($rs['status'] == 'downloading') : ?>
+				<button class="btn btn-sm btn-default disabled font-w300" disabled   data-id="<?=$rs['appid']?>" >下载中</button>
+				<?php elseif ($rs['status'] == 'close') : ?>
+				<button class="btn btn-sm btn-default disabled font-w300" disabled   data-id="<?=$rs['appid']?>" >封禁</button>
+				<?php elseif ($rs['status'] == 'expired') : ?>
+				<button class="btn btn-sm btn-danger  font-w300 buy" data-id="<?=$rs['appid']?>" >续费</button>
+				<?php elseif ($rs['status'] == 'downloaded') : ?>
+				<button class="btn btn-sm btn-primary  font-w300 install"  data-id="<?=$rs['appid']?>" >安装</button>
+				<?php elseif ($rs['status'] == 'uninstalled') : ?>
+				<button class="btn btn-sm btn-primary  font-w300 download"  data-id="<?=$rs['appid']?>" >下载</button>
+				<?php elseif ($rs['status'] == 'installed') : ?>
+				<button class="btn btn-sm btn-primary font-w300 ui" data-id="<?=$rs['appid']?>"  data-lid="<?=$rs['local_appid']?>" >客户端</button>  
+				<?php elseif ($rs['status'] == 'complete') : ?>
+				<button class="btn btn-sm btn-default disabled font-w300" disabled   data-id="<?=$rs['appid']?>" >已授权</button> 
+				<?php elseif ($rs['status'] == 'new_version') : ?>
+				<button class="btn btn-sm btn-danger  font-w300 upgrade" data-id="<?=$rs['appid']?>" >升级</button>
+				<?php else: ?>
+				<button class="btn btn-sm btn-success font-w300 buy"  data-id="<?=$rs['appid']?>" data-id="100" >购买</button>
+				<?php endif; ?>
+				<a href="javascript:void(0);" class="push-5-t btn btn-sm detail" data-id="<?=$rs['appid']?>" >详情</a>
+			</div>
+		</div>
+	</li>
+	<?php endforeach; ?>
+</ul>
+
+<?php endif;?>
+
+<!-- 应用浏览器 Modal -->
+<div class="modal fade " id="_app_browser" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+	<div class="modal-dialog modal-dialog-fromtop modal-lg">
+		<div class="modal-content">
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+
+	function buy( id ) {
+		let url = '<?=R("core-system", "appmanager", "storeBuy", ["id"=>""])?>' + id;
+		$('#_app_browser .modal-content').html('<div class="text-center" style="padding:40px;"><i class="fa fa-refresh fa-2x fa-spin"></i></div>');
+		$('#_app_browser').modal('show');
+		$('#_app_browser .modal-content').load(url);
+	}
+
+	function detail( id ) {
+		let url = '<?=R("core-system", "appmanager", "storeDetail", ["id"=>""])?>' + id;
+		$('#_app_browser .modal-content').html('<div class="text-center" style="padding:40px;"><i class="fa fa-refresh fa-2x fa-spin"></i></div>');
+		$('#_app_browser').modal('show');
+		$('#_app_browser .modal-content').load(url);
+	}
+
+	function download( id ) {
+		let url = '<?=R("core-system", "appmanager", "storeDownload", ["id"=>""])?>' + id;
+		$('#_app_browser .modal-content').html('<div class="text-center" style="padding:40px;"><i class="fa fa-refresh fa-2x fa-spin"></i></div>');
+		$('#_app_browser').modal('show');
+		$('#_app_browser .modal-content').load(url);
+	}
+
+	function install( id ) {
+		let url = '<?=R("core-system", "appmanager", "storeInstall", ["id"=>""])?>' + id;
+		$('#_app_browser .modal-content').html('<div class="text-center" style="padding:40px;"><i class="fa fa-refresh fa-2x fa-spin"></i></div>');
+		$('#_app_browser').modal('show');
+		$('#_app_browser .modal-content').load(url);
+	}
+
+	function ui( id, local_appid ) {
+		let url = '<?=R("core-system", "appmanager", "uiDownload")?>';
+		$('#_app_browser .modal-content').html('<div class="text-center" style="padding:40px;"><i class="fa fa-refresh fa-2x fa-spin"></i></div>');
+		$('#_app_browser').modal('show');
+		$('#_app_browser .modal-content').load(url, {id:id, lid:local_appid} );
+	}
+
+
+	$('.buy').click(function(){
+		var id = $(this).attr('data-id');
+		buy(id);
+	});
+
+	$('.detail').click(function(){
+		var id = $(this).attr('data-id');
+		detail(id);
+	});
+
+	$('.download').click(function(){
+		var id = $(this).attr('data-id');
+		download(id);
+	});
+
+	$('.install').click(function(){
+		var id = $(this).attr('data-id');
+		install(id);
+	});
+
+	// 客户端下载
+	$('.ui').click(function(){
+		var id = $(this).attr('data-id');
+		var lid = $(this).attr('data-lid');
+		ui(id,lid);
+	});
+
+
+</script>

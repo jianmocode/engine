@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<!--[if IE 9]>         <html class="ie9 no-focus"> <![endif]-->
+<!--[if gt IE 9]><!--> <html class="no-focus"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+        <meta http-equiv="Pragma" content="no-cache" />
+        <meta http-equiv="Expires" content="0" />
+
+        <title> 登录-XpmSE </title>
+
+        <meta name="description" content="传播链 - 简单高效的团队协同工具">
+        <meta name="author" content="pixelcave">
+        <meta name="robots" content="noindex, nofollow">
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1.0">
+
+        <!-- Icons -->
+        <!-- The following icons can be replaced with your own, they are used by desktop and mobile browsers 
+        <link rel="shortcut icon" href="assets/img/favicons/favicon.png">
+
+        <link rel="icon" type="image/png" href="assets/img/favicons/favicon-16x16.png" sizes="16x16">
+        <link rel="icon" type="image/png" href="assets/img/favicons/favicon-32x32.png" sizes="32x32">
+        <link rel="icon" type="image/png" href="assets/img/favicons/favicon-96x96.png" sizes="96x96">
+        <link rel="icon" type="image/png" href="assets/img/favicons/favicon-160x160.png" sizes="160x160">
+        <link rel="icon" type="image/png" href="assets/img/favicons/favicon-192x192.png" sizes="192x192">
+
+        <link rel="apple-touch-icon" sizes="57x57" href="assets/img/favicons/apple-touch-icon-57x57.png">
+        <link rel="apple-touch-icon" sizes="60x60" href="assets/img/favicons/apple-touch-icon-60x60.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="assets/img/favicons/apple-touch-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="76x76" href="assets/img/favicons/apple-touch-icon-76x76.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="assets/img/favicons/apple-touch-icon-114x114.png">
+        <link rel="apple-touch-icon" sizes="120x120" href="assets/img/favicons/apple-touch-icon-120x120.png">
+        <link rel="apple-touch-icon" sizes="144x144" href="assets/img/favicons/apple-touch-icon-144x144.png">
+        <link rel="apple-touch-icon" sizes="152x152" href="assets/img/favicons/apple-touch-icon-152x152.png">
+        <link rel="apple-touch-icon" sizes="180x180" href="assets/img/favicons/apple-touch-icon-180x180.png">
+        <!-- END Icons -->
+
+        <!-- Stylesheets -->
+
+        <!-- Bootstrap and CBL CSS framework -->
+        <link rel="stylesheet" href="<?=C('static')?>/assets/css/bootstrap.min.css">
+        <link rel="stylesheet" id="css-main" href="<?=C('static')?>/assets/css/cbl.min.css">
+
+        <!-- You can include a specific file from css/themes/ folder to alter the default color theme of the template. eg: -->
+        <!-- <link rel="stylesheet" id="css-theme" href="assets/css/themes/flat.min.css"> -->
+        <!-- END Stylesheets -->
+    </head>
+    <body>
+        <!-- Register Content -->
+        <div class="content overflow-hidden">
+           
+            <div class="row">
+                <div class="col-sm-12 col-lg-12 push-15-t push-50-l hidden-xs">
+                   <h2 class="font-w300" >
+                       <a href="#"  style="color:#999999;"><i class="icomoon-chuanbolian font-s36"> </i> </a>
+                   </h2>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
+
+                    <!-- Register Block -->
+                    <div class="block block-themed block-shadow block-radius">
+                      
+                        <div class="block-content block-content-full block-content-narrow">
+
+
+                            <div class="push-30-t push-15 clearfix">
+                                <div class="push-15-r pull-left ">
+                                    <img class="img-avatar img-avatar-thumb" src="<?=$headimg?>" alt="">
+
+                                </div>
+                                <h1 class="h2 push-5-t font-w300 ">
+                                    XpmSE -MMMS
+                                </h1> 
+                                <p>TuanDuiMao.com 3</p>
+                            </div>
+                            <hr />
+
+                            <div class="push-30-t push-15 clearfix">
+                               
+                                <p class="push-10-t push-30-l push-30-r">
+                                    简单，高效，的团队协同工具! 
+                                </p>
+                            </div>
+                            <hr />
+
+                            <!-- jQuery Validation (.js-validation-CoreAccountDefaultRegister class is initialized in /js/core/account/default/register.js) -->
+                            <!-- For more examples you can check out https://github.com/jzaefferer/jquery-validation -->
+                            <form class="js-validation-CoreAccountDefaultRegister form-horizontal push-50-t push-50" action="<?=R('core-account','default','wechatLoginUrl')?>" method="post">
+                                <div class="form-group">
+                                    <div class="col-xs-8 col-sm-8 col-md-8  col-md-offset-2  col-xs-offset-2  text-center">
+                                        <button class="btn btn-block btn-lg text-center btn-success font-w300" type="submit"> 
+                                        <i class="fa fa-wechat"></i> 微信登录
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                            <!-- END Register Form -->
+
+                        </div>
+                    </div>
+                    <!-- END Register Block -->
+                </div>
+            </div>
+        </div>
+        <!-- END Register Content -->
+
+        <!-- Register Footer -->
+        <div class="push-10-t text-center ">
+            <small class="text-muted font-w600"> <span class="js-year-copy"></span> &copy; <span class="font-w300">XpmSE</span> TuanDuiMao.com</small>
+        </div>
+        <!-- END Register Footer -->
+
+        <!-- Terms Modal -->
+        <div class="modal fade" id="modal-terms" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-popout">
+                <div class="modal-content">
+                    <div class="block block-themed block-transparent remove-margin-b">
+                        <div class="block-header bg-primary-dark">
+                            <ul class="block-options">
+                                <li>
+                                    <button data-dismiss="modal" type="button"><i class="si si-close"></i></button>
+                                </li>
+                            </ul>
+                            <h3 class="block-title font-w300">传播链用户服务协议</h3>
+                        </div>
+                        <div class="block-content">
+                            <p>1. 传播链定义</p>
+                            <p>2. 隐私条款</p>
+                            <p>3. 免责条款</p>
+                            <p>4. 支付与服务</p>
+                            <p>5. 服务变更</p>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-sm btn-default" type="button" data-dismiss="modal">关闭</button>
+                        <button class="btn btn-sm btn-primary font-w300" type="button" data-dismiss="modal"><i class="fa fa-check"></i> 我接受</button>
+                    </div>
+                </div>
+            </div>
+        </div><!-- END Terms Modal -->
+
+
+        <!-- OneUI Core JS: jQuery, Bootstrap, slimScroll, scrollLock, Appear, CountTo, Placeholder, Cookie and App.js -->
+        <script src="<?=C('static')?>/assets/js/cbl.min.js"></script>
+
+        <!-- Page JS Plugins -->
+        <script src="<?=C('static')?>/assets/js/plugins/jquery-validation/jquery.validate.min.js"></script>
+
+        <!-- Page JS Var Defined  -->
+        <script type="text/javascript">
+            var _vcodeUrl = "<?=R('core-account','default','vcode')?>";
+        </script>
+        <!-- Page JS Code  -->
+        <script src="<?=C('static')?>/js/core/account/default/register.js"></script>
+
+    </body>
+</html>

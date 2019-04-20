@@ -1,0 +1,285 @@
+<style type="text/css">
+    .CodeMirror {border:none; border-bottom: 1px solid #ddd; }
+</style>
+<div class="block-content">
+    <form id="ScaffoldDataForm" 
+          class="js-validation-ScaffoldDataForm form-horizontal" 
+          action="<?=R('core-system','scaffold','datasave',['model_name'=>$_GET['model_name']])?>" method="post" >
+
+        <?php foreach ($columns as $type ) :
+          $t = $type->toArray();
+          $field = $type->get('column_name');
+          $labelClass = [
+                'BaseString'=>'info', 
+                'BaseFloat'=>'default', 
+                'BaseInt'=>'default', 
+                'BaseDate'=>'success',
+                'BaseBool'=>'danger',
+                'BaseArray'=>'warning',
+                'BaseNested'=>'warning',
+                'BaseObject'=>'warning' ];
+
+          $label = $labelClass[$t['type']];
+
+        ?>
+        <div class="form-group">
+            <div class="col-lg-12 col-xs-12 col-sm-12 col-md-12">
+                <div class="form-material ">
+                    
+                    <?php if ( $t['type']=='BaseArray' || $t['type']=='BaseNested' || $t['type']=='BaseObject' ) : ?>  <!-- 输入框 -->
+                        <div>
+                             <textarea id="<?=$field?>" name="<?=$field?>" class="codejson" rows="8" ><?=$data[$field]?></textarea>
+                        </div>
+                    
+                    <?php elseif ( $t['type']=='BaseBool' ) : ?>  <!-- 布尔型选项 -->
+                        <div>
+                            <label class="css-input css-radio css-radio-primary push-10-r">
+                                <input type="radio" 
+                                    id="<?=$field?>"
+                                    name="<?=$field?>"  
+                                    value="1" 
+                                    <?php if($data[$field] == 1) : ?> checked <?php endif;?> > <span></span> 是
+                            </label>
+
+                            <label class="css-input css-radio css-radio-primary">
+                                <input type="radio" 
+                                    id="<?=$field?>"
+                                    name="<?=$field?>" 
+                                    value="0"  <?php if($data[$field] == 0 || !isset($data[$field]) ) : ?> checked <?php endif;?>  ><span></span> 否
+                            </label>
+                        </div>
+
+
+                    <?php elseif ( $t['type']=='BaseDate' ) : ?> <!-- 日期时间 -->
+                        <input 
+                            id="<?=$field?>"
+                            name="<?=$field?>"  
+                            class="js-masked-datetime form-control" 
+                            placeholder="YYYY-MM-dd HH:ii:ss"
+                            type="text"
+                            value=<?=$data[$field]?>  >
+
+                    <?php else: ?>
+                        <input class="form-control" type="text" 
+                            id="<?=$field?>" 
+                            name="<?=$field?>" value="<?=$data[$field]?>" placeholder="">
+                    <?php endif; ?>
+
+                    <label for="<?=$type->get('column_name')?>">
+                        <?=$type->get('screen_name')?> ( <?=$field?> ) 
+                        <span class="label label-<?=$label?> push-15-l"><?=$t['type']?></span>
+                        <?php if ( $t['type']=='BaseArray' ) : ?>
+                            <span class="label label-default"><?=$type->get('schema')?></span>
+                        <?php endif;?>
+
+                        <?php if ( $type->get('required') == true ) : ?>
+                            <span class="label label-danger">必填</span>
+                        <?php endif;?>
+            
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <?php endforeach;?>
+      
+        <div class="form-group">
+            <div class="col-lg-12">
+                <div class="form-material">
+                    <?php if ($_id === null ) : ?>
+                    <button class="btn btn-primary ScaffoldDataFormSubmit font-w300" type="submit" name="error" > 
+                        <i class="fa fa-plus push-5-r"></i> 录入数据 
+                    </button>
+                    <?php else : ?>
+                    <input type="hidden" name="_id" id="_id" value="<?=$_id?>" />
+                    <button class="btn btn-primary ScaffoldDataFormSubmit font-w300" type="submit" name="error" > 
+                        <i class="fa fa-edit push-5-r"></i> 修改数据 
+                    </button> 
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+
+    </form>
+</div>
+
+<script type="text/javascript">
+
+/**
+ * 提交表单 
+ * @param {[type]} validation [description]
+ * @param {[type]} form       [description]
+ */
+function DataSubmit( validation, form  ) {
+
+    var api = $(form).attr('action');
+    var next = $(form).attr('data-next');
+    var submits = $('button[type="submit"]', form);
+        $(submits).attr('disabled', 'disabled');
+        $(submits).addClass('disabled');
+
+    var data = {};
+    var formData =  $(form).serializeArray();
+        for( var i=0; i<formData.length; i++ ) {
+            var name = formData[i]['name'];
+            var value = formData[i]['value'];
+
+            if (value !== "") {
+                data[name] = value;
+            }
+        }
+
+
+    data = jQuery.extend(data, {});
+    $.post( api, data, function(data, textStatus, xhr) {
+
+        $(submits).removeAttr('disabled');
+        $(submits).removeClass('disabled');
+
+        code = data['code'] || 0;
+        extra = data['extra'] || [];
+
+
+        if ( typeof extra == 'object' && isNaN(extra.length) ) {
+            extra = [extra];
+        }
+
+        if ( parseInt(code) == 302 ) {
+            window.location.reload(true);
+            return;
+        }
+
+        if ( typeof data['result'] == 'boolean' && typeof data['content'] == 'string' ) {
+            
+            if (  data['result'] === false ) {
+                code = -1;
+                extra[0] = {
+                    '_FIELD':'error',
+                    'message':data['content']
+                };
+            }
+        }
+
+        if ( code != 0 ) {
+
+            for( i=0; i<extra.length; i++ ) {
+                field = extra[i]['_FIELD'] || null;
+                if ( field != null ) {
+                    message = data['message'] || '出错啦';
+                    if ( typeof extra[i]['message'] != 'undefined' ) {
+                        message = extra[i]['message'];
+                    }
+                    var err = {};
+                        err[field] = message;
+
+                    validation.showErrors(err);
+                }
+
+                 App.notify( '操作失败', 'fa fa-times','danger');
+            }
+
+            return;
+        }
+
+        var message = '操作成功 数据表ID:' + data['_id'];
+
+        
+        // 全局通知
+        App.notify( message  );
+
+        return;
+
+    },'json')
+
+    .error( function(xhr, status, statusText ){
+
+        validation.showErrors({'error': statusText.toString()} );
+             $(submits).removeAttr('disabled');
+             $(submits).removeClass('disabled');
+        App.notify( '操作失败', 'fa fa-times','danger');
+
+        return;
+    });
+}
+
+
+
+/**
+ * 表单验证
+ */
+var ScaffoldDataForm = function() {
+    var initValidation = function(){
+        jQuery('.js-validation-ScaffoldDataForm').validate({
+            errorClass: 'help-block text-right animated fadeInDown',
+            errorElement: 'div',
+            errorPlacement: function(error, e) {                
+                jQuery(e).parents('.form-group .form-material').append(error);
+            },
+            highlight: function(e) {
+                jQuery(e).closest('.form-group .form-material').parent().removeClass('has-error').addClass('has-error');
+                jQuery(e).closest('.help-block').remove();
+            },
+            unhighlight:function(e){
+                jQuery(e).closest('.form-group .form-material').parent().removeClass('has-error');
+                jQuery(e).closest('.help-block').remove();
+            },
+            success: function(e) {
+                jQuery(e).closest('.form-group .form-material').parent().removeClass('has-error');
+                jQuery(e).closest('.help-block').remove();
+            },
+
+            submitHandler: function(form) {
+                var self = this;
+                DataSubmit( self, form );
+            },
+
+            rules: {},
+            messages:{}
+        });
+    };
+
+    return {
+        init: function () {
+            initValidation();  // Init Form Validation
+        }
+    };
+}();
+
+
+/**
+ * 初始化 jsoninput 字符串
+ * @return {[type]} [description]
+ */
+function init_jsoninput() {
+    var objs = document.getElementsByClassName('codejson');
+    for( var i=0; i<objs.length; i++ ) {
+        var rows = parseInt($(objs[i]).attr('rows'));
+            if ( rows == 0 ){
+                 rows = 8;   
+            }
+
+        var height = rows * 20;
+        var cm = CodeMirror.fromTextArea(objs[i], {
+            mode: "application/ld+json", //mode: "javascript",
+            keyMap: "sublime",
+            autoCloseBrackets: true,
+            matchBrackets: true,
+            showCursorWhenSelecting: true,
+          // lineNumbers:true,    
+          // theme: "monokai",
+            tabSize: 4
+        });
+        cm.setSize(null, height);
+    }
+}
+</script>
+
+<script type="text/javascript">
+$(function(){
+   App.initHelpers(['masked-inputs']);
+   $('.js-masked-datetime').mask("9999-99-99 99:99:99",{placeholder:"YYYY-MM-dd HH:ii:ss"});
+   init_jsoninput(); // JSON INPUT
+   ScaffoldDataForm.init();
+
+});
+</script>

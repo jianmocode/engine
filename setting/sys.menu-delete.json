@@ -1,0 +1,159 @@
+{
+  "dashboard":{
+    "group": "控制台",
+    "display": false,
+    "apps": {
+      "dashboard":{
+        "name": "dashboard",
+        "cname": "控制台",
+        "icon": "si-speedometer",
+        "icontype": "si",
+        "display": false,
+        "menu": {
+          "default/index": {
+            "name": "控制台",
+            "icon": "si-speedometer",
+            "icontype": "si",
+            "namespace": "core-dashboard",
+            "controller": "default",
+            "action": "index",
+            "permission": "boss,admin,manager,user",
+            "display":true
+          }
+        }
+      }
+    }
+  },
+
+  "weixin":{
+    "group": "Xpm",
+    "display": true,
+    "permission": "admin",
+    "apps": {
+      "baas-admin":{
+        "name": "admin",
+        "cname": "小程序管理",
+        "display": true,
+        "icon": "fa-wechat",
+        "icontype": "fa",
+        "menu": {
+         
+          "data/index": {
+            "name": "数据管理",
+            "namespace": "baas-admin",
+            "controller": "data",
+            "action": "index",
+            "permission": "boss,admin,manager,user",
+            "display":true
+          },
+
+
+          "wss/index": {
+            "name": "信道管理",
+            "namespace": "baas-admin",
+            "controller": "wss",
+            "action": "index",
+            "permission": "boss,admin,manager,user",
+            "display":true
+          },
+
+          "cert/index": {
+            "name": "证书管理",
+            "namespace": "baas-admin",
+            "controller": "cert",
+            "action": "index",
+            "permission": "boss,admin,manager,user",
+            "display":true
+          },
+
+
+          "conf/index": {
+            "name": "微信配置",
+            "namespace": "baas-admin",
+            "controller": "conf",
+            "action": "index",
+            "permission": "boss,admin,manager,user",
+            "display":true
+          }
+        }
+      }
+    }
+  },
+  
+  "apps":{
+    "group": "应用",
+    "display": true,
+    "auto":"_apps_menu"
+  },
+
+  "company":{
+    "group": "公司",
+    "display": true,
+    "apps": {
+      "department":{
+        "name": "department",
+        "cname": "企业通讯录",
+        "icon": "si-notebook",
+        "icontype": "si",
+        "display": false,
+        "menu": {
+          "default/index": {
+            "name": "企业通讯录",
+            "icon": "si-notebook",
+            "icontype": "si",
+            "namespace": "core-dept",
+            "controller": "default",
+            "action": "index",
+            "permission": "boss,admin,manager,user",
+            "display":true
+          }
+        }
+      },
+
+      "account":{
+        "name": "account",
+        "cname": "账号安全",
+        "display": true,
+        "icon": "si-info",
+        "icontype": "si",
+        "menu": {
+          "default/userprofile": {
+            "name": "账号资料",
+            "namespace": "core-dept",
+            "controller": "default",
+            "action": "userprofile",
+            "permission": "boss,admin,manager,user",
+            "display":true
+          }
+        }
+      }
+    }
+  },
+
+  "system":{
+    "group": "系统",
+    "display": true,
+    "permission": "admin",
+    "apps": {
+      "appmanager":{
+        "name": "appmanager",
+        "cname": "应用管理",
+        "icon": "si-grid",
+        "icontype": "si",
+        "display": false,
+        "menu": {
+          "appmanager/index": {
+            "name": "应用管理",
+            "icon": "si-grid",
+            "icontype": "si",
+            "namespace": "core-system",
+            "controller": "appmanager",
+            "action": "index",
+            "permission": "admin",
+            "display":true
+          }
+        }
+      }
+    }
+  }
+}

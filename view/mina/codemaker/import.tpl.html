@@ -1,0 +1,45 @@
+<div class="block block-themed remove-margin">
+        <div class="block-header bg-primary">
+            <ul class="block-options">
+                <li>
+                     <button type="button" onclick="$('#_app_browser').modal('hide');"><i class="fa fa-times"></i></button>
+                </li>
+            </ul>
+            <h3 class="block-title"> <i class="fa fa-arrow-right"></i> 导入项目 </h3>
+        </div>
+        <div class="block-content" style="padding-top:10px;padding-bottom: 20px;">
+            <form class="form-horizontal" method="post" style="padding-top:20px;" action="<?=R('mina', 'codemaker', 'doImport')?>" >
+              
+                <!--  文件二 -->
+				<div class="form-group">
+                    <div class="col-xs-12 push-10-t text-center">
+                        <div name="jsonfile" class="file-uploader"
+                        data-api='/_a/mina/uploader/upload?type=file'
+                        data-title='请上传项目JSON文件'
+                        data-width="400px"
+                        data-height="100px"
+                        data-icon="fa fa-paperclip"
+                        data-fileicons=''
+                        data-type="attachment"
+                        data-display-name="true"
+                        data-placeholder="请上传项目JSON文件" 
+                        data-allow-types="application/json"
+                        data-maxsize="2M"
+                        data-progress="yes"
+                        data-draggable="yes"
+                        data-src=""
+                        data-path=""
+                        ></div>
+                    </div>
+                </div><!--  END 文件二 -->
+                <div class="form-group">
+                    <div class="col-xs-12 text-center">
+                        <button class="btn btn-lg btn-primary">导入项目</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script language="javascript">
+    App.initHelper('file-uploader',['[name="jsonfile"]']);
+    </script>

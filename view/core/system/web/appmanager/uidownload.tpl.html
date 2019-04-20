@@ -1,0 +1,74 @@
+<div class="block block-themed remove-margin">
+	<div class="block-header bg-primary">
+		<ul class="block-options">
+			<li>
+				 <button type="button" onclick="$('#_app_browser').modal('hide');"><i class="fa fa-times"></i></button>
+			</li>
+		</ul>
+		<h3 class="block-title"> <i class="fa fa-arrow-right"></i> <?=$app['cname']?> 客户端下载 </h3>
+	</div>
+	<div class="block-content" style="padding-top:10px;padding-bottom: 10px;">
+		<div class="list-group-item clearfix" style="border: 0px;">
+			<a class="item item-rounded pull-left push-10-r bg-info" href="<?=$app['homepage']?>" target="_blank">
+				<?php if ($app['icontype']=="img") : ?>
+                    <img src="<?=$app['image']['light']?>" style="width:48px;height:48px;" >
+                <?php else:  ?>
+                    <i class="<?=$app['icontype']?> <?=$app['icon']?> text-white-op"></i>
+                <?php endif;  ?>
+			</a>
+
+			<div class="push-5 clearfix pull-right " style="min-width:300px;width:90%;">
+				<div class="text-danger pull-right font-s16 status-text">
+					<?=sprintf('%.2f', $app['price']/100);?> 元/<?=$app['unit']?>
+				</div>
+				<a class="font-w600 font-s16" href="<?=$app['homepage']?>" target="_blank"><?=$app['cname']?></a>
+				<span class="text-muted font-s16"><?=$app['version']?></span>
+				<div class="font-s14 text-muted push-5-t app-intro" style="min-height: 36px;">
+					<?=$app['detail']?>
+				</div>
+			</div>
+		</div>
+
+		<div style="padding-left:96px;padding-top:10px;">
+			<a 
+				class="btn btn-sm btn-primary  font-w300 download push-20-r"  
+				href="<?=R('core-system', 'appmanager', 'uiZipAndDownload', ['id'=>$app['appid'], 'lid'=>$app['local_appid']])?>" 
+			>打包下载 <?=$app['cname']?> 客户端源代码</a>
+			<a href="https://www.xpmsns.com/docs/<?=__VERSION?>/setup/frontend-app.md" target="_blank">安装手册</a>
+		</div>
+		
+		<div class="content content-full bg-white" style="min-height:320px;">
+         	
+			<h4 class="font-w300"> 客户端部署 </h4>
+      		<pre class="pre-sh push-10-t"><code class="bash" style="padding:20px 40px 20px 40px;">
+# 解压下载的压缩包，进入根目录; 安装依赖包。
+npm install
+
+# 部署WEB端 ( 网站和微信H5 )
+gulp web
+
+# 部署小程序 
+gulp wxapp 
+
+# 编译安卓客户端
+gulp android
+
+# 编译iOS桌面客户端
+gulp ios
+
+# 部署推送小米音箱应用
+gulp xiaomi
+			</code></pre>
+
+        </div>
+	</div>
+</div>
+
+
+<script type="text/javascript">
+$(function(){
+	$('pre code').each(function(i, block) {
+		hljs.highlightBlock(block);
+	});
+});
+</script>

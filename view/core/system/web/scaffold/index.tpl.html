@@ -1,0 +1,169 @@
+        <?php include_once(tpl('common/web/head')); ?>
+        <link rel="stylesheet" href="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/codemirror/lib/codemirror.css">
+        <link rel="stylesheet" href="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/codemirror/addon/fold/foldgutter.css">
+        <link rel="stylesheet" href="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/codemirror/addon/dialog/dialog.css">
+        <link rel="stylesheet" href="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/codemirror/theme/monokai.css">
+        <link rel="stylesheet" href="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/handsontable/handsontable.full.min.css">
+
+
+        <!-- foot JS CODE-->
+        <?php include_once(tpl('common/web/foot')); ?>
+        <script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/jquery-validation/jquery.validate.min.js"></script>
+        <script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/select2/select2.full.min.js"></script>
+        <script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/masked-inputs/jquery.maskedinput.min.js"></script>
+        <script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/codemirror/lib/codemirror.js"></script>
+        <script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/codemirror/addon/search/searchcursor.js"></script>
+        <script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/codemirror/addon/search/search.js"></script>
+        <script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/codemirror/addon/dialog/dialog.js"></script>
+        <script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/codemirror/addon/edit/matchbrackets.js"></script>
+        <script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/codemirror/addon/edit/closebrackets.js"></script>
+        <script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/codemirror/addon/comment/comment.js"></script>
+        <script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/codemirror/addon/wrap/hardwrap.js"></script>
+        <script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/codemirror/addon/fold/foldcode.js"></script>
+        <script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/codemirror/addon/fold/brace-fold.js"></script>
+        <script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/codemirror/mode/javascript/javascript.js"></script>
+        <script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/codemirror/mode/sql/sql.js"></script>
+        <script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/codemirror/mode/php/php.js"></script>
+        <script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+        <script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/codemirror/mode/xml/xml.js"></script>
+        <script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/codemirror/mode/css/css.js"></script>
+        <script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/codemirror/mode/clike/clike.js"></script>
+        <script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/codemirror/keymap/sublime.js"></script>
+        <script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/handsontable/handsontable.full.min.js"></script>
+        <script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/handsontable/zeroclipboard/ZeroClipboard.js"></script>
+
+                      
+
+
+
+        <!-- foot end -->
+
+        <!-- Page Container -->
+        <!--
+            Available Classes:
+
+            'enable-cookies'             Remembers active color theme between pages (when set through color theme list)
+
+            'sidebar-l'                  Left Sidebar and right Side Overlay
+            'sidebar-r'                  Right Sidebar and left Side Overlay
+            'sidebar-mini'               Mini hoverable Sidebar (> 991px)
+            'sidebar-o'                  Visible Sidebar by default (> 991px)
+            'sidebar-o-xs'               Visible Sidebar by default (< 992px)
+
+            'side-overlay-hover'         Hoverable Side Overlay (> 991px)
+            'side-overlay-o'             Visible Side Overlay by default (> 991px)
+            'side-scroll'                Enables custom scrolling on Sidebar and Side Overlay instead of native scrolling (> 991px)
+            'header-navbar-fixed'        Enables fixed header
+        -->
+        <div id="page-container" class="sidebar-l sidebar-o side-scroll header-navbar-fixed sidebar-mini main-sidebar">
+           
+           <!-- 左侧菜单-->
+           <?php include_once(tpl('common/web/menu')); ?>
+           <!-- 左侧菜单 结束-->
+
+           <!-- Header Overlay-->
+           <?php include_once(tpl('common/web/header')); ?>
+           <!-- END Header  Overlay-->
+            
+            <!-- 左侧弹出菜单开始 -->
+            <sidebar id="main-sidebar-left" class="<?=($left_sidebar['active']==true)?'active':''?> fit-w hidden-xs" style="<?=$left_sidebar['style']?>">
+                <div id="main-sidebar-left-scroll">
+                    <!-- Sidebar Content -->
+                    <div style="height:auto;width:300px;"></div>
+                </div>
+            </sidebar>
+            <!-- 左侧弹出菜单结束 -->
+
+            <!-- 右侧弹出菜单开始 > -->
+            <sidebar id="main-sidebar-right <?=($right_sidebar['active']==true)?'active':''?> fit-w hidden-xs" style="<?=$right_sidebar['style']?>">
+                <div id="main-sidebar-right-scroll">
+                    <!-- Sidebar Content -->
+                    <div style="height:auto;width:300px;"></div>
+                </div>
+            </sidebar>
+            <!-- 右侧弹出菜单结束 -->
+
+            <!-- Main Container -->
+            <main id="main-container" class="width-sidebar">            
+
+
+
+
+<!-- Page Content -->
+<div class="content">
+
+    <div class="block">
+
+        <ul class="nav nav-tabs nav-tabs-alt" data-toggle="tabs">
+            
+  			<li> 
+                <a href="#tabs-schema" id="tabs_schema" data-remote="<?=R('core-system','scaffold', 'schema',['model_name'=>$_GET['model_name']])?>">数据结构</a>
+            </li>
+            <li class="active"> 
+                <a href="#tabs-find" id="tabs_find"  data-remote="<?=R('core-system','scaffold', 'find',['model_name'=>$_GET['model_name']])?>">数据查询</a>
+            </li>
+
+            <li class="hidden">
+                <a href="#tabs-update"  id="tabs_update" data-remote="">更新数据</a>
+            </li>
+
+            <li>
+                <a href="#tabs-create" data-remote="<?=R('core-system','scaffold', 'dataform',['model_name'=>$_GET['model_name']])?>">添加数据</a>
+            </li>
+            
+            <li>
+                <a href="#tabs-apibuilder" id="tabs_apibuilder"  data-remote="<?=R('core-system','scaffold', 'apibuilder',['model_name'=>$_GET['model_name']])?>">生成API代码</a>
+            </li>
+          
+        </ul>
+
+        <!-- TAB内容开始 -->
+        <div class="block-content tab-content">
+
+            <div class="tab-pane hide" id="tab-pane-error" >
+                <div class="alert alert-danger push-50-l push-50-r push-20-t ">
+                    <h3 class="font-w300 push-15">载入失败</h3>
+                    <p>{HTML}</p>
+                </div>
+                <div class="row"  style="min-height:300px;" ></div>
+            </div>
+
+            <!-- 数据结构 -->
+            <div class="tab-pane " id="tabs-schema"></div>
+
+            <!-- 数据列表 -->
+            <div class="tab-pane active" id="tabs-find">
+                <?=RUN('core-system','scaffold','find',['model_name'=>$_GET['model_name']])?>
+            </div>
+
+            <!-- 创建数据 -->
+            <div class="tab-pane" id="tabs-create"></div>
+
+            <!-- 更新数据 -->
+            <div class="tab-pane" id="tabs-update"></div>
+
+            <!-- API生成 -->
+            <div class="tab-pane" id="tabs-apibuilder"></div>
+
+        </div>
+    </div>
+</div>
+<!-- END Page Content -->
+
+
+
+
+</main>
+            <!-- Footer Overlay-->
+           <?php include_once(tpl('common/web/footer')); ?>
+           <!-- END Footer Overlay-->
+        </div>
+        <!-- END Page Container -->
+
+        <!-- btn-ajax-post 操作确认对话框 Modal id="_btn-ajax-confirm" -->
+        <?php include_once(tpl('common/web/btn-ajax-post.confirm.mod')); ?>
+
+    </body>
+</html>
+
+

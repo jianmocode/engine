@@ -1,0 +1,9 @@
+body.deepblue {
+  font-style: "Helvetica Neue", "Hiragino Sans GB", "Microsoft YaHei", "\9ED1\4F53", Arial, sans-serif, 'Apple Color Emoji';
+  font-size: 14px;
+  font-weight: 300;
+  color: #646464;
+}
+body.deepblue .wrapper {
+  padding: 20px;
+}

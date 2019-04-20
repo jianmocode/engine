@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>{{page.title}}</title>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="description" content="{{page.description}}">
+	<meta name="keywords" content="{{page.keywords}}">
+	<meta name="author" content="{{page.author}}">
+	<meta name="generator" content="GitBook 3.2.2">
+</head>
+<body class="deepblue" >
+
+<div class="title {{var.name + var.name2}} {{var.name2 + 'HELP'}} "> {{var.name2 + 'HELP'}}  </div>
+<div class="title {{var.name - var.name2}} ">{{title}} {{var.name - var.name2}} </div>
+<div class="title {{var.name * var.name2}} ">{{title}} {{var.name * var.name2}}</div>
+<div class="title {{var.name / var.name2}} ">{{title}}</div>
+<div class="title {{(var.name == var.name2) ? 'OK'}}  ">{{title}}  {{(var.name == var.name2) ? 'OK'}}</div>
+<div class="title {{(var.name) ? 'Short OK'}}  ">{{title}}</div>
+<div class="title {{(true) ? 'Short OK'}}  ">{{title}}</div>
+<div class="title {{(var.name) ? 'OK2' : 'updated'}} ">{{title}}</div>
+<div class="title {{(true) ? 'OK2' : 'updated'}} : 'updated' ">{{title}}</div>
+<div class="title {{(var.name == var.name2) ? 'OK' : 'notok'}}">{{title}}</div>
+<div class="title {{REPLACE('helo','world', var.name)}} {{PING('helo','world', var.name)}}">{{title}}</div>
+
+
+<div class="wrapper">
+	<div class="title {{hidden}} ">{{title}}</div>
+
+	<ul >
+		<li mp:for="{{hots.top}}" 
+		    mp:for-index="{{idx}}" 
+		    mp:for-item="{{it}}" mp:for-from="1" 
+		    mp:if="{{it.name == it.id}}"
+		    >
+			BOYIS
+		</li>
+	</ul>
+	
+	<div mp:if="{{it.name == 'wangp'}}" >
+		BOYIS
+	</div>
+
+	<div mp:if="{{it.name == it.id}}" >
+		BOYIS
+	</div>
+
+	<div class="content">
+		{{content}}
+	</div>
+	<div class="hot" mp:for="{{hots.top}}" mp:for-index="{{idx}}" mp:for-item="{{item}}" >
+		<span class="text-muted"> {{idx}} </span> : {{item.title}} 
+	</div>
+
+	<div class="adv" mp:if="{{hots.0.title == '张三'}}">
+		<div> <a href="#" >我是一条广告 {{author}} 张三 {{test}} </a> </div>
+	</div>
+
+	<div class="adv" mp:elif="{{hots.0.title == '李四'}}">
+		<div> <a href="#" >我是一条广告 {{author}} 李四 </a> </div>
+	</div>
+	<div class="adv" mp:else hello="slls" ">
+		<div> <a href="#" >我是一条广告 {{author}} 王五 </a> </div>
+	</div>
+
+	<div class="adv" mp:if="{{true}}">
+		<div> <a href="#" >我是一条广告 true </a> </div>
+	</div>
+
+	<div class="adv" mp:if="{{cook}}">
+		<div> <a href="#" >我是一条广告 true </a> </div>
+	</div>
+
+	<div class="adv" mp:if="{{tim.cook}}">
+		<div> <a href="#" >我是一条广告 true </a> </div>
+	</div>
+
+	<template is="{{message.type}}" data="{{message}}" />
+
+	<div class="events">
+		<button class="btn" bind:click="hello" > 世界你好 </button>
+	</div>
+
+	<div class="images">
+		<img src="/images/article.svg">
+		<img src="/image.png" >
+		<img src="image.png" name="SERVICE_URL">
+		<img src="{{__STOR__::ASSETS}}/images/article.svg" style="width:20px;" >
+	</div>
+	
+	
+
+	<div class="hot" mp:for="{{hots.top}}" mp:for-index="{{index}}" mp:for-item="{{item}}" >
+		<span class="text-muted"> {{index}} </span> : {{item.title}} 
+		<div  mp:for="{{item.ok}}" mp:for-index="{{idx}}" mp:for-item="{{it}}"  >
+			{{it.hello}}
+			<div class="girls" mp:if="{{it.ok}}" > GIRLS </div>
+			<div class="girls" mp:elif="{{it.ad == 100}}" > BOYIS </div>
+			<div class="girls" mp:else > NOTHING </div>
+		</div>
+	</div>
+</div>
+
+<template name="text">
+	<div>
+		<label> {{index}}: {{msg}} </label>
+		<label> Time: {{time}} </label>
+	</div>
+</template>
+
+<template name="image">
+	<div>
+		<img src="{{src}}">  
+		<label> {{index}}: {{msg}}  Time: {{time}} </label>
+	</div>
+</template>
+
+</body>
+</html>

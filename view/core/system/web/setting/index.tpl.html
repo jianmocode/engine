@@ -1,0 +1,123 @@
+        <?php include_once(tpl('common/web/head')); ?>
+
+        <!-- foot JS CODE-->
+        <?php include_once(tpl('common/web/foot')); ?>
+        <!-- foot end -->
+        <!-- Page Container -->
+        <!--
+            Available Classes:
+
+            'enable-cookies'             Remembers active color theme between pages (when set through color theme list)
+
+            'sidebar-l'                  Left Sidebar and right Side Overlay
+            'sidebar-r'                  Right Sidebar and left Side Overlay
+            'sidebar-mini'               Mini hoverable Sidebar (> 991px)
+            'sidebar-o'                  Visible Sidebar by default (> 991px)
+            'sidebar-o-xs'               Visible Sidebar by default (< 992px)
+
+            'side-overlay-hover'         Hoverable Side Overlay (> 991px)
+            'side-overlay-o'             Visible Side Overlay by default (> 991px)
+            'side-scroll'                Enables custom scrolling on Sidebar and Side Overlay instead of native scrolling (> 991px)
+            'header-navbar-fixed'        Enables fixed header
+        -->
+        <div id="page-container" class="sidebar-l sidebar-o side-scroll header-navbar-fixed <?=$_SIDEBAR_MINI?> main-sidebar">
+           
+           <!-- 左侧菜单-->
+           <?php include_once(tpl('common/web/menu')); ?>
+           <!-- 左侧菜单 结束-->
+
+           <!-- Header Overlay-->
+           <?php include_once(tpl('common/web/header')); ?>
+           <!-- END Header  Overlay-->
+
+            <!-- Main Container -->
+            <main id="main-container" class="width-sidebar">
+                <!-- Page Content -->
+                <div class="content">
+                    <div class="block">
+
+                        <ul class="nav nav-tabs nav-tabs-alt" data-toggle="tabs">
+                            <li class="active">  <!-- 手机不显示 -->
+                                <a href="#tabs-general" data-remote="<?=R('core-system','setting','settings_form_general')?>" class="general">系统</a>
+                            </li>
+                            <li>
+                                <a href="#tabs-app" data-remote="<?=R('core-system','setting','settings_form_app')?>" class="app">接入应用</a>
+                            </li>
+                            <li>
+                                <a href="#tabs-dingtalk" data-remote="<?=R('core-system','setting','settings_form_dingtalk')?>" class="dingtalk">钉钉</a>
+                            </li>
+                            <li>
+                                <a href="#tabs-wechat" data-remote="<?=R('core-system','setting','settings_form_wechat')?>" class="wechat">微信</a>
+                            </li>
+                            <li>
+                                <a href="#tabs-notify" data-remote="<?=R('core-system','setting','settings_form_notify')?>" class="notify">通知</a>
+                            </li>
+                            <li>
+                                <a href="#tabs-log" data-remote="<?=R('core-system','setting','settings_form_log')?>" class="log">日志</a>
+                            </li>
+                            <li>
+                                <a href="#tabs-Redis" data-remote="<?=R('core-system','setting','settings_form_Redis')?>" class="redis">Redis</a>
+                            </li>
+                            <li>
+                                <a href="#tabs-Storage" data-remote="<?=R('core-system','setting','settings_form_Storage')?>" class="storage">Storage</a>
+                            </li>
+                            <li>
+                                <a href="#tabs-Supertable" data-remote="<?=R('core-system','setting','settings_form_SuperTable')?>" class="superTable">SuperTable</a>
+                            </li>
+                            
+                            <li class="pull-right">
+                                <a href="#tabs-about" data-remote="<?=R('core-system','setting','settings_form_about')?>"> 
+                                    <i class="fa fa-info-circle" ></i> 
+                                </a>
+                            </li>
+                        </ul>
+                         <!-- TAB内容开始 -->
+                        <div class="block-content tab-content">
+
+                            <div class="tab-pane hide" id="tab-pane-error" >
+                                <div class="alert alert-danger push-50-l push-50-r push-20-t ">
+                                    <h3 class="font-w300 push-15">载入失败</h3>
+                                    <p>{HTML}</p>
+                                </div>
+                                <div class="row"  style="min-height:300px;" ></div>
+                            </div>
+
+                            <!-- 系统选项标签 表单 -->
+                            <div class="tab-pane active" id="tabs-general">
+                                <?=RUN('core-system','setting','settings_form_general')?>
+                            </div>
+                            <!-- 接入应用 表单 -->
+                            <div class="tab-pane" id="tabs-app"></div>
+                            <!-- 接入钉钉标签 表单 -->
+                            <div class="tab-pane" id="tabs-dingtalk"></div>
+
+                            <!-- 接入微信标签 表单 -->
+                            <div class="tab-pane" id="tabs-wechat"></div>
+                            <!-- 接入通知标签 表单 -->
+                            <div class="tab-pane" id="tabs-notify"></div>
+                            <!-- 接入日志标签 表单 -->
+                            <div class="tab-pane" id="tabs-log"></div>
+                            <!-- 接入Redies标签 表单 -->
+                            <div class="tab-pane" id="tabs-Redis"></div>
+
+                            <!-- 接入Storage标签 表单 -->
+                            <div class="tab-pane" id="tabs-Storage"></div>
+
+                            <!-- 接入Supertable 表单 -->
+                            <div class="tab-pane" id="tabs-Supertable"></div>
+
+                        </div>
+                    </div>
+             
+                </div>
+                <!-- END Page Content -->
+            </main>
+            <!-- END Main Container -->
+            <!-- Footer Overlay-->
+           <?php include_once(tpl('common/web/footer')); ?>
+           <!-- END Footer Overlay-->
+        </div>
+         <!-- Modal LIST -->
+        <!-- Modal LIST END -->
+    </body>
+</html>

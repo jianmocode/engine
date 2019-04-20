@@ -1,0 +1,66 @@
+<link rel="stylesheet" href="<?=\Xpmse\Conf::G('general/static')?>/assets/js/plugins/highlightjs/github-gist.min.css">
+<link rel="stylesheet" href="<?=\Xpmse\Conf::G('general/static')?>/assets/js/plugins/highlightjs/styles/darkula.css">
+<script src="<?=\Xpmse\Conf::G('general/static')?>/assets/js/plugins/highlightjs/highlight.pack.js"></script>
+
+<div class="block block-themed remove-margin">
+	<div class="block-header bg-primary">
+		<ul class="block-options">
+			<li>
+				 <button type="button" onclick="$('#_app_browser').modal('hide');"><i class="fa fa-times"></i></button>
+			</li>
+		</ul>
+		<h3 class="block-title"> <i class="fa fa-arrow-right"></i><?=$history['name'] ?>(<?=$history['history_id']?>) 部署文档</h3>
+	</div>
+	<div class="block-content" style="padding-top:10px;padding-bottom: 20px;">
+			
+		<div class="content content-full bg-white" style="min-height:320px;">
+			<h4 class="font-w300">部署<?=$history['name'] ?>(<?=$history['history_id']?>)</h4>
+         	<pre class="pre-sh push-10-t"><code class="bash" style="padding:20px 40px 20px 40px;">
+# 第一步: 登录服务器，运行以下命令，进入容器
+docker exec -it &lt;容器名称&gt; /bin/bash
+
+# 第二步: 在容器中，进入应用目录
+cd /apps/<机构目录>/<应用目录>
+
+# 第三步: 运行部署命令
+xpm codemaker <?=$history['history_id']?>
+
+xpm codemaker <?=$history['history_id']?> --force  # 若文件已存在，直接覆盖
+xpm codemaker <?=$history['history_id']?> --merge --force  # 若文件已存在，合并代码
+         	 </code></pre>
+
+         	<h4 class="font-w300 push-20-t">部署单个文件</h4>
+			<pre class="pre-sh push-10-t"><code class="bash" style="padding:20px 40px 20px 40px;">
+# 第一步: 登录服务器，运行以下命令，进入容器
+docker exec -it &lt;容器名称&gt; /bin/bash
+
+# 第二步: 在容器中，进入应用目录
+cd /apps/<机构目录>/<应用目录>
+
+# 第三步: 部署单个文件
+xpm codemaker <?=$history['history_id']?> <文件/目录名称>
+xpm codemaker <?=$history['history_id']?> <文件/目录名称> --force  # 若文件已存在，直接覆盖
+xpm codemaker <?=$history['history_id']?> <文件/目录名称> --merge --force  # 若文件已存在，合并代码
+
+xpm codemaker <?=$history['history_id']?> <?=$file['name']?>
+
+xpm codemaker <?=$history['history_id']?> <?=$file['name']?> --force # 若文件已存在，直接覆盖
+xpm codemaker <?=$history['history_id']?> <?=$file['name']?> --merge --force # 若文件已存在，合并代码
+
+<?php foreach( $files as $name=>$f ) : if ( $name != $file['name'] ) :?>
+xpm codemaker <?=$history['history_id']?> <?=$name?>
+
+<?php endif;endforeach; ?>
+         	 </code></pre>
+
+        </div>
+	</div>
+</div>
+
+<script type="text/javascript">
+$(function(){
+	$('pre code').each(function(i, block) {
+		hljs.highlightBlock(block);
+	});
+});
+</script>

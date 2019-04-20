@@ -1,0 +1,131 @@
+<template type="text">
+	<div class="col-xs-12">
+		<div class="form-material">
+			<input class="form-control" type="text" id="{{attr.name}}" name="{{attr.name}}" 
+				value="{{value}}" 
+				placeholder="{{name}}" />
+			<label for="{{attr.name}}">{{name}}</label>
+			<div class="help-block text-right"></div>
+		</div>
+	</div>
+</template>
+
+<template type="checkbox">
+	<div class="col-xs-12 push-20-t">
+		<div class="form-material">
+			<div>
+				{{scope}}
+				<label class="css-input css-checkbox css-checkbox-default">
+					<input type="checkbox" name="{{attr.name}}" value="{{scope.value}}" ifvalue="checked" > <span></span> {{scope.name}}
+				</label>
+				{{/scope}}
+			</div>
+		</div>
+	</div>
+</template>
+
+<template type="radio">
+	<div class="col-xs-12 push-20-t">
+		<div class="form-material">
+			<div>
+				{{scope}}
+				<label class="css-input css-radio css-radio-primary push-10-r">
+					<input type="radio" name="{{attr.name}}" value="{{scope.value}}" ifvalue="checked" > <span></span> {{scope.name}}
+				</label>
+				{{/scope}}
+			</div>
+		</div>
+	</div>
+</template>
+
+<template type="select">
+	<div class="col-xs-12">
+		<div class="form-material">
+			<select class="js-select2 form-control" id="{{attr.name}}" name="{{attr.name}}" 
+				style="width: 100%;" data-placeholder="请选择 {{name}}...">
+				<option></option>
+				{{scope}}
+				<option ifvalue="selected" value="{{scope.value}}" >{{scope.name}}</option>
+				{{/scope}}
+			</select>
+		</div>
+		<label for="{{attr.name}}">{{name}}</label>
+		<div class="help-block text-right"></div>
+	</div>
+</template>
+
+<template type="select_mutiple">
+	<div class="col-xs-12">
+		<div class="form-material">
+			<select class="js-select2 form-control" id="{{attr.name}}" name="{{attr.name}}" 
+				style="width: 100%;" data-placeholder="请选择 {{name}}..." multiple>
+				<option></option>
+				{{scope}}
+				<option ifvalue="selected" value="{{scope.value}}" >{{scope.name}}</option>
+				{{/scope}}
+			</select>
+		</div>
+		<label for="{{attr.name}}">{{name}}</label>
+		<div class="help-block text-right"></div>
+	</div>
+</template>
+
+<template type="textarea">
+	<div class="col-xs-12">
+		<div class="form-material">
+			<textarea class="form-control" id="{{attr.name}}" name="{{attr.name}}" rows="3" placeholder="填写{{name}}">{{value}}</textarea>
+			<label for="{{attr.name}}">{{name}}</label>
+			<div class="help-block text-right"></div>
+		</div>
+	</div>
+</template>
+
+<template type="file">
+	<div class="col-sm-12 push-10-t push-10">
+        <div class="form-material">
+            <div class="form-material">
+                <div name="{{attr.name}}" class="file-uploader rounded rounded-4 push-10-t "
+                     data-api='<?=App::URI("mina", "uploader", "upload", ["type"=>"file", "private"=>1])?>'
+                     data-title='{{attr.title}}'
+                     data-width="{{attr.width}}"
+                     data-height="{{attr.height}}"
+                     data-type="attachment"
+                     data-icon="fa fa-paperclip"  
+                     data-placeholder="{{attr.placeholder}}" 
+                     data-allow-types=".txt,.cert,.crt,.key,.pem"
+                     data-maxsize="400"
+                     data-progress="yes"
+                     data-draggable="yes"
+                     data-src="{{value.url}}"
+                     data-path="{{value.path}}"
+                     ></div>
+                <label for="{{attr.name}}">{{name}}</label>
+            </div>
+        </div>
+    </div>
+</template>
+
+<template type="image">
+	<div class="col-sm-12 push-10-t push-10">
+        <div class="form-material">
+            <div class="form-material">
+                <div name="{{attr.name}}" class="file-uploader rounded rounded-4 push-10-t "
+                     data-api='<?=App::URI("mina", "uploader", "upload", ["type"=>"image", "private"=>1])?>'
+                     data-title='{{attr.title}}'
+                     data-previews=""
+                     data-width="{{attr.width}}"
+                     data-height="{{attr.height}}"
+                     data-icon="fa fa-image" 
+                     data-placeholder="{{attr.placeholder}}" 
+                     data-allow-types="image/png,image/jpg,image/jpeg,image/gif"
+                     data-maxsize="400"
+                     data-progress="yes"
+                     data-draggable="yes"
+                     data-src="{{value.url}}"
+                     data-path="{{value.path}}"
+                     ></div>
+                <label for="{{attr.name}}">{{name}}</label>
+            </div>
+        </div>
+    </div>
+</template>

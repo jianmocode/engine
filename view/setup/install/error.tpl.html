@@ -1,0 +1,46 @@
+<?php 
+include_once(tpl('setup/head')); 
+?>
+<!-- Install Content -->
+<div class="content overflow-hidden">
+    <div class="row">
+         <div class="col-lg-6 col-lg-offset-3  col-md-6 col-md-offset-3  col-sm-6 col-sm-offset-3 p push-15-t">
+             <!-- Step Form Content -->
+             <div class="block block-shadow block-radius">
+                <div class="block-header"></div>
+				<div class="block-content block-content-full block-content-narrow" style="padding-left: 10%;padding-right: 10%;">  	
+
+                    <p class="lead"> <?=$title?> </p>
+                    <div class="nice-copy " >
+                        
+                        <?php if(count($extra) > 0  ) : // 错误项 ?>
+                        <ul class="list push-20">
+                            <?php foreach ($extra as $ex)  : ?>
+                                <li style="padding:.5em; padding-left:0px;"> <?=$ex?> </li>
+                            <?php endforeach; ?>
+                        </ul>
+                        <?php endif ?>
+
+                        <?=$message?> 
+                    </div>
+
+                    <form action="base_forms_elements.html" method="post" class="form-horizontal" onsubmit="return false;">
+                        <div class="form-group text-center push-30-t">
+                            <a class="btn btn-primary font-w300" href="/setup.php" >   重试 </a>
+                        </div>
+                    </form>
+
+				</div>
+             </div> <!-- Step Form Content -->
+        </div>
+    </div>
+</div>
+
+<?php include_once(tpl('setup/foot')); ?>
+<script src="/static/assets/js/plugins/easy-pie-chart/jquery.easypiechart.min.js"></script>
+<script type="text/javascript">
+$(function(){
+});
+</script>
+<?php include_once(tpl('setup/footer')); ?>
+

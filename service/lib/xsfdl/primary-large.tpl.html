@@ -1,0 +1,914 @@
+<template type="input">
+	<!-- 单行文本: {{name}} ({{_name}}) 开始  -->
+	<div class="form-group {{_error ? 'has-error'}} {{ class }} ">
+		<label class="col-xs-2 control-label" for="{{_name}}">{{name}}{% if rule.required == true %}<span class="text-danger">*</span>{% endif %}</label>
+		<div class="col-xs-8">
+			<input class="form-control input-lg {{readonly ? "disabled" : "" }}"  {{readonly ? "disabled" : "" }}
+				type="text" 
+				id="{{_name}}" name="{{_name}}" 
+				placeholder="{{placeholder}}"  
+				value="{{_value | e('html') }}" /> 
+			<div class="help-block">{{_error ? _error : helper}}</div>
+		</div>
+	</div><!-- END 单行文本: {{name}} ({{_name}}) -->
+</template>
+
+<template type="inputs">
+	<!-- 多条文本: {{name}} ({{_name}}) {{_value}} 开始   minLength(1) -->
+	<div class="xpmse-inputs-panel">
+		{% for val in _value | minLength(1)  %}
+		<div class="xpmse-inputs  {{ class }}" name="{{_name}}">
+			<div class="form-group {{_error ? 'has-error'}}" >
+				<label class="col-xs-2 control-label" for="{{_name}}">{{name}} {{val}} {% if rule.required == true %} <span class="text-danger">*</span>{% endif %}</label>
+				<div class="col-xs-8">
+					<input class="form-control input-lg {{readonly ? "disabled" : "" }}"   {{readonly ? "disabled" : "" }}
+						type="text" 
+                        id="{{_name}}" name="{{_name}}"
+                        data-multiple="1"
+						placeholder="{{placeholder}}"  
+						value="{{val | e('html') }}" /> 
+					<div class="help-block">{{_error ? _error : helper}}</div>
+				</div>
+				<div class="col-xs-2 push-10-t">
+					<a href="javascript:void(0);" data-action="add"    class="text-success push-20-r"> <i class="fa fa-plus font-s20"></i> </a> 
+					<a href="javascript:void(0);" data-action="remove" class="text-danger"> <i class="fa fa-minus font-s20"></i> </a> 
+				</div>
+			</div> 
+		</div>
+		{% endfor %} 
+	</div>
+	<script type="text/javascript">
+		$('.xpmse-inputs[name="{{_name}}"]').Multipliable({
+			initialized: function(elm, idx) {
+				$(elm).parent('.xpmse-inputs-panel') .find('.control-label').each( function(i, el ){
+					if (i >0) { $(el).html('');}
+				});
+			},
+			added: function( elm ) {},
+			removed: function(){},
+			html: function( elm ){ 
+				var html = $(elm).clone();
+				var resp = $(html);
+					resp.find('.control-label').html('');
+				return resp;
+			}
+		});
+	</script><!-- END 多条文本: {{name}} ({{_name}}) -->
+</template>
+
+<template type="json-input-s2">
+	<!-- JSON文本: {{name}} ({{_name}}) {{_value}} 开始   minLength(1) -->
+	<div class="xpmse-json-input-panel"  >
+		{% for val in _value | minLength(pair) %}
+		<div class="xpmse-json-input  {{ class }}"  name="{{_name}}__origin"   data-nested="{{_name}}__origin" data-multiple="1" >
+			<div class="form-group {{_error ? 'has-error'}}" >
+				<label class="col-xs-2 control-label" for="{{_name}}">{{name}} {{__key}} {% if rule.required == true %} <span class="text-danger">*</span>{% endif %}</label>
+				<div class="col-xs-2">
+					<input class="form-control input-lg"  
+						type="text" 
+						data-name="key" 
+						placeholder="{{attr.title_cname ? attr.title_cname : '请输入键名'}}"
+						value="{{'<?php echo "<?=trim(\\\$__key)?>"; ?>'}}" /> 
+					<div class="help-block">{{_error ? _error : helper}}</div>
+				</div>
+				<div class="col-xs-6">
+					<input class="form-control input-lg"  
+						type="text" 
+						data-name="value"
+						placeholder="{{attr.title_cname ? attr.title_cname : '请输入数值'}}"
+						value="{{'<?php echo "<?=trim(\\\$val)?>"; ?>'}}" /> 
+					<div class="help-block">{{_error ? _error : helper}}</div>
+				</div>
+				<div class="col-xs-2 push-10-t">
+					<a href="javascript:void(0);" data-action="add"    class="text-success push-20-r"> <i class="fa fa-plus font-s20"></i> </a> 
+					<a href="javascript:void(0);" data-action="remove" class="text-danger"> <i class="fa fa-minus font-s20"></i> </a> 
+				</div>
+			</div> 
+		</div>
+		{% endfor %} 
+		<input type="hidden" name="{{_name}}" value="" />
+	</div>
+	<script type="text/javascript">
+
+		function _{{_name}}() {
+			result = {};
+			$(".form-group", '[name="{{_name}}__origin"]').each(function(idx,elm){
+				key = "";
+				val = "";
+				$('input', elm).each(function(idx,input){
+					if ( $(input).attr('data-name') == "key" ){
+						key = $(input).val();
+					} else if ($(input).attr('data-name') == "value" ){
+						val = $(input).val();
+					}
+				})
+
+				if ( key != "" ) {
+					result[key] = val;
+				}
+			})
+
+			$('input[name="{{_name}}"]').val( "json://" + JSON.stringify(result) );
+		}
+
+
+		// Init
+		_{{_name}}();
+
+		$('.xpmse-json-input[name="{{_name}}__origin"]').Multipliable({
+			initialized: function(elm, idx) {
+				$(elm).parent('.xpmse-json-input-panel') .find('.control-label').each( function(i, el ){
+					if (i >0) { $(el).html('');}
+				});
+
+				$('input',elm).change(function(event) {
+					_{{_name}}();
+				});
+			},
+			added: function( elm ) {
+				 _{{_name}}();
+			},
+			removed: function(){
+				 _{{_name}}();
+			},
+			html: function( elm ){ 
+				var html = $(elm).clone();
+				var resp = $(html);
+					resp.find('.control-label').html('');
+				return resp;
+			}
+		});
+	</script><!-- END JSON文本: {{name}} ({{_name}}) -->
+</template>
+
+<template type="json-input">
+	<!-- JSON文本数组: {{name}} ({{_name}}) {{_value}} 开始   minLength(1) -->
+	<div class="xpmse-json-input-panel"  >
+		{% for val in _value | minLength(1) %}
+		<div class="xpmse-json-input  {{ class }}"  name="{{_name}}__origin"   data-nested="{{_name}}__origin" data-multiple="1" >
+			<div class="form-group {{_error ? 'has-error'}}" >
+				<label class="col-xs-2 control-label" for="{{_name}}">{{name}} {% if rule.required == true %} <span class="text-danger">*</span>{% endif %}</label>
+				<div class="col-xs-2">
+					<input class="form-control input-lg"  
+						type="text" 
+						data-name="key" 
+						placeholder="{{attr.title_cname ? attr.title_cname : '请输入键名'}}"
+						value="{{'<?php echo "<?=key(\\\$val)?>"; ?>'}}" /> 
+					<div class="help-block">{{_error ? _error : helper}}</div>
+				</div>
+				<div class="col-xs-6">
+					<input class="form-control input-lg {{readonly ? "disabled" : "" }}" {{readonly ? "disabled" : "" }}  
+						type="text" 
+						data-name="value"
+						placeholder="{{attr.title_cname ? attr.title_cname : '请输入数值'}}"
+						value="{{'<?php echo "<?=current(\\\$val)?>"; ?>'}}" /> 
+					<div class="help-block">{{_error ? _error : helper}}</div>
+				</div>
+				<div class="col-xs-2 push-10-t">
+					<a href="javascript:void(0);" data-action="add"    class="text-success push-20-r"> <i class="fa fa-plus font-s20"></i> </a> 
+					<a href="javascript:void(0);" data-action="remove" class="text-danger"> <i class="fa fa-minus font-s20"></i> </a> 
+				</div>
+			</div> 
+		</div>
+		{% endfor %} 
+		<input type="hidden" name="{{_name}}" value="" />
+	</div>
+	<script type="text/javascript">
+
+		function _{{_name}}() {
+			result = []; map = {}
+			$(".form-group", '[name="{{_name}}__origin"]').each(function(idx,elm){
+				key = "";
+				val = "";
+				$('input', elm).each(function(idx,input){
+					if ( $(input).attr('data-name') == "key" ){
+						key = $(input).val();
+					} else if ($(input).attr('data-name') == "value" ){
+						val = $(input).val();
+					}
+				})
+
+				if ( key != "" ) {
+					map[key] = val;
+				}
+			})
+
+			for ( var key in map ) {
+				var obj = {};
+				obj[key] = map[key];
+				result.push(obj);
+			}
+
+			console.log( "result" , "=", result , map);
+			$('input[name="{{_name}}"]').val( "json://" + JSON.stringify(result) );
+		}
+
+
+		// Init
+		_{{_name}}();
+
+		$('.xpmse-json-input[name="{{_name}}__origin"]').Multipliable({
+			initialized: function(elm, idx) {
+				$(elm).parent('.xpmse-json-input-panel') .find('.control-label').each( function(i, el ){
+					if (i >0) { $(el).html('');}
+				});
+
+				$('input',elm).change(function(event) {
+					_{{_name}}();
+				});
+			},
+			added: function( elm ) {
+				 _{{_name}}();
+			},
+			removed: function(){
+				 _{{_name}}();
+			},
+			html: function( elm ){ 
+				var html = $(elm).clone();
+				var resp = $(html);
+					resp.find('.control-label').html('');
+				return resp;
+			}
+		});
+	</script><!-- END JSON文本: {{name}} ({{_name}}) -->
+</template>
+
+<template type="textarea">
+	<!-- 文本域: {{name}} ({{_name}}) 开始  -->
+	<div class="form-group {{_error ? 'has-error'}}  {{ class }}">
+		<label class="col-xs-2 control-label" for="{{_name}}">{{name}}{% if rule.required == true %}<span class="text-danger">*</span>{% endif %}</label>
+		<div class="col-xs-8">
+			<textarea class="form-control input-lg {{readonly ? "disabled" : "" }}"   {{readonly ? "disabled" : "" }}
+				type="text" 
+				id="{{_name}}" name="{{_name}}" rows="{{attr.rows}}"
+				placeholder="{{placeholder}}">{{_value  | e('html') }}</textarea> 
+			<div class="help-block">{{_error ? _error : helper}}</div>
+		</div>
+	</div><!-- END 文本域: {{name}} ({{_name}}) -->
+</template>
+
+
+<template type="summernote">
+	<!-- 富文本(summernote): {{name}} ({{_name}}) 开始  -->
+	<div class="form-group   {{_error ? 'has-error'}}  {{ class }}">
+		<label class="col-xs-2 control-label" for="{{_name}}">{{name}}{% if rule.required == true %}<span class="text-danger">*</span>{% endif %}</label>
+		<div class="col-xs-8">
+			<textarea class="js-summernote" name="{{_name}}" id="{{_name}}" placeholder="{{placeholder}}" >{{ _value | e('html')}}</textarea>
+			<div class="help-block">{{_error ? _error : helper}}</div>
+		</div>
+	</div><!-- END 富文本(summernote): {{name}} ({{_name}}) -->
+	<script type="text/javascript">
+		// Init full text editor
+		$('.js-summernote[name={{_name}}]').summernote({
+			lang: 'zh-CN',
+			height: {{ attr.height ? attr.height : 300 }},
+			minHeight: {{ attr.minHeight ? attr.minHeight : 'null' }},
+			maxHeight: {{ attr.maxHeight ? attr.maxHeight : 'null' }},
+			callbacks: {
+    			onImageUpload: function(files) {
+    				var that = this;
+    				for(var i = files.length - 1; i >= 0; i--) {
+    					var file = files[i];
+    					var form_data = new FormData();
+						form_data.append('file', file);
+						$.ajax({
+							data: form_data,
+							dataType:'json',
+							type: "POST",
+							url: '{{attr.api ? attr.api : "/_a/mina/uploader/upload?type=image"}}',
+							cache: false,
+							contentType: false,
+							processData: false,
+							success: function( rs ) {
+							    $(that).summernote('editor.insertImage', rs['url']);
+							}
+						});
+    				}
+    			}
+    		}
+		});
+	</script>
+</template>
+
+<template type="json-editor">
+
+    <!-- JSON编辑器(json-editor): {{name}} ({{_name}}) 开始  -->
+	<style type="text/css">
+		.CodeMirror {
+			border: 1px solid #e6e6e6;
+		}
+	</style>
+	<div class="json-editor draggable-item" data-name="{{_name}}" >
+
+		<div class="form-group">
+			<label class="col-xs-2 control-label">{{name}}</label>
+			<div class="col-xs-8">
+                
+                {% if attr.mode == "" or attr.mode == "text/javascript" or attr.mode == "text/json" or attr.mode == "json" %}
+                <textarea class="form-control input-lg {{readonly ? "disabled" : "" }}" name="{{_name}}"  type="text"  rows="6" 
+                    {{readonly ? "disabled" : "" }}
+                    placeholder="{{placeholder}}">{{ _value | json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE') )}}</textarea>
+                <input type="hidden" name="__json_cols" value="{{_name}}" />
+                {% else %}
+                <textarea class="form-control input-lg {{readonly ? "disabled" : "" }}" name="{{_name}}"  type="text"  rows="6" 
+                    {{readonly ? "disabled" : "" }}
+                    placeholder="{{placeholder}}">{{ _value }}</textarea>
+                {% endif %}
+			</div>
+			<div class="col-xs-2 push-10-t"></div>
+		</div>
+
+		<!-- helper -->
+		<div class="form-group helper"> 
+			<label class="col-xs-2 control-label" for="schedule"></label>
+			<div class="col-xs-9">
+				<div class="help-block">{{_error ? _error : helper}}</div>
+			</div>
+		</div><!-- end helper -->
+	</div>
+    <!-- END 代码编辑器(json-editor): {{name}} ({{_name}})  -->
+
+    <script type="text/javascript">
+    
+        // 载入代码编辑器
+		if ( typeof CodeMirror != 'undefined' ) {
+			
+			var txt_id = (new Date).getTime() + Math.floor(Math.random()*1000000+1);
+			$('textarea[name="{{_name}}"]').attr('id', txt_id );
+			CodeMirror.fromTextArea(document.getElementById(txt_id), {
+				lineNumbers: true,
+				mode: "{{attr.mode ? attr.mode : "text/javascript"}}",
+                readOnly: {{readonly ? "true" : "false"}},
+				viewportMargin: Infinity
+			}).on('change', function( cm ){ // 更新 txt 数据
+				document.getElementById(txt_id).value = cm.getValue();
+			});
+		}
+	</script>
+</template>
+
+
+<template type="checkbox">
+	<!-- 复选框: {{name}} ({{_name}}) 开始  -->
+	<div class="form-group {{_error ? 'has-error'}}  {{ class }}">
+		<label class="col-xs-2 control-label" for="{{_name}}">{{name}}{% if rule.required == true %}<span class="text-danger">*</span>{% endif %}</label>
+		<div class="col-xs-8">
+			{{ attr.option | toCheckbox( _value, attr.default, _name, readonly) }}
+			<div class="help-block">{{_error ? _error : helper}}</div>
+		</div>
+	</div><!-- END 复选框: {{name}} ({{_name}}) 开始  -->
+</template>
+<template type="radio">
+	<!-- 单选框: {{name}} ({{_name}}) 开始  -->
+	<div class="form-group {{_error ? 'has-error'}}  {{ class }} ">
+		<label class="col-xs-2 control-label" for="{{_name}}">{{name}}{% if rule.required == true %}<span class="text-danger">*</span>{% endif %}</label>
+		<div class="col-xs-8">
+			{{ attr.option | toRadio( _value, attr.default, _name, readonly) }}
+			<div class="help-block">{{_error ? _error : helper}}</div>
+		</div>
+	</div><!-- END 单选框: {{name}} ({{_name}}) 开始  -->
+</template>
+
+<template type="select"> 
+	<!-- 下拉选择: {{name}} ({{_name}}) 开始  -->
+	<div class="form-group {{_error ? 'has-error'}}  {{ class }}">
+		<label class="col-xs-2 control-label" for="{{_name}}">{{name}}{% if rule.required == true %}<span class="text-danger">*</span>{% endif %}</label>
+		<div class="col-xs-8">
+			<select class="js-select2 form-control input-lg {{attr.selectedInline ? 'selected-inline' : ''}}  {{readonly ? "disabled" : "" }} "  {{readonly ? "disabled" : "" }}  style="width: 100%;" 
+                    id="{{_name}}" name="{{_name}}"  
+                    data-language="{{attr.language ? attr.language : 'zh-CN'}}"
+					data-param-cancelable="{{attr.cancelable ? attr.cancelable : 0}}"
+					data-param-cancel="{{attr.cancel ? attr.cancel : '取消选择'}}"
+					data-placeholder="{{placeholder}}" >
+				<option></option>
+				{{ attr.option | toOption( _value, attr.default ) }}
+			</select>
+			<div class="help-block">{{_error ? _error : helper}}</div>
+		</div>
+	</div><!-- END 下拉选择: {{name}} ({{_name}}) -->
+</template>
+
+
+<template type="select-remote"> 
+	<!-- 下拉选择(动态数据): {{name}} ({{_name}}) 开始  -->
+	<div class="form-group {{_error ? 'has-error'}}  {{ class }}">
+		<label class="col-xs-2 control-label" for="{{_name}}">{{name}}{% if rule.required == true %}<span class="text-danger">*</span>{% endif %}</label>
+		<div class="col-xs-8"> 
+			<select class="js-select2 form-control input-lg {{attr.selectedInline ? 'selected-inline' : ''}}  {{readonly ? "disabled" : "" }}" {{readonly ? "disabled" : "" }} style="width: 100%;" 
+					id="{{_name}}" name="{{_name}}" 
+					data-language="{{attr.language ? attr.language : 'zh-CN'}}"
+					data-param-cancelable="{{attr.cancelable ? attr.cancelable : 0}}"
+					data-param-cancel="{{attr.cancel ? attr.cancel : '取消选择'}}"
+					data-param-model="{{attr.model}}"
+					data-param-table="{{attr.table}}"
+					data-param-fields="{{attr.fields ? attr.fields | join(',') }}"
+					data-param-style="{{attr.style | replace({'\"':'\\\"'}) }}"
+					data-param-option="{{attr.option}}"
+					data-param-default="{{attr.default}}"
+					data-ajax-url="{{attr.api ?  attr.api : '/_a/mina/helper/select2?method=get' }}"
+					data-preload-url="{{attr.api ?  [attr.api, '&preload='] |join : '/_a/mina/helper/select2?method=get&preload='}}{{_value | join(',') }}"
+					data-placeholder="{{placeholder}}" {{ attr.multiple == "1" ? ' multiple data-select2-multiple=1 '}} >
+				<option></option>
+			</select>
+			<div class="help-block">{{_error ? _error : helper}}</div>
+		</div>
+		{% if attr.cancelable %} 
+		<script type="text/javascript">
+		$(function(){
+			// 取消选择
+			$('select[name={{_name}}]').on("select2:select", function( e ){
+				var data = e.params.data || {};
+				id = data.id || '';
+				if ( '__cancel' ==  data.id ) {
+					$(this).select2("val", "");
+				}
+			});
+		});
+        </script>
+        {% endif %}
+	</div><!-- END 下拉选择(动态数据): {{name}} ({{_name}}) -->
+</template>
+
+
+<template type="image">
+	<!-- 单图上传: {{name}} ({{_name}}) 开始  -->
+	<div class="xpmse-image  {{ class }}" name="{{_name}}">
+		<div class="form-group {{_error ? 'has-error'}}" >
+			<label class="col-xs-2 control-label" for="{{_name}}">{{name}}{% if rule.required == true %} <span class="text-danger">*</span>{% endif %}</label>
+			<div class="col-xs-8">
+		   		<div name="{{_name}}" class="file-uploader rounded rounded-4 push-10-t"
+					data-api='{{attr.api ? attr.api : "/_a/mina/uploader/upload?type=image"}}'
+					data-title='{{attr.title ?  attr.title : placeholder}}'
+					data-previews="{{attr.previews}}"
+					data-width="{{attr.width}}"
+					data-height="{{attr.height}}"
+					data-icon="{{attr.draggable ? attr.draggable : 'fa fa-image'}}" 
+					data-placeholder="{{placeholder}}" 
+					data-allow-types="{{attr.allow ? attr.allow : 'image/png,image/jpg,image/jpeg,image/gif'}}"
+					data-maxsize="{{attr.maxsize ? attr.maxsize : '20'}}"
+					data-progress="{{attr.progress ? attr.progress : 'yes'}}"
+					data-cropable="{{attr.cropable ? attr.cropable : 'yes'}}"
+					data-draggable="{{attr.draggable ? attr.draggable : 'yes'}}"
+					data-src="{{_value.url}}"
+					data-path="{{_value.path}}"
+					></div>
+				<div class="help-block">{{_error ? _error : helper}}</div>
+			</div>
+		</div> 
+	</div><!-- END 单图上传: {{name}} ({{_name}}) -->
+</template>
+
+
+<template type="images">
+	<!-- 多图上传: {{name}} ({{_name}}) 开始  -->
+	<div class="xpmse-images-panel">
+		{% for img in _value | minLength(1) %} 
+		<div class="xpmse-images  {{ class }}" name="{{_name}}">
+			<div class="form-group {{_error ? 'has-error'}}" >
+				<label class="col-xs-2 control-label" for="{{_name}}">{{name}}{% if rule.required == true %} <span class="text-danger">*</span>{% endif %}</label>
+				<div class="col-xs-8">
+			   		<div name="{{_name}}" class="file-uploader rounded rounded-4"
+						data-api='{{attr.api ? attr.api : "/_a/mina/uploader/upload?type=image"}}'
+						data-title='{{attr.title ?  attr.title : ""}}'
+						data-previews="{{attr.previews}}"
+						data-width="{{attr.width}}"
+						data-height="{{attr.height}}"
+						data-icon="{{attr.draggable ? attr.draggable : 'fa fa-image'}}" 
+						data-placeholder="{{placeholder}}" 
+						data-allow-types="{{attr.allow ? attr.allow : 'image/png,image/jpg,image/jpeg,image/gif'}}"
+						data-maxsize="{{attr.maxsize ? attr.maxsize : '20'}}"
+						data-progress="{{attr.progress ? attr.progress : 'yes'}}"
+						data-cropable="{{attr.cropable ? attr.cropable : 'yes'}}"
+						data-draggable="{{attr.draggable ? attr.draggable : 'yes'}}"
+						data-src="{{img.url}}"
+						data-path="{{img.path}}"
+						data-multiple="1"
+						></div>
+					<div class="help-block">{{_error ? _error : helper}}</div>
+				</div>
+				<div class="col-xs-1 push-10-t">
+					<a href="javascript:void(0);" data-action="add"    class="text-success push-20-r"> <i class="fa fa-plus font-s20"></i> </a> 
+					<a href="javascript:void(0);" data-action="remove" class="text-danger"> <i class="fa fa-minus font-s20"></i> </a> 
+				</div>
+			</div> 
+		</div>
+		{% endfor %} 
+	</div>
+
+	<script type="text/javascript">
+		$('.xpmse-images[name="{{_name}}"]').Multipliable({
+			initialized: function(elm, idx) {
+				$(elm).parent('.xpmse-images-panel') .find('.control-label').each( function(i, el ){
+					if (i >0) { $(el).html('');}
+				});
+			},
+			added: function( elm ) {
+				App.initHelper('file-uploader', {handler: $(elm).find('.file-uploader')} );
+			},
+			removed: function(){},
+			html: function( elm ){ 
+				var html = $(elm).clone();
+				var resp = $(html);
+				resp.find('.control-label').html('');
+				resp.find('.file-uploader').html('');
+				resp.find('.file-uploader').attr('data-src', '');
+				resp.find('.file-uploader').attr('data-path', '');
+				resp.find('input').remove();
+				return resp;
+			}
+		});
+	</script><!-- END 多图上传: {{name}} ({{_name}}) -->
+</template>
+
+
+<template type="image-groups">
+	<!-- 多图片组上传: {{name}} ({{_name}}) 开始  -->
+	<div class="xpmse-image-groups-content  {{ class }}  draggable-column">
+		
+		{% for img in _value | minLength(1) %} 
+		<div class="xpmse-image-groups draggable-item" data-nested="{{_name}}" data-multiple="1">
+			<div class="form-group {{_error ? 'has-error'}}" >
+				<label class="col-xs-2 control-label draggable-handler" for="{{_name}}">{{name}}{% if rule.required == true %} <span class="text-danger">*</span>{% endif %}</label>
+				<div class="col-xs-4" style="{{attr.width ? ['width:', attr.width + 20, 'px']|join }}" >
+			   		<div name="{{_name}}" class="file-uploader rounded rounded-4"
+						data-api='{{attr.api ? attr.api : "/_a/mina/uploader/upload?type=image"}}'
+						data-title='{{attr.title ?  attr.title : ""}}'
+						data-previews="{{attr.previews}}"
+						data-width="{{attr.width}}"
+						data-height="{{attr.height}}"
+						data-icon="{{attr.draggable ? attr.draggable : 'fa fa-image'}}" 
+						data-placeholder="{{placeholder}}" 
+						data-allow-types="{{attr.allow ? attr.allow : 'image/png,image/jpg,image/jpeg,image/gif'}}"
+						data-maxsize="{{attr.maxsize ? attr.maxsize : '20'}}"
+						data-progress="{{attr.progress ? attr.progress : 'yes'}}"
+						data-cropable="{{attr.cropable ? attr.cropable : 'yes'}}"
+						data-draggable="{{attr.draggable ? attr.draggable : 'yes'}}"
+						data-src="{{img.url}}"
+						data-path="{{img.path}}"
+						data-nested-value="1"
+						></div>
+					<div class="help-block">{{_error ? _error : helper}}</div>
+				</div>
+				<div class="col-xs-4">
+					<div class="col-xs-12">
+						<input 
+							class="form-control input-lg"  
+							type="text" 
+							data-name="title" 
+							placeholder="{{attr.title_cname ? attr.title_cname : '请输入标题'}}"
+							value="{{img.title | e('html') }}" /> 
+					</div>
+					<div class="col-xs-12 push-10-t">
+						<input 
+							class="form-control input-lg"  
+							type="text" 
+							data-name="link" 
+							placeholder="{{attr.link_cname ? attr.link_cname : '请输入链接地址'}}"
+							value="{{img.link | e('html') }}" />
+					</div>
+					<div class="col-xs-12 push-10-t">
+						<textarea class="form-control input-lg"  
+							data-name="summary" rows="{{attr.rows ? attr.rows : 4 }}"
+							placeholder="{{attr.summary_cname ? attr.summary_cname : '请输入图片介绍'}}">{{img.summary | e('html') }}</textarea> 
+					</div>
+				</div>
+				<div class="col-xs-1 push-10-t">
+					<a href="javascript:void(0);" data-action="add"    class="text-success push-20-r"> <i class="fa fa-plus font-s20"></i> </a> 
+					<a href="javascript:void(0);" data-action="remove" class="text-danger"> <i class="fa fa-minus font-s20"></i> </a> 
+				</div>
+			</div> 
+		</div>
+		{% endfor %} 
+
+		<script type="text/javascript">
+			$('.xpmse-image-groups[data-nested="{{_name}}"]').Multipliable({
+				initialized: function(elm, idx) {
+					$(elm).parent('.xpmse-image-groups-content') .find('.control-label').each( function(i, el ){
+						if (i >0) { $(el).html('');}
+					});
+				},
+				added: function( elm ) {
+					App.initHelper('file-uploader', {handler: $(elm).find('.file-uploader')} );
+				},
+				removed: function(){},
+				html: function( elm ){ 
+					var html = $(elm).clone();
+					var resp = $(html);
+					resp.find('.control-label').html('');
+					resp.find('.file-uploader').html('');
+					resp.find('.file-uploader').attr('data-src', '');
+					resp.find('.file-uploader').attr('data-path', '');
+					resp.find('input[type=hidden]').remove();
+					resp.find('input').val('');
+					resp.find('textarea').val('');
+					return resp;
+				}
+			});
+		</script>
+	</div><!-- END 多图片组上传: {{name}} ({{_name}}) -->
+</template>
+
+
+
+<template type="file">
+	<!-- 单文件上传: {{name}} ({{_name}}) 开始  -->
+	<div class="xpmse-file  {{ class }}" name="{{_name}}">
+		<div class="form-group {{_error ? 'has-error'}}" >
+			<label class="col-xs-2 control-label" for="{{_name}}">{{name}}{% if rule.required == true %} <span class="text-danger">*</span>{% endif %}</label>
+			<div class="col-xs-8">
+		   		<div name="{{_name}}" class="file-uploader rounded rounded-4 push-10-t"
+					data-api='{{attr.api ? attr.api : "/_a/mina/uploader/upload?type=file"}}'
+					data-title='{{attr.title ?  attr.title : placeholder}}'
+                    data-type="attachment"
+                    data-display-name="{{attr.displayname ?  attr.displayname : 'true'}}"
+					data-width="{{attr.width}}"
+					data-height="{{attr.height}}"
+					data-icon="{{attr.draggable ? attr.draggable : 'fa fa-paperclip'}}" 
+					data-placeholder="{{placeholder}}" 
+					data-allow-types="{{attr.allow ? attr.allow : ''}}"
+					data-maxsize="{{attr.maxsize ? attr.maxsize : '20'}}"
+					data-progress="{{attr.progress ? attr.progress : 'yes'}}"
+					data-draggable="{{attr.draggable ? attr.draggable : 'yes'}}"
+					data-src="{{_value.url}}"
+					data-path="{{_value.path}}"
+					></div>
+				<div class="help-block">{{_error ? _error : helper}}</div>
+			</div>
+		</div> 
+	</div><!-- END 单文件上传: {{name}} ({{_name}}) -->
+</template>
+
+<template type="files">
+	<!-- 多文件上传: {{name}} ({{_name}}) 开始  -->
+	<div class="xpmse-files-panel">
+		{% for img in _value | minLength(1) %} 
+		<div class="xpmse-files  {{ class }}" name="{{_name}}">
+			<div class="form-group {{_error ? 'has-error'}}" >
+				<label class="col-xs-2 control-label" for="{{_name}}">{{name}}{% if rule.required == true %} <span class="text-danger">*</span>{% endif %}</label>
+				<div class="col-xs-8">
+			   		<div name="{{_name}}" class="file-uploader rounded rounded-4"
+                        data-api='{{attr.api ? attr.api : "/_a/mina/uploader/upload?type=file"}}'
+                        data-type="attachment"
+                        data-display-name="{{attr.displayname ?  attr.displayname : 'true'}}"
+						data-title='{{attr.title ?  attr.title : ""}}'
+						data-width="{{attr.width}}"
+						data-height="{{attr.height}}"
+						data-icon="{{attr.draggable ? attr.draggable : 'fa fa-paperclip'}}" 
+						data-placeholder="{{placeholder}}" 
+						data-allow-types="{{attr.allow ? attr.allow : 'image/*,video/*,application/*,audio/*'}}"
+						data-maxsize="{{attr.maxsize ? attr.maxsize : '20'}}"
+						data-progress="{{attr.progress ? attr.progress : 'yes'}}"
+						data-draggable="{{attr.draggable ? attr.draggable : 'yes'}}"
+						data-src="{{img.url}}"
+						data-path="{{img.path}}"
+						data-multiple="1"
+						></div>
+					<div class="help-block">{{_error ? _error : helper}}</div>
+				</div>
+				<div class="col-xs-1 push-10-t">
+					<a href="javascript:void(0);" data-action="add"    class="text-success push-20-r"> <i class="fa fa-plus font-s20"></i> </a> 
+					<a href="javascript:void(0);" data-action="remove" class="text-danger"> <i class="fa fa-minus font-s20"></i> </a> 
+				</div>
+			</div> 
+		</div>
+		{% endfor %} 
+	</div>
+
+	<script type="text/javascript">
+		$('.xpmse-files[name="{{_name}}"]').Multipliable({
+			initialized: function(elm, idx) {
+				$(elm).parent('.xpmse-files-panel') .find('.control-label').each( function(i, el ){
+					if (i >0) { $(el).html('');}
+				});
+			},
+			added: function( elm ) {
+				App.initHelper('file-uploader', {handler: $(elm).find('.file-uploader')} );
+			},
+			removed: function(){},
+			html: function( elm ){ 
+				var html = $(elm).clone();
+				var resp = $(html);
+				resp.find('.control-label').html('');
+				resp.find('.file-uploader').html('');
+				resp.find('.file-uploader').attr('data-src', '');
+				resp.find('.file-uploader').attr('data-path', '');
+				resp.find('input').remove();
+				return resp;
+			}
+		});
+	</script><!-- END 多文件上传: {{name}} ({{_name}}) -->
+</template>
+
+
+<template type="file-groups">
+	<!-- 多文件组上传: {{name}} ({{_name}}) 开始  -->
+	<div class="xpmse-file-groups-content  {{ class }}  draggable-column">
+		
+		{% for img in _value | minLength(1) %} 
+		<div class="xpmse-file-groups draggable-item" data-nested="{{_name}}" data-multiple="1">
+			<div class="form-group {{_error ? 'has-error'}}" >
+				<label class="col-xs-2 control-label draggable-handler" for="{{_name}}">{{name}}{% if rule.required == true %} <span class="text-danger">*</span>{% endif %}</label>
+				<div class="col-xs-4" style="{{attr.width ? ['width:', attr.width + 20, 'px']|join }}" >
+			   		<div name="{{_name}}" class="file-uploader rounded rounded-4"
+						data-api='{{attr.api ? attr.api : "/_a/mina/uploader/upload?type=file"}}'
+						data-title='{{attr.title ?  attr.title : ""}}'
+                        data-type="attachment"
+                        data-display-name="{{attr.displayname ?  attr.displayname : 'false'}}"
+						data-width="{{attr.width}}"
+						data-height="{{attr.height}}"
+						data-icon="{{attr.draggable ? attr.draggable : 'fa fa-paperclip'}}" 
+						data-placeholder="{{placeholder}}" 
+						data-allow-types="{{attr.allow ? attr.allow : '*'}}"
+						data-maxsize="{{attr.maxsize ? attr.maxsize : '20'}}"
+						data-progress="{{attr.progress ? attr.progress : 'yes'}}"
+						data-draggable="{{attr.draggable ? attr.draggable : 'yes'}}"
+						data-src="{{img.url}}"
+						data-path="{{img.path}}"
+						data-nested-value="1"
+						></div>
+					<div class="help-block">{{_error ? _error : helper}}</div>
+				</div>
+				<div class="col-xs-4">
+					<div class="col-xs-12">
+						<input 
+							class="form-control input-lg"  
+							type="text" 
+							data-name="title" 
+							placeholder="{{attr.title_cname ? attr.title_cname : '请输入标题'}}"
+							value="{{img.title | e('html') }}" /> 
+					</div>
+					<div class="col-xs-12 push-10-t">
+						<input 
+							class="form-control input-lg"  
+							type="text" 
+							data-name="link" 
+							placeholder="{{attr.link_cname ? attr.link_cname : '请输入链接地址'}}"
+							value="{{img.link | e('html') }}" />
+					</div>
+					<div class="col-xs-12 push-10-t">
+						<textarea class="form-control input-lg"  
+							data-name="summary" rows="{{attr.rows ? attr.rows : 4 }}"
+							placeholder="{{attr.summary_cname ? attr.summary_cname : '请输入文件介绍'}}">{{img.summary | e('html') }}</textarea> 
+					</div>
+				</div>
+				<div class="col-xs-1 push-10-t">
+					<a href="javascript:void(0);" data-action="add"    class="text-success push-20-r"> <i class="fa fa-plus font-s20"></i> </a> 
+					<a href="javascript:void(0);" data-action="remove" class="text-danger"> <i class="fa fa-minus font-s20"></i> </a> 
+				</div>
+			</div> 
+		</div>
+		{% endfor %} 
+
+		<script type="text/javascript">
+			$('.xpmse-file-groups[data-nested="{{_name}}"]').Multipliable({
+				initialized: function(elm, idx) {
+					$(elm).parent('.xpmse-file-groups-content') .find('.control-label').each( function(i, el ){
+						if (i >0) { $(el).html('');}
+					});
+				},
+				added: function( elm ) {
+					App.initHelper('file-uploader', {handler: $(elm).find('.file-uploader')} );
+				},
+				removed: function(){},
+				html: function( elm ){ 
+					var html = $(elm).clone();
+					var resp = $(html);
+					resp.find('.control-label').html('');
+					resp.find('.file-uploader').html('');
+					resp.find('.file-uploader').attr('data-src', '');
+					resp.find('.file-uploader').attr('data-path', '');
+					resp.find('input[type=hidden]').remove();
+					resp.find('input').val('');
+					resp.find('textarea').val('');
+					return resp;
+				}
+			});
+		</script>
+	</div><!-- END 多图片组上传: {{name}} ({{_name}}) -->
+</template>
+
+
+<template type="date-input">
+  <!-- 单行日期: {{name}} ({{_name}}) 开始  -->
+  <div class="form-group {{_error ? 'has-error'}} {{ class }} ">
+    <label class="col-xs-2 control-label" for="{{_name}}__date">{{name}}{% if rule.required == true %}<span class="text-danger">*</span>{% endif %}</label>
+    <div class="col-xs-8">
+      <input 
+         name="{{_name}}__date" id="{{_name}}__date"
+         class="js-datepicker form-control  input-lg" type="text" 
+         data-date-format="yyyy年mm月dd日" 
+         placeholder="{{placeholder ? placeholder : '请选择日期' }} "
+         value="{{_value | toDate }}"  />
+      <div class="help-block">{{_error ? _error : helper}}</div>
+      </div>
+      <input name="{{_name}}" id="{{_name}}" type="hidden" value="{{_value | toDateTime }}" />
+      <script type="text/javascript">
+      $(function(){
+      	function {{_name}}_change() {
+      		var dt = $('input[name={{_name}}__date]').val();
+      			dt = dt.replace('年', '-');
+      			dt = dt.replace('月', '-');
+      			dt = dt.replace('日', '');
+      		var datetime = dt + ' 00:00:00' ;
+		$('input[name={{_name}}]').val( datetime );
+	}
+	$('input[name={{_name}}__date]').on("change", function( e ){
+		 {{_name}}_change();
+	});
+});
+</script>
+</div><!-- END 单行时间日期: {{name}} ({{_name}}) -->
+</template>
+
+<template type="datetime-input">
+<!-- 单行时间日期: {{name}} ({{_name}}) 开始  -->
+<div class="form-group {{_error ? 'has-error'}} {{ class }} ">
+<label class="col-xs-2 control-label" for="{{_name}}__date">{{name}}{% if rule.required == true %}<span class="text-danger">*</span>{% endif %}</label>
+<div class="col-xs-4">
+<input 
+ name="{{_name}}__date" id="{{_name}}__date"
+
+class="js-datepicker form-control  input-lg" type="text" 
+data-date-format="yyyy年mm月dd日" 
+placeholder="{{placeholder ? placeholder : '请选择日期' }} "
+ value="{{_value | toDate }}"  />
+
+<div class="help-block">{{_error ? _error : helper}}</div>
+</div>
+ <div class="col-xs-4">
+<input 
+name="{{_name}}__time" id="{{_name}}__time"
+class="js-masked-time form-control  input-lg"  type="text" 
+ placeholder="请输入时间"
+value="{{_value | toTime }}" /> 
+ </div>
+<input name="{{_name}}" id="{{_name}}" type="hidden" value="{{_value | toDateTime }}" />
+<script type="text/javascript">
+$(function(){
+function {{_name}}_change() {
+var tm = $('input[name={{_name}}__time').val();
+ tm = tm.replace('@ ', '');
+tm = tm.replace('时', ':');
+tm = tm.replace('分', ':');
+ tm = tm = tm + '00';
+var dt = $('input[name={{_name}}__date]').val();
+dt = dt.replace('年', '-');
+dt = dt.replace('月', '-');
+ dt = dt.replace('日', '');
+var datetime = dt + ' ' + tm;
+$('input[name={{_name}}]').val( datetime );
+}
+$('input[name={{_name}}__date]').on("change", function( e ){
+ {{_name}}_change();
+
+});
+
+ $('input[name={{_name}}__time').on("change", function( e ){
+
+{{_name}}_change();
+});
+});
+
+ </script>
+</div><!-- END 单行时间日期: {{name}} ({{_name}}) -->
+</template>
+<template type="tag-input">
+ <!-- 单行标签文本: {{name}} ({{_name}}) 开始  -->
+
+<div class="form-group {{_error ? 'has-error'}} {{ class }} ">
+
+<label class="col-xs-2 control-label" for="{{_name}}">{{name}}{% if rule.required == true %}<span class="text-danger">*</span>{% endif %}</label>
+
+<div class="col-xs-8">
+<input class="form-control input-lg"  
+ type="text" 
+ id="{{_name}}" name="{{_name}}" 
+placeholder="{{placeholder}}"  
+value="{{_value | e('html') }}" /> 
+<div class="help-block">{{_error ? _error : helper}}</div>
+
+</div>
+ <script type="text/javascript">
+var options = {
+height: '42px',
+width: '100%',
+defaultText: '添加',
+removeWithBackspace: true,
+delimiter: [',']
+ }
+$('input[name={{_name}}').tagsInput(options);
+</script>
+ </div><!-- END 单行标签文本: {{name}} ({{_name}}) -->
+</template>
+
+
+<!-- 标题分割线 -->
+<template type="title">
+	<!-- {{name}} ({{_name}}) 开始  -->
+	<div class="form-group  {{ class }}">
+		<div class="col-xs-12">
+			<h3 class="font-w400">{{name}}</h3>
+			<hr />
+		</div>
+	</div><!-- 结束 {{name}} ({{_name}}) -->
+</template><!-- END 标准输入框 -->

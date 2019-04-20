@@ -1,0 +1,136 @@
+<div class="block-content">
+    <form id="CustTypeFormStep1Form" 
+          class="js-validation-CustTypeFormStep1 form-horizontal" 
+          action="<?=R('default','dotype_create_step1')?>" method="post" >
+        <div class="form-group">
+            <div class="col-lg-6">
+                 <div class="form-material">
+                     <input class="form-control" type="text" id="company" name="company" value="<?=$company?>" placeholder="请填写CorpID">
+                     <label for="name">CorpID</label>
+                 </div>
+            </div>
+
+            <div class="col-lg-6">
+                 <div class="form-material">
+                     <input class="form-control" type="text" id="company" name="company" value="<?=$company?>" placeholder="请填写corpsecret">
+                     <label for="name">corpsecret</label>
+                 </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-lg-6">
+                 <div class="form-material">
+                     <input class="form-control" type="text" id="company" name="company" value="<?=$company?>" placeholder="请填写ssosecret">
+                     <label for="name">ssosecret</label>
+                 </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-lg-12">
+                <label for="name">接入钉钉</label>
+                <label class="css-input switch switch-sm switch-primary">
+                    <span class="push-10-r"></span>  <input type="checkbox" > <span></span> 
+                </label>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <div class="col-lg-12">
+                <div class="form-material">
+                    <div>
+                        <label class="css-input css-radio css-radio-primary push-10-r">
+                            <input type="radio" name="radio-group1" checked><span></span> 以钉钉为准 (推荐)
+                        </label>
+                        <label class="css-input css-radio css-radio-primary push-10-r">
+                            <input type="radio" name="radio-group1"><span></span> 以本地为准(自动更新钉钉通讯录信息)
+                        </label>
+                        <!-- 
+                        <label class="css-input css-radio css-radio-primary push-10-r">
+                            <input type="radio" name="radio-group1"><span></span> 双向 (不推荐)
+                        </label> -->
+                    </div>
+                    <label for="name">团队/部门信息同步方式</label>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <div class="form-group">
+            <div class="col-lg-12">
+                <div class="form-material">
+                    <div>
+                        <label class="css-input css-radio css-radio-primary push-10-r">
+                            <input type="radio" name="radio-group3" checked><span></span> 不同步 (推荐)
+                        </label>
+                        <label class="css-input css-radio css-radio-primary push-10-r">
+                            <input type="radio" name="radio-group3"><span></span> 以钉钉为准 
+                        </label>
+                        <label class="css-input css-radio css-radio-primary push-10-r">
+                            <input type="radio" name="radio-group3"><span></span> 以本地为准 (自动更新钉钉通讯录信息)
+                        </label>
+                        <!-- 
+                        <label class="css-input css-radio css-radio-primary push-10-r">
+                            <input type="radio" name="radio-group3"><span></span> 双向 (不推荐)
+                        </label> -->
+                    </div>
+                    <label for="name">系统管理员</label>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <div class="col-lg-12">
+                <div class="form-material">
+                    <div>
+                        <label class="css-input css-radio css-radio-primary push-10-r">
+                            <input type="radio" name="radio-group2" checked><span></span> 开启
+                        </label>
+                        <label class="css-input css-radio css-radio-primary push-10-r">
+                            <input type="radio" name="radio-group2"><span></span> 不开启
+                        </label>
+                    </div>
+                    <label for="name">钉钉账号登录</label>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="form-group">
+           <!--  按钮组 (btngroup) -->
+            <div class="col-lg-12">
+
+                
+                    <!-- refresh -->
+                    <button  id="ID_14671172870094912_1" 
+                        type="button" 
+                        data-form="#general-form"
+                        data-action="<?=R('core-system', 'settingapi','tryit', ['se'=>'general'])?>"
+                        class="btn btn-primary font-w300 push-20-r tryit se-action">
+                       <span class="tryit"><i class="fa fa-refresh"></i> 校验配置</span>
+                        <span class="pull-left tryit-status hidden" > <i class="fa fa-refresh fa-spin"></i> 正在校验</span>
+                    </button>
+
+                    <button  id="ID_14671172870094912_1" 
+                        type="button"
+                        data-form="#general-form"
+                        data-action="<?=R('core-system', 'settingapi','saveit', ['se'=>'general','id'=>$data['id']])?>"
+                        class="btn btn-primary font-w300  push-20-r saveit">
+                        <i class="fa fa-plus push-5-r"></i> 
+                        保存资料
+                    </button>
+              
+           </div><!-- END   按钮组 (btngroup)-->
+        </div> <!-- END FORM GROUP GROUP_14671172870081144 -->
+        <div class="form-group"></div>
+
+    </form>
+</div>
+
+
+
+

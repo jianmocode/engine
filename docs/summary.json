@@ -1,0 +1,90 @@
+[{
+	"name":"开始",
+	"open": true,
+	"articles":[{
+		"name": "入门指引",
+		"path": "start/how-it-works.md"
+	},{
+		"name": "版本说明",
+		"path": "start/version.md"
+	},{
+		"name": "发行注记",
+		"path": "start/you-shoud-known.md"
+	}]
+},{
+	"name":"安装",
+	"open": false,
+	"articles":[{
+		"name": "系统环境要求",
+		"path": "setup/requirement.md"
+	},{
+		"name": "安装 XpmSE",
+		"path": "setup/install.md"
+	},{
+		"name": "安装后端应用",
+		"path": "setup/backend-app.md"
+	},{
+		"name": "前端应用编译",
+		"path": "setup/frontend-app.md"
+	}]
+},{
+	"name":"开发",
+	"open": false,
+	"articles":[{
+		"name": "快速上手",
+		"path": "development/quick-start.md"
+	},{
+		"name": "技术架构",
+		"path": "development/architecture.md"
+	},{
+		"name": "代码目录",
+		"path": "development/directory.md"
+	},{
+		"name": "前端应用",
+		"path": "development/frontend-app.md"
+	},{
+		"name": "后端应用",
+		"path": "development/backend-app.md"
+	},{
+		"name": "签名算法",
+		"path": "development/signature.md"
+	}]
+},{
+	"name":"管理",
+	"open": false,
+	"articles":[{
+		"name": "命令",
+		"path": "maintenance/cli.md"
+	},{
+		"name": "配置",
+		"path": "maintenance/config.md"
+	},{
+		"name": "日志",
+		"path": "maintenance/logs.md"
+	},{
+		"name": "数据",
+		"path": "maintenance/data.md"
+	},{
+		"name": "备份",
+		"path": "maintenance/backup.md"
+	}]
+},{
+	"name":"手册",
+	"open": false,
+	"articles":[{
+		"name": "XpmSE Service",
+		"path": "handbook/xpmse-service.md"
+	},{
+		"name": "XpmSE CLI",
+		"path": "handbook/xpmse-cli.md"
+	},{
+		"name": "XpmSE UI",
+		"path": "handbook/xpmse-ui.md"
+	},{
+		"name": "XpmJS API",
+		"path": "handbook/xpmjs-api.md"
+	},{
+		"name": "MINA 模板引擎",
+		"path": "handbook/mina-engine.md"
+	}]
+}]

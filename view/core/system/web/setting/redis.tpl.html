@@ -1,0 +1,122 @@
+<div class="block-content">
+    <form id="redis-form" 
+          class="js-validation-CustTypeFormStep1 form-horizontal" 
+          action="<?=R('default','dotype_create_step1')?>" method="post" >
+        <div class="form-group">
+            <div class="col-lg-6">
+                <div class="form-material push-30-l push-30-r">
+                     <input class="form-control" type="text" id="host" name="host" value="<?=$company?>" placeholder="请填写Sentry DSN">
+                     <label for="name">Host</label>
+                 </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="form-material push-30-l push-30-r">
+                     <input class="form-control" type="text" id="port" name="port" value="<?=$company?>" placeholder="请填写Sentry DSN">
+                     <label for="name">Port</label>
+                 </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-lg-6">
+                <div class="form-material push-30-l push-30-r">
+                     <input class="form-control" type="password" id="password" name="password" value="<?=$company?>" placeholder="请填写password">
+                     <label for="name">Password</label>
+                 </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-lg-2">
+                <div class="form-material push-30-l push-30-r">
+                    <button  id="ID_14671172870094912_1" 
+                        type="button" 
+                        data-form="#redis-form"
+                        data-action="<?=R('core-system', 'settingapi','tryit', ['se'=>'redis'])?>"
+                        class="btn btn-primary font-w300 push-20-r tryit se-action">
+                       <span class="tryit"><i class="fa fa-refresh"></i> 校验配置</span>
+                        <span class="pull-left tryit-status hidden" > <i class="fa fa-refresh fa-spin"></i> 正在校验</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="col-lg-2">
+                <div class="form-material push-30-l push-30-r">
+                    <button  id="ID_14671172870094912_1" 
+                        type="button"
+                        data-form="#redis-form"
+                        data-action="<?=R('core-system', 'settingapi','saveit', ['se'=>'general','id'=>$data['id']])?>"
+                        class="btn btn-primary font-w300  push-20-r saveit">
+                        <i class="fa fa-plus push-5-r"></i> 
+                        保存资料
+                    </button>
+                 </div>
+            </div>
+        </div>
+
+    </form>
+</div>
+
+<script type="text/javascript">
+$(function(){
+
+    //DatePicker && image-crop
+    App.initHelpers(['datepicker', 'image-crop', 'select2']);
+
+
+})
+</script>
+<script>
+$(function(){
+        // 连接测试按钮
+        seActionInit('.tryit',function( status, resp )  {
+
+                if ( status == 'success') {
+                   
+                    App.notify('校验成功!');
+
+                }  else {
+
+                    message = resp['message'] || '校验失败';
+                    App.notify(message, 'fa fa-times','danger');
+                }
+        }, {
+            'status':'.tryit-status',
+            'action':'.se-action',
+            'hidden':'.tryit',
+            'doing':'<i class="fa fa-refresh fa-spin"></i> 正在校验, 可能花费数秒钟... ',
+            'mute':false
+        });
+
+})
+$(function(){
+        
+        // 保存
+        seActionInit('.saveit',function( status, resp )  {
+
+                if( status=='success') {
+                   
+                    App.notify('保存成功!');
+
+                    $('.general').click();
+
+                }else  if ( status == 'error' ) {
+
+                    App.notify( '保存失败 | 警告:' + resp, 'fa fa-times','danger');
+                 }else if ( status == 'warning' ) {
+
+                    App.notify(resp, 'fa fa-times','danger');
+                 }else{
+
+                     App.notify('保存失败!','fa fa-times','danger');
+                 }
+        },{
+            'status':'.tryit-status',
+            'action':'.se-action',
+            'hidden':'.tryit',
+            'doing':'<i class="fa fa-refresh fa-spin"></i> 正在校验, 可能花费数秒钟... ',
+            'mute':false
+        });
+})
+
+</script>

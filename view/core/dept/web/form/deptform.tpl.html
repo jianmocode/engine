@@ -1,0 +1,750 @@
+<div class="block-content">
+    <form id="DeptForm" 
+          class="js-validation-CoreDeptForm form-horizontal" 
+          action="<?=R('core-dept', 'api','DeptSave')?>" method="post" >
+          
+        <div class="form-group">
+
+            <div class="col-lg-6">
+                <div class="form-material">
+                    <input class="form-control" type="text" id="name" name="name" value="<?=$curr['name']?>" placeholder="请填部门名称">
+                    <label for="name">部门名称</label>
+                </div>
+            </div>
+
+            
+            <div class="col-lg-6">
+                <div class="form-material">
+                    <select class="js-select2 form-control" id="parentid" name="parentid" style="width: 100%;" data-placeholder="请选择部门...">
+                        <option></option><!-- Required for data-placeholder attribute to work with Select2 plugin -->
+                        
+                        <?php 
+                        $deptMap = (isset($depts['map'])) ? $depts['map'] : [];
+                        $deptData = (isset($depts['data'])) ? $depts['data'] : [];
+                        $deptData = (is_array($uplevel)) ? $uplevel : $deptData;
+
+                        foreach ($deptData as $dept) :
+                            $name = $dept['name'];
+                            $parentid = $dept['parentid'];
+                            while ( isset($deptMap[$parentid]) && $parentid != 1 ) {
+                                $id = $deptMap[$parentid]['id'];
+                                $parentid  = $deptMap[$parentid]['parentid'];
+                                $name = $deptMap[$id]['name'] . "::" . $name;
+                            }
+                        ?>
+
+                        <option value="<?=$dept['id']?>"  
+                            <?php if( 
+                                        $dept['id'] == 1 || 
+                                        $dept['id'] == $curr['parentid'] || 
+                                        $parent_id == $dept['_id'] ) :?> 
+                                    selected
+                            <?php endif;?> > <?=$name?> </option>
+                        <?php endforeach; ?>
+
+                    </select>
+                    <label for="parentid">父部门</label>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="form-group">
+            <div class="col-lg-6">
+                <div class="form-material">
+                    <input class="form-control" type="text" id="order" name="order" value="<?=(isset($curr['order']))? $curr['order'] : 0?>" placeholder="在父部门中的排序">
+                    <label for="order">排序</label>
+                </div>
+            </div>
+
+            
+            <div class="col-lg-6">
+                <div class="form-material">
+                    <select class="js-select2 form-control" id="deptManagerUseridList" name="deptManagerUseridList" style="width: 100%;" data-placeholder="请选择员工..." multiple >
+                        <option></option><!-- Required for data-placeholder attribute to work with Select2 plugin -->
+                        
+                        <?php 
+                        $usersData = (isset($users['data'])) ? $users['data'] : [];
+                        $deptManagerUseridList = (isset($curr['deptManagerUseridList']) ) ? $curr['deptManagerUseridList'] : [];
+                        foreach ($usersData as $user) :
+                            $name = $user['name'];
+                            $userid = $user['userid'];
+                        ?>
+                        <option value="<?=$userid?>"  
+                            <?php if( in_array( $userid, $deptManagerUseridList) ) :?> 
+                                    selected
+                            <?php endif;?> > <?=$name?> </option>
+                        <?php endforeach; ?>
+
+                    </select>
+                    <label for="deptManagerUseridList">部门主管</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- 以下部分忽略显示 -->
+        <div class="hide fullinfo"> <!-- More Info hide-->
+
+        <!-- 管理员Only 选项 -->
+        <div class="form-group"></div>
+        
+        <div class="form-group">
+
+            <div class="col-lg-4">
+                 <div class="form-material">
+                     <div>
+                        <label class="css-input switch switch-primary switch-sm">
+                            <input name="createDeptGroup" id="createDeptGroup" type="checkbox" value="1"  
+                                <?php if( ($curr['createDeptGroup'] === true) ) : ?> checked <?php endif;?> 
+                            ><span></span> 
+                        </label>
+                     </div>
+                     <label for="createDeptGroup">同时创建群组</label>
+                 </div>
+            </div>
+
+            <div class="col-lg-4">
+                 <div class="form-material">
+                     <div>
+                        <label class="css-input switch switch-primary switch-sm">
+                            <input name="autoAddUser" id="autoAddUser" type="checkbox" 
+                                <?php if($curr['autoAddUser'] === true) : ?> checked <?php endif;?> 
+                            ><span></span> 
+                        </label>
+                     </div>
+                     <label for="autoAddUser">新成员自动加群</label>
+                 </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="form-material">
+                    <select class="js-select2 form-control" id="orgDeptOwner" name="orgDeptOwner" style="width: 100%;" data-placeholder="请选择员工...">
+                        <option></option><!-- Required for data-placeholder attribute to work with Select2 plugin -->
+                        
+                        <?php 
+                        $usersData = (isset($users['data'])) ? $users['data'] : [];
+                        $orgDeptOwner = (isset($curr['orgDeptOwner']) ) ? $curr['orgDeptOwner'] : "";
+                        foreach ($usersData as $user) :
+                            $name = $user['name'];
+                            $userid = $user['userid'];
+                        ?>
+                        <option value="<?=$userid?>"  
+                            <?php if( $userid == $orgDeptOwner ) :?> 
+                                    selected
+                            <?php endif;?> > <?=$name?> </option>
+                        <?php endforeach; ?>
+
+                    </select>
+                    <label for="orgDeptOwner">企业群群主</label>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="form-group">
+
+            <div class="col-lg-4">
+                 <div class="form-material">
+                     <div>
+                        <label class="css-input switch switch-primary switch-sm">
+                            <input name="deptHiding" id="deptHiding" type="checkbox" value="1"
+                                <?php if($curr['deptHiding'] === true) : ?> checked <?php endif;?> 
+                            ><span></span> 
+                        </label>
+                     </div>
+                     <label for="deptHiding">是否隐藏部门</label>
+                 </div>
+            </div>
+
+
+            <div class="col-lg-4">
+                <div class="form-material">
+                    <select class="js-select2 form-control" id="deptPerimits" name="deptPerimits" style="width: 100%;" data-placeholder="请选择部门..." multiple>
+                        <option></option><!-- Required for data-placeholder attribute to work with Select2 plugin -->
+                        
+                        <?php 
+                        $deptMap = (isset($depts['map'])) ? $depts['map'] : [];
+                        $childrenData = (isset($children) && $children != null) ? $children : [];
+                        foreach ($childrenData as $dept) :
+                            $name = $dept['name'];
+                            $parentid = $dept['parentid'];
+                            while ( isset($deptMap[$parentid]) && $parentid != $curr['id'] ) {
+                                $id = $deptMap[$parentid]['id'];
+                                $parentid  = $deptMap[$parentid]['parentid'];
+                                $name = $deptMap[$id]['name'] . "::" . $name;
+                            }
+                        ?>
+
+                        <option value="<?=$dept['id']?>"  
+                            <?php if( isset($curr['deptPerimits']) && 
+                                      is_array($curr['deptPerimits']) && 
+                                      in_array($dept['id'], $curr['deptPerimits'])) :?> 
+                                    selected
+                            <?php endif;?> > <?=$name?> </option>
+                        <?php endforeach; ?>
+
+                    </select>
+                    <label for="deptPerimits">可见子部门</label>
+                </div>
+            </div>
+
+
+            <div class="col-lg-4">
+                <div class="form-material">
+                    <select class="js-select2 form-control" id="userPerimits" name="userPerimits" style="width: 100%;" data-placeholder="请选择员工..." multiple>
+                        <option></option><!-- Required for data-placeholder attribute to work with Select2 plugin -->
+                        
+                        <?php 
+                        $usersData = (isset($users['data'])) ? $users['data'] : [];
+                        $userPerimits = (isset($curr['userPerimits']) ) ? $curr['userPerimits'] : "";
+                        foreach ($usersData as $user) :
+                            $name = $user['name'];
+                            $userid = $user['userid'];
+                        ?>
+                        <option value="<?=$userid?>"  
+                            <?php if( $userid == $userPerimits ) :?> 
+                                    selected
+                            <?php endif;?> > <?=$name?> </option>
+                        <?php endforeach; ?>
+
+                    </select>
+                    <label for="userPerimits">可查看隐藏部门员工</label>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="form-group">
+
+            <div class="col-lg-4">
+                 <div class="form-material">
+                     <div>
+                        <label class="css-input switch switch-primary switch-sm">
+                            <input name="outerDept" id="outerDept" type="checkbox" value="1"
+                                <?php if($curr['outerDept'] === true) : ?> checked <?php endif;?> 
+                            ><span></span> 
+                        </label>
+                     </div>
+                     <label for="outerDept">该部门员工仅可见自己</label>
+                 </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="form-material">
+                    <select class="js-select2 form-control" id="outerPermitDepts" name="outerPermitDepts" style="width: 100%;" data-placeholder="请选择部门..." multiple>
+                        <option></option><!-- Required for data-placeholder attribute to work with Select2 plugin -->
+                        
+                        <?php 
+                        $deptMap = (isset($depts['map'])) ? $depts['map'] : [];
+                        $childrenData = (isset($depts['data'])) ? $depts['data'] : [];
+                        foreach ($childrenData as $dept) :
+                            $name = $dept['name'];
+                            $parentid = $dept['parentid'];
+                            while ( isset($deptMap[$parentid]) && $parentid != 1 ) {
+                                $id = $deptMap[$parentid]['id'];
+                                $parentid  = $deptMap[$parentid]['parentid'];
+                                $name = $deptMap[$id]['name'] . "::" . $name;
+                            }
+                        ?>
+                        <option value="<?=$dept['id']?>"  
+                            <?php if( isset($curr['outerPermitDepts']) && 
+                                      is_array($curr['outerPermitDepts']) && 
+                                      in_array($dept['id'], $curr['outerPermitDepts'])) :?> 
+                                    selected
+                            <?php endif;?> > <?=$name?> </option>
+                        <?php endforeach; ?>
+                    </select>
+                    <label for="outerPermitDepts">额外可见部门</label>
+                </div>
+            </div>
+
+
+            <div class="col-lg-4">
+                <div class="form-material">
+                    <select class="js-select2 form-control" id="outerPermitUsers" name="outerPermitUsers" style="width: 100%;" data-placeholder="请选择员工..." multiple >
+                        <option></option><!-- Required for data-placeholder attribute to work with Select2 plugin -->
+                        
+                        <?php 
+                        $usersData = (isset($users['data'])) ? $users['data'] : [];
+                        $outerPermitUsers = (isset($curr['outerPermitUsers']) ) ? $curr['outerPermitUsers'] : [];
+                        foreach ($usersData as $user) :
+                            $name = $user['name'];
+                            $userid = $user['userid'];
+                        ?>
+                        <option value="<?=$userid?>"  
+                            <?php if( in_array( $userid, $outerPermitUsers) ) :?> 
+                                    selected
+                            <?php endif;?> > <?=$name?> </option>
+                        <?php endforeach; ?>
+
+                    </select>
+                    <label for="outerPermitUsers">额外可见员工</label>
+                </div>
+            </div>
+
+
+        </div>
+
+
+
+
+        </div> <!-- Hide 标签-->
+
+        <div class="form-group">
+            <div class="col-lg-8 col-lg-offset-2 push-20-t text-center">
+                <button class="btn btn-default switch-form-display-btn  font-w300" type="button" style="width:100%;"> 
+                    <i class="fa fa-angle-double-down push-5-r"></i> 显示更多选项 
+                </button>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-lg-12">
+                <div class="form-material">
+                    <input class="form-control" type="hidden" id="_id" name="_id" value="0" placeholder="">
+                    <button class="btn btn-primary UserFormSubmit font-w300" type="submit" name="error" > 
+                        <i class="fa fa-plus push-5-r"></i> 添加部门 
+                    </button>
+                    
+                    
+                    <button 
+                        class="btn btn-danger push-15-l DeptDeleteSubmit font-w300
+                        <?php if ( !isset($curr['_id']) ) :  // 查看用户时候显示  ?>  hidden <?php endif;?> " 
+                        type="button" name="delete"  
+                        data-toggle="modal" data-target="#modal-delete"
+                        data-backdrop="static"
+                    > 
+                        <i class="fa fa-times push-5-r"></i> 删除 <?=$curr['name']?>
+                    </button>
+                    
+
+                    <a class="btn btn-primary pull-right font-w300" type="button" name="UserList"  href="<?=R('core-dept','default','index')?>" > 
+                        <i class="fa fa-list push-5-r"></i> 返回联系人列表
+                    </a>
+
+                </div>
+            </div>
+
+        </div>
+
+        <div class="form-group"></div>
+
+    </form>
+</div>
+
+<!-- 图片裁切插件 id="_image-crop-modal" -->
+<?php include_once(tpl('common/web/imagecrop.mod')); ?>
+
+<!-- 删除用户确认弹窗 -->
+<div class="modal fade" id="modal-delete" tabindex="-1" 
+     role="dialog" aria-hidden="true" 
+     data-action="<?=R('core-dept','api','DeptDelete', ['_id'=>$curr['_id']])?>"
+     data-goback="<?=R('core-dept','default','index')?>"
+    >
+    <div class="modal-dialog modal-dialog-top">
+        <div class="modal-content">
+            <div class="block block-themed block-transparent remove-margin-b">
+                <div class="block-header bg-primary">
+                    <ul class="block-options">
+                        <li> <button data-dismiss="modal" type="button"><i class="si si-close"></i></button> </li>
+                    </ul>
+                    <h3 class="block-title">确认删除【<?=$curr['name']?>】吗？</h3>
+                </div>
+                <div class="block-content">
+                    <p>请确认删除用户 【<?=$curr['name']?>】，此操作不可恢复，请谨慎操作!</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-sm btn-default" type="button" data-dismiss="modal">取消操作</button>
+                <button class="btn btn-sm btn-danger DeleteConfirm" type="button"><i class="fa fa-check"></i> 确认删除</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END 删除用户确认弹窗 -->
+
+
+<script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/select2/select2.full.min.js"></script>
+<script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/jquery-validation/jquery.validate.min.js"></script>
+<script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
+<script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/dropzonejs/dropzone.min.js"></script>
+<script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/cropper/cropper.min.js"></script>
+<script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/jquery-tags-input/jquery.tagsinput.min.js"></script>
+<script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/jquery-tags-input/jquery.tagsinput2.js"></script>
+
+
+<script type="text/javascript"> 
+
+
+// 将表单修改为更新状态
+function DeptUpdate( data, updateForm ) {
+
+    if ( typeof updateForm == 'undefined' )  updateForm = false; 
+    data = data || [];
+
+    var id = data['_id'] || null;
+    var name = data['name'] || '更新部门';
+    var remoteLink = "<?=R('core-dept','default', 'userform', ['_id'=>''])?>" + id;
+
+    if ( id == null ) {
+        DeptCreate();
+        return ;
+    }
+
+    $('input[name="_id"]').val(id);
+    $('#tabs-link-deptform').html(name);
+    $('#tabs-link-deptform').attr('data-remote', remoteLink );
+    $('.UserFormSubmit', '#DeptForm').html('<i class="fa fa-refresh push-5-r"></i> 更新部门');
+
+    if ( updateForm ) { // 为表单赋值
+
+    }
+}
+
+
+
+// 将表单修改为创建状态
+function DeptCreate() {
+    $('#tabs-link-deptform').html('添加部门');
+    $('input[name="_id"]').val("");
+    $('.UserFormSubmit', '#DeptForm').html('<i class="fa fa-plus push-5-r"></i> 添加部门');
+}
+
+
+// 表单联动
+function GroupInit( btn_switch, objs ){
+
+    if ( $(btn_switch).is(":checked") ) {
+        GroupEnable( objs );
+    } else {
+        GroupDisable( objs );   
+    }
+
+    $(btn_switch).click(function() {
+        GroupSwitch( objs );
+    });
+}
+
+function GroupSwitch( objs ) {
+    if (  $(objs[0]).hasClass('disabled') ) {
+        GroupEnable( objs );
+    } else {
+        GroupDisable( objs );
+    }
+}
+
+    function GroupEnable( objs ) {
+        for( var i=0; i<objs.length; i ++ ) {
+            $(objs[i]).removeClass('disabled');
+            $(objs[i]).removeAttr('disabled');
+        }
+    }
+
+    function GroupDisable( objs ) {
+        for( var i=0; i<objs.length; i ++ ) {
+            $(objs[i]).addClass('disabled');
+            $(objs[i]).attr('disabled', 'disabled');
+        }
+    }
+
+
+
+
+/**
+ * 删除用户
+ * @param {[type]} id [description]
+ */
+function DeptDelete() {
+    var buttons = $('button', '#modal-delete');
+        buttons.attr('disabled','disabled');
+        buttons.addClass('disabled');
+
+    var content = $('.block-content', '#modal-delete');
+    var content_text = content.html();
+        content.html('<p> <i class="fa fa-refresh fa-spin"></i> 正在删除请稍后... </p>');
+
+    var action = $('#modal-delete').attr('data-action');
+    var goback = $('#modal-delete').attr('data-goback');
+
+    $.post(action, {}, function(data, textStatus, xhr) {
+      
+
+        code = data['code'] || 0;
+        extra = data['extra'] || [];
+
+        if ( typeof extra == 'object' && isNaN(extra.length) ) {
+            extra = [extra];
+        }
+
+        if ( parseInt(code) == 302 ) {
+            window.location.reload(true);
+            return;
+        }
+
+        if ( code != 0 ) {
+            message = data['message'] || '出错啦';
+            content.html('<p class="text-danger"> <i class="fa fa-times"></i> 删除失败! '+message+' </p>');
+            window.setTimeout(function(){
+                content.html(content_text);
+            },2000);
+
+            $(buttons).removeAttr('disabled');
+            $(buttons).removeClass('disabled');
+            return;
+        }
+
+        // 全局通知
+        content.html('<p class="text-success"> <i class="fa fa-check"></i> 删除成功! 即将返回联系人列表 <i class="fa fa-refresh fa-spin"></i> </p>');
+        window.setTimeout(function(){
+            window.location = goback;
+        },1000);
+
+    }, 'json')
+
+    .error( function(xhr, status, statusText ){
+        $(buttons).removeAttr('disabled');
+        $(buttons).removeClass('disabled');
+        content.html('<p class="text-danger"> <i class="fa fa-times"></i> 删除失败! '+statusText+' </p>');
+        window.setTimeout(function(){
+            content.html(content_text);
+        },2000);
+        return;
+    });
+}
+
+
+/**
+ * 提交表单 
+ * @param {[type]} validation [description]
+ * @param {[type]} form       [description]
+ */
+function DeptDataSubmit( validation, form  ) {
+
+    var api = $(form).attr('action');
+    var next = $(form).attr('data-next');
+    var submits = $('button[type="submit"]', form);
+        $(submits).attr('disabled', 'disabled');
+        $(submits).addClass('disabled');
+
+    var data = {};
+
+    var formData =  $(form).serializeArray();
+        for( var i=0; i<formData.length; i++ ) {
+            var name = formData[i]['name'];
+            var value = formData[i]['value'];
+
+            if (value !== "") {
+                data[name] = value;
+            }
+        }
+
+
+    // 特殊数值处理
+    if ( typeof data['parentid'] != 'undefined' ) {        
+        data['parentid'] =  $('select[name="parentid"]').val();
+    }
+
+    if ( typeof data['deptManagerUseridList'] != 'undefined' ) {        
+        data['deptManagerUseridList'] =  $('select[name="deptManagerUseridList"]').val();
+    }
+
+    if ( typeof data['orgDeptOwner'] != 'undefined' ) {        
+        data['orgDeptOwner'] =  $('select[name="orgDeptOwner"]').val();
+    }
+
+    if ( typeof data['deptPerimits'] != 'undefined' ) {        
+        data['deptPerimits'] =  $('select[name="deptPerimits"]').val();
+    }
+
+    if ( typeof data['userPerimits'] != 'undefined' ) {        
+        data['userPerimits'] =  $('select[name="userPerimits"]').val();
+    }
+
+    if ( typeof data['outerPermitDepts'] != 'undefined' ) {        
+        data['outerPermitDepts'] =  $('select[name="outerPermitDepts"]').val();
+    }
+
+    if ( typeof data['outerPermitUsers'] != 'undefined' ) {        
+        data['outerPermitUsers'] =  $('select[name="outerPermitUsers"]').val();
+    }
+
+
+
+    data = jQuery.extend(data, {});
+    $.post( api, data, function(data, textStatus, xhr) {
+
+        $(submits).removeAttr('disabled');
+        $(submits).removeClass('disabled');
+
+        code = data['code'] || 0;
+        extra = data['extra'] || [];
+
+        if ( typeof extra == 'object' && isNaN(extra.length) ) {
+            extra = [extra];
+        }
+
+        if ( parseInt(code) == 302 ) {
+            window.location.reload(true);
+            return;
+        }
+
+        if ( code != 0 ) {
+
+            for( i=0; i<extra.length; i++ ) {
+                field = extra[i]['_FIELD'] || null;
+                if ( field != null ) {
+                    message = data['message'] || '出错啦';
+                    if ( typeof extra[i]['message'] != 'undefined' ) {
+                        message = extra[i]['message'];
+                    }
+                    var err = {};
+                        err[field] = message;
+
+                    validation.showErrors(err);
+                }
+            }
+
+            return;
+        }
+
+        var curr = data['data'];
+            DeptUpdate(curr); // 变更为修改
+
+        // 全局通知
+        App.notify( '操作成功' );
+        // console.log('ok');
+
+        return;
+
+    },'json')
+
+    .error( function(xhr, status, statusText ){
+
+        validation.showErrors({'error': statusText} );
+             $(submits).removeAttr('disabled');
+             $(submits).removeClass('disabled');
+
+        App.notify( '操作失败', 'fa fa-times','danger');
+
+        return;
+    });
+
+}
+
+
+/**
+ * 表单验证
+ */
+var CoreDeptForm = function() {
+    var initValidation = function(){
+        jQuery('.js-validation-CoreDeptForm').validate({
+            errorClass: 'help-block text-right animated fadeInDown',
+            errorElement: 'div',
+            errorPlacement: function(error, e) {                
+                jQuery(e).parents('.form-group .form-material').append(error);
+            },
+            highlight: function(e) {
+                jQuery(e).closest('.form-group .form-material').parent().removeClass('has-error').addClass('has-error');
+                jQuery(e).closest('.help-block').remove();
+            },
+            unhighlight:function(e){
+                jQuery(e).closest('.form-group .form-material').parent().removeClass('has-error');
+                jQuery(e).closest('.help-block').remove();
+            },
+            success: function(e) {
+                jQuery(e).closest('.form-group .form-material').parent().removeClass('has-error');
+                jQuery(e).closest('.help-block').remove();
+            },
+
+            submitHandler: function(form) {
+                var self = this;
+                DeptDataSubmit( self, form );
+            },
+            rules: {
+
+                'name': {
+                    required: true,
+                    minlength: 2,
+                    maxlength: 20,
+                },
+
+                'order': {
+                   digits:true
+                },
+            },
+
+            messages: {
+                'name': {
+                    required: '请填写部门名称',
+                    minlength: '部门名称不能少于2个字',
+                    maxlength: '部门名称不能超过20个字',
+                },
+
+                'order': {
+                    digits: '排序必须为数字',
+                }
+            }
+        });
+    };
+
+    return {
+        init: function () {
+            initValidation();  // Init Form Validation
+        }
+    };
+}();
+</script>
+
+<script type="text/javascript">
+$(function () {
+
+    /** 各种数据初始化 **/
+
+    // 表单数据项切换
+    function switch_form_display() {
+        if ( $('.fullinfo').hasClass('hide') ) {
+            $('.fullinfo').removeClass('hide');
+            $('.switch-form-display-btn').html('<i class="fa fa-angle-double-up push-5-r"></i> 显示较少选项');
+        } else {
+            $('.fullinfo').addClass('hide');
+            $('.switch-form-display-btn').html('<i class="fa fa-angle-double-down push-5-r"></i> 显示更多选项');
+        }
+    }
+
+    // 事件绑定
+    $('.switch-form-display-btn').click(function() { // 表单切换按钮
+        switch_form_display();
+    });
+
+    GroupInit($('input[name="createDeptGroup"]'),[$('input[name="autoAddUser"]'), $('select[name="orgDeptOwner"]')]);      // 同时创建群组
+    GroupInit($('input[name="deptHiding"]'),[$('select[name="deptPerimits"]'), $('select[name="userPerimits"]')]);         // 是否隐藏部门
+    GroupInit($('input[name="outerDept"]'),[$('select[name="outerPermitDepts"]'), $('select[name="outerPermitUsers"]')]);   // 该部门员工仅可见自己
+
+
+    /** 表单组件初始化 **/
+    // File Uploader 
+    App.initHelpers('file-uploader', {'home':'<?=$GLOBALS["_defaults"]["storage"]["public_upload_home"]?>'});
+
+    //DatePicker && image-crop
+    App.initHelpers(['datepicker', 'image-crop', 'select2']);
+
+    // 表单验证程序
+    CoreDeptForm.init();
+
+    
+    <?php if ( isset($curr['_id']) ) :  // 如果有用户数据，则更新为修改表单  ?>
+    
+    // 表单修改用户
+    DeptUpdate(<?=json_encode($curr)?>, true);
+
+    // 删除用户逻辑
+    $('.DeleteConfirm').click(function(event) {
+        DeptDelete('<?=$curr['_id']?>');
+    });
+    <?php endif; ?>
+
+});
+
+</script>
+
+

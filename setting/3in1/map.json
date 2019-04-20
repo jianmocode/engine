@@ -1,0 +1,9 @@
+{
+	"menu.json":"/code/config/menu.json",
+	"start.sh":"/start.sh",
+	"start.web.sh":"/start/web.sh",
+	"web":"/defaults/web/default",
+    "backup.sh":"/backup.sh",
+    "mysql":"/defaults/mysql/default",
+    "mysql.cnf":"/etc/mysql/conf.d/mysql.cnf"
+}

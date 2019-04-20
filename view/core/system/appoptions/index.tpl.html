@@ -1,0 +1,343 @@
+<?php 
+use \xpmse\Utils;
+?>
+<?php include_once(tpl('common/web/head')); ?>
+
+      
+<!-- Page JS Plugins CSS -->
+<link rel="stylesheet" href="/static/assets/js/plugins/slick/slick.min.css">
+<link rel="stylesheet" href="/static/assets/js/plugins/slick/slick-theme.min.css">
+<link rel="stylesheet" href="/static/assets/js/plugins/highlightjs/github-gist.min.css">
+<link rel="stylesheet" href="/static/assets/js/plugins/highlightjs/styles/darkula.css">
+
+<link rel="stylesheet" href="/static/assets/js/plugins/bootstrap-datepicker/bootstrap-datepicker3.min.css">
+<link rel="stylesheet" href="/static/assets/js/plugins/select2/select2.min.css">
+<link rel="stylesheet" href="/static/assets/js/plugins/select2/select2-bootstrap.min.css">
+<link rel="stylesheet" href="/static/assets/js/plugins/jquery-tags-input/jquery.tagsinput.min.css">
+<link rel="stylesheet" href="/static/assets/js/plugins/summernote/summernote.css">
+<link rel="stylesheet" href="/static/assets/js/plugins/summernote/summernote-bs3.min.css">
+<link rel="stylesheet" href="/static/assets/js/plugins/codemirror/lib/codemirror.css">
+<link rel="stylesheet" href="/static/assets/js/plugins/codemirror/addon/fold/foldgutter.css">
+<link rel="stylesheet" href="/static/assets/js/plugins/codemirror/addon/dialog/dialog.css">
+<link rel="stylesheet" href="/static/assets/js/plugins/codemirror/theme/monokai.css">
+
+<!-- foot JS CODE-->
+<?php include_once(tpl('common/web/foot')); ?>
+<!-- foot end -->
+
+<script src="/static/assets/js/plugins/select2/select2.full.min.js"></script>
+<script src="/static/assets/js/plugins/select2/i18n/zh-CN.js"></script>
+<script src="/static/assets/js/plugins/dropzonejs/dropzone.min.js"></script>
+<script src="/static/assets/js/plugins/cropper/cropper.min.js"></script>
+<script src="/static/assets/js/plugins/jquery-tags-input/jquery.tagsinput.min.js"></script>
+<script src="/static/assets/js/plugins/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
+<script src="/static/assets/js/plugins/masked-inputs/jquery.maskedinput.min.js"></script>
+<script src="/static/assets/js/plugins/jquery-validation/jquery.validate.min.js"></script>
+<script src="/static/assets/js/plugins/jquery-ui/jquery-ui.min.js"></script>
+<script src="/static/assets/js/plugins/summernote/summernote.min.js"></script>
+<script src="/static/assets/js/plugins/summernote/lang/summernote-zh-CN.js"></script>
+<script src="/static/assets/js/plugins/codemirror/lib/codemirror.js"></script>
+<script src="/static/assets/js/plugins/codemirror/addon/search/searchcursor.js"></script>
+<script src="/static/assets/js/plugins/codemirror/addon/search/search.js"></script>
+<script src="/static/assets/js/plugins/codemirror/addon/dialog/dialog.js"></script>
+<script src="/static/assets/js/plugins/codemirror/addon/edit/matchbrackets.js"></script>
+<script src="/static/assets/js/plugins/codemirror/addon/edit/closebrackets.js"></script>
+<script src="/static/assets/js/plugins/codemirror/addon/comment/comment.js"></script>
+<script src="/static/assets/js/plugins/codemirror/addon/wrap/hardwrap.js"></script>
+<script src="/static/assets/js/plugins/codemirror/addon/fold/foldcode.js"></script>
+<script src="/static/assets/js/plugins/codemirror/addon/fold/brace-fold.js"></script>
+<script src="/static/assets/js/plugins/codemirror/mode/javascript/javascript.js"></script>
+<script src="/static/assets/js/plugins/codemirror/mode/shell/shell.js"></script>
+<script src="/static/assets/js/plugins/codemirror/mode/sql/sql.js"></script>
+<script src="/static/assets/js/plugins/codemirror/mode/python/python.js"></script>
+<script src="/static/assets/js/plugins/codemirror/mode/go/go.js"></script>
+<script src="/static/assets/js/plugins/codemirror/mode/php/php.js"></script>
+<script src="/static/assets/js/plugins/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+<script src="/static/assets/js/plugins/codemirror/mode/xml/xml.js"></script>
+<script src="/static/assets/js/plugins/codemirror/mode/css/css.js"></script>
+<script src="/static/assets/js/plugins/codemirror/mode/sass/sass.js"></script>
+<script src="/static/assets/js/plugins/codemirror/mode/vue/vue.js"></script>
+<script src="/static/assets/js/plugins/codemirror/mode/textile/textile.js"></script>
+<script src="/static/assets/js/plugins/codemirror/mode/clike/clike.js"></script>
+<script src="/static/assets/js/plugins/codemirror/mode/markdown/markdown.js"></script>
+<script src="/static/assets/js/plugins/codemirror/keymap/sublime.js"></script>
+
+<script type="text/javascript" language="javacript">
+// CodeMirror, copyright (c) by Marijn Haverbeke and others
+// Distributed under an MIT license: https://codemirror.net/LICENSE
+// @see https://codemirror.net/doc/manual.html#addon_autorefresh
+(function(mod) {
+  if (typeof exports == "object" && typeof module == "object") // CommonJS
+    mod(require("../../lib/codemirror"))
+  else if (typeof define == "function" && define.amd) // AMD
+    define(["../../lib/codemirror"], mod)
+  else // Plain browser env
+    mod(CodeMirror)
+})(function(CodeMirror) {
+  "use strict"
+
+  CodeMirror.defineOption("autoRefresh", false, function(cm, val) {
+    if (cm.state.autoRefresh) {
+      stopListening(cm, cm.state.autoRefresh)
+      cm.state.autoRefresh = null
+    }
+    if (val && cm.display.wrapper.offsetHeight == 0)
+      startListening(cm, cm.state.autoRefresh = {delay: val.delay || 250})
+  })
+
+  function startListening(cm, state) {
+    function check() {
+      if (cm.display.wrapper.offsetHeight) {
+        stopListening(cm, state)
+        if (cm.display.lastWrapHeight != cm.display.wrapper.clientHeight)
+          cm.refresh()
+      } else {
+        state.timeout = setTimeout(check, state.delay)
+      }
+    }
+    state.timeout = setTimeout(check, state.delay)
+    state.hurry = function() {
+      clearTimeout(state.timeout)
+      state.timeout = setTimeout(check, 50)
+    }
+    CodeMirror.on(window, "mouseup", state.hurry)
+    CodeMirror.on(window, "keyup", state.hurry)
+  }
+
+  function stopListening(_cm, state) {
+    clearTimeout(state.timeout)
+    CodeMirror.off(window, "mouseup", state.hurry)
+    CodeMirror.off(window, "keyup", state.hurry)
+  }
+});
+</script>
+
+<!-- foot end -->
+
+<!-- Page Container -->
+<!--
+    Available Classes:
+
+    'enable-cookies'             Remembers active color theme between pages (when set through color theme list)
+
+    'sidebar-l'                  Left Sidebar and right Side Overlay
+    'sidebar-r'                  Right Sidebar and left Side Overlay
+    'sidebar-mini'               Mini hoverable Sidebar (> 991px)
+    'sidebar-o'                  Visible Sidebar by default (> 991px)
+    'sidebar-o-xs'               Visible Sidebar by default (< 992px)
+
+    'side-overlay-hover'         Hoverable Side Overlay (> 991px)
+    'side-overlay-o'             Visible Side Overlay by default (> 991px)
+    'side-scroll'                Enables custom scrolling on Sidebar and Side Overlay instead of native scrolling (> 991px)
+    'header-navbar-fixed'        Enables fixed header
+-->
+<div id="page-container" class="sidebar-l sidebar-o side-scroll header-navbar-fixed <?=$_SIDEBAR_MINI?> main-sidebar">
+   
+   <!-- 左侧菜单-->
+   <?php include_once(tpl('common/web/menu')); ?>
+   <!-- 左侧菜单 结束-->
+
+    <!-- Header Overlay-->
+   <?php include_once(tpl('common/web/header')); ?>
+   <!-- END Header  Overlay-->
+
+    <!-- Main Container -->
+    <main id="main-container" class="width-sidebar">
+        <!-- Page Content -->
+        <div class="content">
+             <div class="row">
+                <div class="col-xs-3">
+                    <div class="block">
+                        <div class="block-content">
+                            <ul class="nav nav-pills nav-stacked push">
+                               
+                                <?php foreach($apps as $app) : ?>
+                                <li class="<?=$app['active'] ? 'active' : ''?>">
+                                    <a href="<?=R('core-system','appoptions','index',['slug'=>$app['slug']])?>" >
+                                        
+                                        <?php if ( $app["icontype"] == "img") : ?>
+                                        <img 
+                                            src="<?= $app['active'] ? ASR($app['slug'],$app['image']['light']) : ASR($app['slug'],$app['image']['dark'])?>" 
+                                            style="width:16px;height:16px; line-height:18px; border:none;margin-right:5px;" />
+                                        <?php else: ?>
+                                        <i class="<?=$app["icontype"]?> <?=$app["icon"]?> push-5-r"></i> 
+                                        <?php endif ?>
+                                        <?=$app["cname"]?>
+                                        <span class="badge pull-right"><?=$app["cnt"]?></span>
+                                    </a>
+                                </li>
+                                <?php endforeach;?>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xs-9">
+                    <div class="block">
+                        <div class="block-content">
+                            <style type="text/css">
+                                .CodeMirror {
+                                    border: 1px solid #e6e6e6;
+                                }
+                            </style>
+                            <table class="js-table-sections table">
+                                <?php for( $i=0; $i<count($options); $i++ ) : 
+                                    $opt = $options[$i];
+                                ?>
+                                <tbody class="js-table-sections-header font-w500 font-s16 <?= ($i==0) ? 'open' : ''?> "><tr><td>
+                                    <i class="fa fa-angle-right push-5-r"></i><?=$opt["cname"]?>
+                                </tr></td></tbody>
+                                    <tbody><tr><td>
+                                        <form name="devcode<?=$i?>" class="form-horizontal" action="<?=R("core-system", "appoptions", "save")?>" >
+                                            <div class="form-group"><div class="col-xs-12" style="padding-top:7px;">
+
+                                                <!-- 编译代码 开始  -->
+                                                <textarea name="value" id="<?=$opt['option_id']?>"
+                                                    class="form-control input-lg" type="text"  rows="6" 
+                                                    placeholder=""><?=Utils::out($opt["value"])?></textarea>
+                                                <input type="hidden" name="__json_cols" value="value" />
+                                                <input type="hidden" name="key" value="<?=$opt["key"]?>" />
+                                                <input type="hidden" name="app" value="<?=$current?>" />
+                                                <script type="text/javascript">
+                                                    if ( typeof CodeMirror != 'undefined' ) {
+
+                                                        CodeMirror.fromTextArea(document.getElementById("<?=$opt['option_id']?>"), {
+                                                            lineNumbers: false,
+                                                            autoRefresh:true,
+                                                            mode: "application/json",
+                                                            viewportMargin: Infinity
+                                                        }).on('change', function( cm ){ // 更新 txt 数据
+                                                            document.getElementById("<?=$opt['option_id']?>").value = cm.getValue();
+                                                        });
+                                                    }
+                                                </script>
+                                                <!-- END 编译代码 -->
+                                            </div></div>
+
+                                            <div class="form-group"><div class="col-xs-12" style="padding-top:7px;">
+                                                <button 
+                                                    type="button"
+                                                    class="btn btn-lg btn-primary btn-minw fn-action fn-save push-20-r"  >
+                                                        <i class="fa fa-history"></i> 更新配置
+                                                </button>
+                                            </div></div>
+                                    </form>
+                                </tr></td></tbody>
+                                <?php endfor; ?>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END Page Content -->
+
+    </main>
+    <!-- END Main Container -->
+
+     <!-- Footer Overlay-->
+   <?php include_once(tpl('common/web/footer')); ?>
+   <!-- END Footer Overlay-->
+</div>
+<!-- END Page Container -->
+
+
+<!-- Page JS Code -->
+<script src="/static/assets/js/plugins/bootstrap-treeview/bootstrap-treeview.js"></script>
+<script src="/static/assets/js/plugins/jquery-sortable/sortable.js"></script>
+
+<script>
+    function pending( message ) {
+        $('.fn-action')
+            .addClass('disabled')
+            .attr('disabled', 'disabled');
+        App.loading({message:message}).show();
+    }
+    
+    
+    function success( message ) {
+        App.notify( message );
+    }
+    
+    function failure( message,  validation ) {
+        validation = validation  || null;
+        message = message || null;
+    
+        if ( typeof message == 'object' ) {
+            validation.showErrors(message);
+            return;
+        }
+    
+        if ( message != null ) {
+            App.notify( message, 'fa fa-times', 'danger' );
+        }
+    }
+    
+    function done() {
+        App.loading().hide();
+        $('.fn-action')
+            .removeClass('disabled')
+            .removeAttr('disabled');
+    }
+    
+    
+    /**
+     * 保存表单
+     */
+    function save( form, validation ) {
+    
+        var api =$(form).attr("action");
+    
+        try {
+            var data = $(form).serializeData(true);
+        } catch( e  ){
+            console.log( e );
+            return ;
+        }
+    
+        pending('保存中, 请稍候...');
+        // POST 数据
+        jQuery.post( api, data, function( data, textStatus, xhr) {
+    
+            done();
+    
+            if ( typeof data['code'] == 'string' ) {
+                data['code'] = parseInt(data['code']);
+            }
+    
+            // 返回数据异常
+            if ( typeof data['code'] == 'number' && data['code'] !== 0 ) {
+    
+                if ( typeof data['extra'] == 'object' && typeof data['extra']['errors'] == 'object'  ) {
+                    failure( data['extra']['errors'], validation );
+                    return;
+                }
+    
+                var message = data['message'] || "未知错误";
+                failure( message );
+                return;
+            }
+    
+            
+            // 保存成功
+            success('保存成功');
+    
+        }, 'json')
+    
+        .error(function( xhr, status, message) {
+            failure("保存失败, 网络错误 ( " + xhr.status + ' ' + message+" )");
+            console.log( status, xhr.status, ' message=', message );
+        });
+    }
+
+    $(function () {
+        App.initHelpers('table-tools');
+        $('.fn-save').click( function() {
+            var form = $(this).parents("form");
+            save(form, null);
+        });
+    });
+</script>
+
+</body>
+</html>

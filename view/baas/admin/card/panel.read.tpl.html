@@ -1,0 +1,98 @@
+<?php use \Xpmse\Utils; ?>
+<div class="content" style="min-height: 600px;">
+	<div class="form-horizontal push-10-t">
+		<div class="tab-pane active" id="tabs-status-0 ">
+
+			<table class="js-table-checkable table table-hover remove-margin">
+			    <tbody>
+
+			    	<tr>
+						<td width="35%">修改时间</td>
+				        <td width="70%"><?=$rs['updated_at']?></td>
+				    </tr>
+				</tbody>
+			</table>
+
+			<table class="js-table-checkable table table-hover remove-margin">
+			    <tbody>
+			    	<?php 
+					$cnames = [
+                        'card_id'=>"卡券 ID", 
+                        'cname'=>'卡券名称', 
+                        'card_type'=>'卡券类型',
+                        'consume_policy'=>'核销权限',
+                        'deal_detail'=>'团购详情',
+                        'least_cost'=>'起用金额',
+                        'reduce_cost' => '减免金额',
+                        'discount'=>'打折额度',
+                        'gift'=>'兑换内容的名称',
+                        'default_detail'=>'优惠详情',
+                        'base_info' => '卡券基本信息数据',
+                        'advanced_info' => '卡券高级信息数据',
+                        'card_status' => '卡券状态',
+                        'path'=>'证书路径' 
+                    ];
+			    	foreach($columns as $col ):
+			    	?>
+					<tr >
+						<td width="35%"> <?=$cnames[$col]?> </td>
+				        <td width="70%">
+				        <?php 
+				        	if ( is_bool($rs[$col]) ) {
+				        		echo json_encode($rs[$col]);
+				        	} else if ( is_numeric($rs[$col]) ) {
+								echo json_encode($rs[$col]);
+
+				        	} else if ( empty($rs[$col]) ) {
+				        		echo "<span class='text-danger'>NULL</span>";
+				        	} else if ( is_array($rs[$col]) ) {
+				        		Utils::out( $rs[$col]); 
+				        	} else {
+				        		echo $rs[$col];
+				        	}
+				        ?></td>
+				    </tr>
+					<?php endforeach;?>
+			    </tbody>
+
+			    <tfoot>
+			    	<tr><td  colspan="2"></td></tr>
+			    </tfoot>
+			</table>
+
+	    </div>
+	    <!-- 按钮区域 -->
+		<div class="form-group">
+	        <div class="col-xs-12">
+	        	<button class="btn btn-minw btn-primary pull-left bcmessage"  data-toggle-close="block-group"   data-block="#window-left" id="tabs-close">关闭窗口</button>
+	        	<button class="btn btn-minw btn-primary pull-right manage-type content-xiugai" type="button">修改模式</button>
+	        </div>
+	    </div>
+
+	    <div class="form-group"></div>
+	    <!-- 按钮区域结束 -->
+	</div>
+</div>
+<!-- markdown载入 -->
+<script type="text/javascript">
+
+	$(function(){
+		// 阅读模式切换修改模式
+		$('.content-xiugai').click(function(event) {
+			$('.yuedutype').removeClass('show');
+			$('.xiugaitype').removeClass('hide');
+			$('.yuedutype').addClass('hide');
+			$('.xiugaitype').addClass('show');
+			
+		});
+	})
+
+	// 关闭
+    $(function(){
+        $('#tabs-close').click(function() {
+             $('#window-left').close();
+        });
+    })
+    
+</script>
+

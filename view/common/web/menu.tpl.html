@@ -1,0 +1,96 @@
+            <!-- Sidebar -->
+            <nav id="sidebar">
+                <!-- Sidebar Scroll Container -->
+                <div id="sidebar-scroll" data-color="#000">
+                    <!-- Sidebar Content -->
+                    <!-- Adding .sidebar-mini-hide to an element will hide it when the sidebar is in mini mode -->
+                    <div class="sidebar-content" style="font-size: 16px;">
+                        <!-- Side Header -->
+                        <div class="side-header side-content" style="padding-top:12px; padding-left:8px;padding-right:5px;">
+                            <!-- Layout API, functionality initialized in App() -> uiLayoutApi() -->
+                           <!--  <button class="btn btn-link text-gray pull-right hidden-md hidden-lg" type="button" data-toggle="layout" data-action="sidebar_close">
+
+                                <i class="fa fa-times"></i>
+                            </button> -->
+
+                            <!-- Themes functionality initialized in App() -> uiHandleTheme() -->
+                            <div class="btn-group pull-right visible-lg">
+                                <button class="btn btn-link text-gray" data-toggle="layout" data-action="sidebar_mini_toggle" type="button">
+                                    <i class="si si-pin"></i>
+                                </button>
+                            </div>
+
+                            <div class="btn-group">
+                                <!-- <a href="#" class="group-logo dropdown-toggle h5 " data-toggle="dropdown" > -->
+                                    <img src="<?=$_LOGO['custom'] ? $_LOGO['custom'] : $_LOGO['default']?>" width="42" height="42" >
+                                    <!-- <span class="push-10-l"><?=$_SHORT?><span class="caret"></span> </span> -->
+                                    <span class="push-10-l" style="font-size: 18px;">
+                                        <?=$_SHORT?> <!-- <span class="caret"></span> -->  
+                                    </span>
+                                <!-- </a> -->
+
+                                 <!-- 
+    
+                                <ul class="dropdown-menu dropdown-menu">
+                                    <li>
+                                        <a tabindex="-1" href="<?=R('core-dept','default','index')?>">企业通讯录</a>
+                                    </li>
+                                   
+                                    <li>
+                                        <a tabindex="-1" href="javascript:void(0)">系统信息</a>
+                                    </li>
+                                     
+                                </ul>-->
+                            </div>
+                        </div>
+                        <!-- END Side Header -->
+
+                        <!-- Side Content -->
+                        <div class="side-content">
+                            <ul class="nav-main"> <!-- MENU BEGIN -->
+                            <?php foreach($_MENU as $m ) : ?>
+
+                                <?php if (!empty($m['group'])) :  // 分组 ?>  
+                                <li class="nav-main-heading"> <span class="sidebar-mini-hide"><?=$m['group']?></span></li>
+
+                                <?php else : ?>
+                                <li class="<?=($m['open']==1)?'open':''?>">
+                                    <a class="nav-submenu" 
+                                        <?php if (!empty($m['submenu'])) : ?>  data-toggle="nav-submenu"  <?php endif;?>
+                                        href="<?=!empty($m['link'])?$m['link']:'#'?>"  >
+                                        
+                                        <?php if ( $m['icontype'] == 'img') : ?>
+                                        <image 
+                                            src="<?=$m['icon']['default']?>" 
+                                            style="width:16px;height:16px; line-height:18px; border:none;margin-right: 15px;" />
+                                        <?php else:?>
+                                        <i style="font-size: 16px;"  class="<?=$m['icontype']?> <?=$m['icon']?>"></i>
+                                        <?php endif;?>
+
+                                        <span class="sidebar-mini-hide"><?=$m['name']?></span>
+                                    </a>
+
+                                    <?php if (!empty($m['submenu'])) : ?>
+                                        <ul>
+                                            <?php foreach($m['submenu'] as $sm ) : ?>
+                                            <li>
+                                                <a href="<?=$sm['link']?>" style="font-size:14px"  
+                                                  class="<?=($sm['active']==1)?'active':''?>" >  <?=$sm['name']?> </a>
+                                            </li>
+                                            <?php endforeach;?>
+                                        </ul>
+                                    <?php endif; ?> 
+                                </li>
+                                <?php endif; ?>
+                            <?php endforeach;?>
+
+                            </ul><!-- MENU END  -->
+
+                        </div>
+                        <!-- END Side Content -->
+                    </div>
+                    <!-- Sidebar Content -->
+                </div>
+                <!-- END Sidebar Scroll Container -->
+            </nav>
+            <!-- END Sidebar -->

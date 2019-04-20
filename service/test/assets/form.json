@@ -1,0 +1,61 @@
+{
+	"单行文本 Text" : {
+		"type": "text", 
+		"attrs": {
+			"name": "name_text"
+		}
+	}, 
+
+	"多选 CheckBox": {
+		"type": "checkbox", 
+		"scope": ["数值1","数值2","数值3"],  
+		"attrs": {
+			"name": "name_checkbox"
+		}
+	},
+
+	"单选 Radio":{
+		"type": "radio",
+		"scope": ["数值1","数值2","数值3"],
+		"attrs": {
+			"name": "name_radio"
+		}
+	},
+
+	"单选下拉菜单 Select": {   
+		"type" : "select", 
+		"scope": ["数值1","数值2","数值3"],
+		"attrs": {
+			"name": "name_select"
+		}
+	},
+
+	"多选下拉菜单 Select": {   
+		"type" : "select_mutiple", 
+		"scope": ["数值1","数值2","数值3"],
+		"attrs": {
+			"name": "name_select_mutiple"
+		}
+	},
+
+	"多行文本 Textarea": {
+		"type": "textarea",
+		"attrs": {
+			"name": "name_textarea"
+		}
+	},
+
+	"文件上传 File": {
+		"type": "file",
+		"attrs": {
+			"name": "name_file"
+		}
+	},
+
+	"图片上传 image": {
+		"type": "image",
+		"attrs": {
+			"name": "name_image"
+		}
+	}
+}

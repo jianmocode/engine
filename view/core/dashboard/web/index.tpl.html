@@ -1,0 +1,90 @@
+        <?php include_once(tpl('common/web/head')); ?>
+
+        <!-- foot JS CODE-->
+        <?php include_once(tpl('common/web/foot')); ?>
+        <!-- foot end -->
+
+        <!-- Page Container -->
+        <!--
+            Available Classes:
+
+            'enable-cookies'             Remembers active color theme between pages (when set through color theme list)
+
+            'sidebar-l'                  Left Sidebar and right Side Overlay
+            'sidebar-r'                  Right Sidebar and left Side Overlay
+            'sidebar-mini'               Mini hoverable Sidebar (> 991px)
+            'sidebar-o'                  Visible Sidebar by default (> 991px)
+            'sidebar-o-xs'               Visible Sidebar by default (< 992px)
+
+            'side-overlay-hover'         Hoverable Side Overlay (> 991px)
+            'side-overlay-o'             Visible Side Overlay by default (> 991px)
+            'side-scroll'                Enables custom scrolling on Sidebar and Side Overlay instead of native scrolling (> 991px)
+            'header-navbar-fixed'        Enables fixed header
+        -->
+        <div id="page-container" class="sidebar-l sidebar-o side-scroll header-navbar-fixed <?=$_SIDEBAR_MINI?> main-sidebar">
+           
+           <!-- 左侧菜单-->
+           <?php include_once(tpl('common/web/menu')); ?>
+           <!-- 左侧菜单 结束-->
+
+ 		   <!-- Header Overlay-->
+           <?php include_once(tpl('common/web/header')); ?>
+           <!-- END Header  Overlay-->
+
+            <!-- Main Container -->
+            <main id="main-container" class="width-sidebar">
+                <!-- Page Content -->
+                <div class="content">
+
+                    <h2 class="content-heading push-5-t font-w300">我的应用</h2>
+
+                    <!-- 应用清单 开始 -->
+                    <?php foreach ($apps as $idx=>$app): ?>
+                    
+                    <?php if ($idx == 0 )  : ?>
+                    <div class="row">
+                    <?php elseif( $idx % 3 == 0 ): ?>
+                    </div>
+                    <div class="row">
+                    <?php endif; ?>
+
+                        <div class="col-lg-4">
+                            <a class="block block-rounded block-link-hover3" href="<?=(isset($app['index'])? $app['index'] : '#')?>">
+                                <div class="block-content block-content-full clearfix">
+                                    <div class="pull-left push-20-r">
+                                        <span class="h4">
+                                            <?php if ($app['icontype']=="img") : ?>
+                                                <img src="<?=ASR($app['alias'],$app['image']['color'])?>" style="width:40px;height:40px;" >
+                                            <?php else:  ?>
+                                                <i class="<?=$app['icontype']?> <?=$app['icon']?> fa-2x text-modern"></i>
+                                            <?php endif;  ?>
+                                        </span>
+                                    </div>
+
+                                    <div>
+                                        <div class="push-5 font-w300"><?=$app['cname']?></div>
+                                        <div class="text-muted" style="width:80%; overflow: hidden;text-overflow:ellipsis;height:22px;"><?=$app['intro']?></div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    <?php endforeach;?>
+                    </div>
+                    <!-- 应用清单 结束 -->
+
+
+                </div>
+                <!-- END Page Content -->
+
+            </main>
+            <!-- END Main Container -->
+
+             <!-- Footer Overlay-->
+           <?php include_once(tpl('common/web/footer')); ?>
+           <!-- END Footer Overlay-->
+        </div>
+        <!-- END Page Container -->
+
+
+    </body>
+</html>

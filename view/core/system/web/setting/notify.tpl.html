@@ -1,0 +1,153 @@
+<div class="block-content">
+    <form id="CustTypeFormStep1Form" 
+          class="js-validation-CustTypeFormStep1 form-horizontal" 
+          action="<?=R('default','dotype_create_step1')?>" method="post" >
+
+        <div class="form-group ">
+            <div class="col-lg-6">
+                <div class="form-material  push-30-l push-30-r">
+                        <div class="form-material">
+                            <select class="js-select2 form-control" id="department"  style="width: 100%;" data-placeholder="请选择部门...">
+                                <option></option><!-- Required for data-placeholder -->
+                                <option>111</option>
+                            </select>
+                            <label for="department">所在部门</label>
+                        </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <div class="col-lg-6">
+                 <div class="form-material push-30-l push-30-r">
+                     <input class="form-control" type="text" id="company" name="company" value="<?=$company?>" placeholder="请填写key">
+                     <label for="name">key</label>
+                 </div>
+            </div>
+
+            <div class="col-lg-6">
+                 <div class="form-material push-30-l push-30-r">
+                     <input class="form-control" type="text" id="company" name="company" value="<?=$company?>" placeholder="请填写Secret">
+                     <label for="name">Secret</label>
+                 </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-lg-6">
+                 <div class="form-material push-30-l push-30-r">
+                    <input class="form-control" type="text" id="company" name="company" value="<?=$company?>" placeholder="请填写测试手机号">
+                    <label for="name">测试手机号</label>
+                 </div>
+            </div>
+
+            <div class="col-lg-6">
+                 <div class="form-material push-30-l push-30-r">
+                     <input class="form-control" type="text" id="company" name="company" value="<?=$company?>" placeholder="请填写验证码">
+                     <label for="name">验证码</label>
+                 </div>
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <div class="col-lg-2">
+                <div class="form-material push-30-l push-30-r">
+                    <button  
+                        id="ID_14671172870094912_1" 
+                        type="submit" 
+                        class="btn btn-primary font-w300  push-20-r">
+                        <i class="fa push-5-r fa-refresh"></i> 
+                        验证配置
+                    </button>
+                </div>
+            </div>
+
+            <div class="col-lg-2">
+                <div class="form-material push-30-l push-30-r">
+                    <button  
+                        id="ID_14671172870094912_1" 
+                        type="submit" 
+                        class="btn btn-primary font-w300  push-20-r">
+                        <i class="fa fa-plus push-5-r"></i> 
+                        保存资料
+                    </button>
+                 </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-lg-6">
+                <div class="form-material push-30-l push-30-r">
+                    <select class="js-select2 form-control" id="department"  style="width: 100%;" data-placeholder="请选择邮件服务商">
+                        <option></option><!-- Required for data-placeholder -->
+                        <option>111</option>
+                    </select>
+                    <label for="department">请选择邮件服务商</label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-lg-6">
+                <div class="form-material push-30-l push-30-r">
+                     <input class="form-control" type="text" id="company" name="company" value="<?=$company?>" placeholder="请填写AppSecret">
+                     <label for="name">邮箱</label>
+                </div>
+            </div>
+            
+            <div class="col-lg-6">
+                <div class="form-material push-30-l push-30-r">
+                     <input class="form-control" type="password" id="company" name="company" value="<?=$company?>" placeholder="请填写密码">
+                     <label for="name">密码</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-lg-6">
+                <div class="form-material push-30-l push-30-r">
+                     <input class="form-control" type="text" id="company" name="company" value="<?=$company?>" placeholder="请填写测试邮箱">
+                     <label for="name">测试邮箱</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-lg-2">
+                <div class="form-material push-30-l push-30-r">
+                    <button  
+                        id="ID_14671172870094912_1" 
+                        type="submit" 
+                        class="btn btn-primary font-w300  push-20-r">
+                        <i class="fa push-5-r fa-refresh"></i> 
+                        验证配置
+                    </button>
+                </div>
+            </div>
+
+            <div class="col-lg-2">
+                <div class="form-material push-30-l push-30-r">
+                    <button  
+                        id="ID_14671172870094912_1" 
+                        type="submit" 
+                        class="btn btn-primary font-w300  push-20-r">
+                        <i class="fa fa-plus push-5-r"></i> 
+                        保存资料
+                    </button>
+                 </div>
+            </div>
+        
+        </div>
+
+    </form>
+</div>
+
+<script type="text/javascript">
+$(function(){
+
+    //DatePicker && image-crop
+    App.initHelpers(['datepicker', 'image-crop', 'select2']);
+
+
+})
+</script>

@@ -1,0 +1,197 @@
+<div class="block-content">
+    <form id="mysql-form" 
+          class="js-validation-CustTypeFormStep1 form-horizontal" 
+          action="<?=R('default','dotype_create_step1')?>" method="post" >
+        <div class="form-group">
+            <div class="col-lg-6">
+                <div class="form-material push-30-l push-30-r">
+                    <div class="form-material">
+                        <select class="js-select2 form-control" id="department"  style="width: 100%;" data-placeholder="请选择检索引擎">
+                            <option></option><!-- Required for data-placeholder -->
+                            <option>Elasticsearch</option>
+                        </select>
+                        <label for="department">检索引擎</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-lg-6">
+                <div class="form-material push-30-l push-30-r">
+                     <input class="form-control" type="input" id="es_host" name="es_host" value="<?=$company?>" placeholder="请填写Host">
+                     <label for="name">Host</label>
+                 </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="form-material push-30-l push-30-r">
+                     <input class="form-control" type="input" id="es_port" name="es_port" value="<?=$company?>" placeholder="请填写Port">
+                     <label for="name">Port</label>
+                 </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-lg-6">
+                <div class="form-material push-30-l push-30-r">
+                     <input class="form-control" type="input" id="es_index" name="es_index" value="<?=$company?>" placeholder="请填写索引名称">
+                     <label for="name">索引名称</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group"> 
+          
+        </div>
+
+        <div class="form-group">
+            <div class="col-lg-6">
+                <div class="form-material push-30-l push-30-r">
+                   <select class="js-select2 form-control" id="st_engine"  name="st_engine" style="width: 100%;" data-placeholder="请选择存储引擎">
+                            <option></option><!-- Required for data-placeholder -->
+                            <option>Mysql</option>
+                    </select>
+                  <label for="name">存储引擎</label>
+                </div> 
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-lg-6">
+                <div class="form-material push-30-l push-30-r">
+                  <input class="form-control" type="input" id="st_host" name="st_host" value="<?=$company?>" placeholder="请填写Host">
+                  <label for="name">Host</label>
+                </div> 
+            </div>
+
+            <div class="col-lg-6">
+                <div class="form-material push-30-l push-30-r">
+                  <input class="form-control" type="input" id="st_port" name="st_port" value="<?=$company?>" placeholder="请填写Port">
+                  <label for="name">Port</label>
+                </div> 
+            </div>
+        </div>
+
+        <div class="form-group">
+            
+            <div class="col-lg-6">
+                <div class="form-material push-30-l push-30-r">
+                  <input class="form-control" type="input" id="st_user" name="st_user" value="<?=$company?>" placeholder="请填写User">
+                  <label for="name">User</label>
+                </div> 
+            </div>
+
+            <div class="col-lg-6">
+                <div class="form-material push-30-l push-30-r">
+                  <input class="form-control" type="password" id="st_pass" name="st_pass" value="<?=$company?>" placeholder="请填写Password">
+                  <label for="name">Password</label>
+                </div> 
+            </div>
+        
+        </div>
+
+        <div class="form-group">
+            <div class="col-lg-6">
+                <div class="form-material push-30-l push-30-r">
+                  <input class="form-control" type="input" id="st_dbname" name="st_dbname" value="<?=$company?>" placeholder="请填写数据库名称">
+                  <label for="name">数据库名称</label>
+                </div>
+            </div>
+        </div>
+      
+        <div class="form-group">
+            <div class="col-lg-2">
+                <div class="form-material push-30-l push-30-r">
+                    <button  id="ID_14671172870094912_1" 
+                        type="button" 
+                        data-form="#mysql-form"
+                        data-action="<?=R('core-system', 'settingapi','tryit', ['se'=>'supertable'])?>"
+                        class="btn btn-primary font-w300 push-20-r tryit se-action">
+                        <span class="tryit"><i class="fa fa-refresh"></i> 校验配置</span>
+                        <span class="pull-left tryit-status hidden" > <i class="fa fa-refresh fa-spin"></i> 正在校验</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="col-lg-2">
+                <div class="form-material push-30-l push-30-r">
+                    <button  id="ID_14671172870094912_1" 
+                        type="button"
+                        data-form="#storage-form"
+                        data-action="<?=R('core-system', 'settingapi','saveit', ['se'=>'general','id'=>$data['id']])?>"
+                        class="btn btn-primary font-w300  push-20-r saveit">
+                        <i class="fa fa-plus push-5-r"></i> 
+                        保存资料
+                    </button>
+                 </div>
+            </div>
+        </div>
+
+    </form>
+</div>
+
+<script type="text/javascript">
+$(function(){
+
+    //DatePicker && image-crop
+    App.initHelpers(['datepicker', 'image-crop', 'select2']);
+
+
+})
+</script>
+<script>
+$(function(){
+        // 连接测试按钮
+        seActionInit('.tryit',function( status, resp )  {
+
+                if ( status == 'success') {
+                   
+                    App.notify('校验成功!');
+
+                }  else {
+
+                    message = resp['message'] || '校验失败';
+                    App.notify(message, 'fa fa-times','danger');
+                }
+        }, {
+            'status':'.tryit-status',
+            'action':'.se-action',
+            'hidden':'.tryit',
+            'doing':'<i class="fa fa-refresh fa-spin"></i> 正在校验, 可能花费数秒钟... ',
+            'mute':false
+        });
+
+})
+
+$(function(){
+        
+        // 保存
+        seActionInit('.saveit',function( status, resp )  {
+
+                if( status=='success') {
+                   
+                    App.notify('保存成功!');
+
+                    $('.general').click();
+
+                }else  if ( status == 'error' ) {
+
+                    App.notify( '保存失败 | 警告:' + resp, 'fa fa-times','danger');
+                 }else if ( status == 'warning' ) {
+
+                    App.notify(resp, 'fa fa-times','danger');
+                 }else{
+
+                     App.notify('保存失败!','fa fa-times','danger');
+                 }
+        },{
+            'status':'.tryit-status',
+            'action':'.se-action',
+            'hidden':'.tryit',
+            'doing':'<i class="fa fa-refresh fa-spin"></i> 正在校验, 可能花费数秒钟... ',
+            'mute':false
+        });
+})
+
+</script>

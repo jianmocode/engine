@@ -1,0 +1,77 @@
+{
+	"name":"{{name}}",
+	"org":"{{org}}",
+	"version":"{{version}}",
+	"cname":"{{cname}}",
+	"icon":"si-puzzle",
+	"icontype":"si",
+	"intro":"XpmSE应用模板",
+	"detail":"@readme.md",
+	"document":"@document.md",
+	"author":"北京云道天成科技有限公司",
+	"homepage":"https://www.jianmo.ink",
+	"menu": [
+        {
+            "slug": "{{org}}/{{name}}",
+            "group": "{{cname}}"
+        },
+        {
+            "slug": "{{org}}/{{name}}/default/index",
+            "name": "菜单一",
+            "index": true,
+            "icon": "si-notebook",
+            "icontype": "si",
+            "link": "{default,index}",
+            "permission": "boss,admin,manager",
+            "order": 9999
+        },
+        {
+            "slug": "{{org}}/{{name}}/default",
+            "name": "菜单二",
+            "icon": "si-info",
+            "icontype": "si",
+            "permission": "boss,admin,manager,user",
+            "order": 9999,
+            "submenu": [
+                {
+                    "slug": "{{org}}/{{name}}/default/blank",
+                    "name": "子菜单一",
+                    "link": "{default,blank}",
+                    "permission": "boss,admin,manager,user",
+                    "order": 9999
+                }
+            ]
+        }
+    ],
+	"dependencies": {},
+	"injections": {},
+	"api": [],
+	"register_api": {},
+	"setup": {
+
+		"install": {
+			"controller":"setup",
+			"action":"install"
+		},
+
+		"upgrade": {
+			"controller":"setup",
+			"action":"upgrade"
+		},
+
+		"uninstall":{
+			"controller":"setup",
+			"action":"uninstall"
+		},
+
+		"repair": {
+			"controller":"setup",
+			"action":"repair"
+		}
+	}
+}
+
+
+
+
+

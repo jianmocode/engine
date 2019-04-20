@@ -1,0 +1,171 @@
+[
+	{
+		"slug":"core-dashboard/default/index",
+		"name":"控制台",
+		"icon":"si-speedometer",
+		"icontype": "si",
+		"link":"{core-dashboard,default,index,[name:first]}",
+		"permission": "boss,admin,manager,user",
+		"order":9999
+	},
+	{
+		"slug":"company",
+		"group":"公司"
+	},
+	{
+		"slug":"core-dept/default/index",
+		"name":"员工",
+		"icon":"si-users",
+		"icontype": "si",
+		"link":"{core-dept,default,index}",
+		"permission": "boss,admin,manager",
+		"order":9999
+	},
+	{
+		"slug":"core-dept/default/userprofile",
+		"name":"我的",
+		"icon":"si-user",
+        "icontype": "si",
+        "link":"{core-dept,default,userprofile}",
+		"permission": "boss,admin,manager,user",
+		"order":9999
+	},
+	{
+		"slug":"system",
+		"group":"系统",
+		"permission": "boss,admin"
+	},
+	{
+		"slug":"core-system/appmanager/index",
+		"name":"应用",
+		"icon":"si-grid",
+		"icontype": "si",
+		"link":"{core-system,appmanager,index}",
+		"permission": "boss,admin",
+		"order":9999
+    },
+    {
+		"slug":"core-system/pages/index",
+		"name":"页面",
+		"icon":"si-layers",
+		"icontype": "si",
+		"link":"{core-system,pages,index}",
+		"permission": "boss,admin",
+		"order":9999
+	},
+    {
+		"slug":"core-system/appoptions/index",
+		"name":"设置",
+		"icon":"si-settings",
+		"icontype": "si",
+		"link":"{core-system,appoptions,index}",
+		"permission": "boss,admin",
+		"order":9999
+    },
+    {
+		"slug":"core-system/service/index",
+		"name":"服务",
+		"icon":"fa-server",
+		"icontype": "fa",
+		"link":"{core-system,service,index}",
+		"permission": "boss,admin",
+		"order":9999
+    },
+	{
+		"slug":"system/wxapp",
+		"name":"微信",
+		"icon":{
+			"default":"/static/defaults/images/icons/wechat.svg",
+			"hover":"/static/defaults/images/icons/wechat.png",
+			"active":"/static/defaults/images/icons/wechat.png"
+		},
+		"icontype": "img",
+		"permission": "boss,admin,manager",
+		"order":9999,
+		"submenu":[
+			{
+				"slug":"baas-admin/conf/index",
+				"name":"公众平台",
+				"link":"{baas-admin,conf,index}",
+				"permission": "boss,admin,manager",
+				"order":9999
+			}
+		]
+	},
+	{
+		"slug":"system/develop",
+		"name":"开发",
+		"icon":"fa-code",
+		"icontype": "fa",
+		"permission": "boss,admin,manager",
+		"order":9999,
+		"submenu":[
+			{
+				"slug":"mina/codemaker/index",
+				"name":"代码生成",
+				"link":"{mina,codemaker,index}",
+				"permission": "boss,admin,manager",
+				"order":9999
+			},
+			{
+				"slug":"mina/apidebugger/index",
+				"name":"API调试",
+				"link":"{mina,apidebugger,index}",
+				"permission": "boss,admin,manager",
+				"order":9999
+			},
+			{
+				"slug":"baas-admin/wss/index",
+				"name":"信道调试",
+				"link":"{baas-admin,wss,index}",
+				"permission": "boss,admin,manager,user",
+				"order":9999
+			},
+			{
+				"slug":"core-system/secret/index",
+				"name":"密钥管理",
+				"link":"{core-system,secret,index}",
+				"permission": "boss,admin,manager",
+				"order":9999
+			}
+		]
+    },
+	{
+		"slug":"system/general",
+		"name":"通用",
+		"icon":"si-screen-desktop",
+		"icontype": "si",
+		"permission": "boss,admin,manager",
+		"order":9999,
+		"submenu":[
+			{
+				"slug":"core-system/task/index",
+				"name":"任务管理",
+				"link":"{core-system,task,index}",
+				"permission": "boss,admin,manager",
+				"order":9999
+			},
+			{
+				"slug":"baas-admin/data/index",
+				"name":"数据管理",
+				"link":"{baas-admin,data,index}",
+				"permission": "boss,admin,manager,user",
+				"order":9999
+			},
+			{
+				"slug":"baas-admin/cert/index",
+				"name":"证书管理",
+				"link":"{baas-admin,cert,index}",
+				"permission": "boss,admin,manager",
+				"order":9999
+			},
+			{
+				"slug":"core-system/info/index",
+				"name":"系统信息",
+				"link":"{core-system,info,index}",
+				"permission": "boss,admin,manager",
+				"order":9999
+			}
+		]
+	}
+]

@@ -1,0 +1,2016 @@
+#!/usr/bin/env php 
+<?php
+
+namespace Xpmse\Cli;
+$dir_array = explode(DIRECTORY_SEPARATOR,__DIR__);
+$dir_array?array_pop($dir_array):1;
+$troot = implode(DIRECTORY_SEPARATOR,$dir_array);
+define( 'TROOT', $troot );
+define( 'DS' , DIRECTORY_SEPARATOR );
+define( 'AROOT' , TROOT . DS  );
+define( 'SEROOT', TROOT . DS . 'service'  );
+define( 'CWD', getcwd() );
+
+chdir( '/' );
+
+
+include_once( TROOT .'/_lp/cli.init.php' );
+include_once( TROOT .'/service/lib/Inc.php' );
+
+use \Aura\Cli\CliFactory as CliFactory;
+use \Xpmse\Utils as Utils;
+use \Xpmse\Excp as Excp;
+use \Xpmse\Conf as Conf;
+use \Xpmse\Job as Job;
+use \Xpmse\Websocket as WebSocket;
+use \Xpmse\Wxappserver as Wxappserver;
+use \Mina\Cache\Redis as Cache;
+
+use \Ratchet\MessageComponentInterface;
+use \Ratchet\ConnectionInterface;
+use \PDOException;
+use \Exception;
+
+
+
+
+// =====  命令行程序逻辑  =====
+
+$options = [
+	"q:",  // Query
+	"d:",  // Data
+    "u:",  // 模拟登录用户
+    "job-server",  // 队列服务器
+	"vv",   // 是否显示查询条件
+];
+
+$cli_factory = new CliFactory;
+$context = $cli_factory->newContext($GLOBALS);
+$getopt = $context->getopt($options);
+$stdio = $cli_factory->newStdio();
+
+$queryString = $getopt->get("-q");
+$dataString =  $getopt->get("-d");
+$fileString =  $getopt->get("-f");
+$userMobile =  $getopt->get("-u");
+$headerString = $getopt->get("-h");  // Header
+$cookieString = $getopt->get("-c");  // Cookies
+
+// Headers & Query & Data & File
+$user = $query = $data = $file = $headers = $cookies = []; 
+
+if ( $cookieString != null ) {
+
+	if ( $cookieString[0] == '@'  ) {
+
+		$file_name = str_replace('@','', $cookieString );
+		
+		if ( $file_name[0] != DS ) {
+			$file_name = CWD . DS . $file_name;
+		}
+
+		if ( file_exists($file_name)) {
+			$cookieString = file_get_contents($file_name);
+		}
+	}
+
+	$cookies  = json_decode( $cookieString, true );
+	if( json_last_error() !== JSON_ERROR_NONE)  {
+		error( json_last_error_msg() . "\cookies is not json string:\n--------\n" .  $headers  . "\n----------\n");
+		return;
+    }
+
+    // 设定 Session ID 
+    if ( !empty($cookies["PHPSESSID"]) ) {
+        session_id( $cookies["PHPSESSID"] );
+    }
+
+    foreach( $cookies as $key=>$val ) {
+        $_COOKIE["$key"] = $val;
+    }
+}
+
+if ( $headerString != null ) {
+
+	if ( $headerString[0] == '@'  ) {
+
+		$file_name = str_replace('@','', $headerString );
+		
+		if ( $file_name[0] != DS ) {
+			$file_name = CWD . DS . $file_name;
+		}
+
+		if ( file_exists($file_name)) {
+			$headerString = file_get_contents($file_name);
+		}
+	}
+
+	$headers  = json_decode( $headerString, true );
+	if( json_last_error() !== JSON_ERROR_NONE)  {
+		error( json_last_error_msg() . "\headers is not json string:\n--------\n" .  $headers  . "\n----------\n");
+		return;
+    }
+    
+    foreach( $headers as $key=>$val ) {
+        $key = str_replace("-","_", $key);
+        $key = strtoupper( "HTTP_{$key}" );
+        $_SERVER[$key] = $val;
+    }
+}
+
+if ( $queryString != null ) {
+
+	if ( $queryString[0] == '@'  ) {
+
+		$file_name = str_replace('@','', $queryString );
+		
+		if ( $file_name[0] != DS ) {
+			$file_name = CWD . DS . $file_name;
+		}
+
+		if ( file_exists($file_name)) {
+			$queryString = file_get_contents($file_name);
+		}
+	}
+
+	$query  = json_decode( $queryString, true );
+	if( json_last_error() !== JSON_ERROR_NONE)  {
+		error( json_last_error_msg() . "\nQuery is not json string:\n--------\n" .  $queryString  . "\n----------\n");
+		return;
+	}
+}
+
+if ( $dataString != null ) {
+	if ( $dataString[0] == '@'  ) {
+
+		$file_name = str_replace('@','', $dataString );
+		
+		if ( $file_name[0] != DS ) {
+			$file_name = CWD . DS . $file_name;
+		}
+
+		if ( file_exists($file_name)) {
+			$dataString = file_get_contents($file_name);
+		}
+
+	}
+
+	$data  = json_decode( $dataString, true );
+	if ( $data == false ) {
+		error( "Data is not json string:\n--------\n" . $dataString  . "\n----------\n");
+		return;
+	}
+}
+
+// 文件上传
+if ( $fileString != null ) {
+
+	if ( $fileString[0] == '@'  ) {
+
+		$file_name = str_replace('@','', $fileString );
+		if ( $file_name[0] != DS ) {
+			$file_name = CWD . DS . $file_name;
+		}
+
+		if ( file_exists($file_name)) {
+			$fileString = file_get_contents($file_name);
+		}
+	}
+
+	$fileTmp  = json_decode( $fileString, true );
+	if( json_last_error() !== JSON_ERROR_NONE)  {
+		error( json_last_error_msg(), "\nFile is not json string:\n--------\n" ,  $fileString  . "\n----------\n");
+		return;
+	}
+
+	foreach ($fileTmp as $idx => $fd ) {
+		if ( $fd[0] != DS ) {
+			$fd = CWD . DS . $fd;
+		}
+
+		if ( file_exists($fd) ) {
+			
+			$file[$idx] = [
+				'name' => basename($fd),
+				'type' => Utils::mimetype($fd),
+				'error' => UPLOAD_ERR_OK,
+				'tmp_name' => $fd,
+				'content' =>base64_encode(file_get_contents($fd))
+			];
+		}
+	}
+}
+
+
+// 模拟用户登录
+
+$u = M('User');
+if ( $userMobile != null ) {
+	$user = $u->getLine("WHERE mobile=? LIMIT 1", [], [$userMobile] );	
+	if ( count( $user) == 0 ) {
+		error( "用户 {$userMobile} 不存在! ");
+		exit();
+	}
+} else {
+
+	$message = '未知错误';
+
+	try {
+		$user = $u->getLine("WHERE isAdmin=1 LIMIT 1");
+	} catch( Exception $e) {
+		 $user = [];
+		 $message = $e->getMessage();
+	} catch( PDOException $e ) {
+		$user = [];
+		$message = $e->getMessage();
+	}
+
+	if ( count( $user) == 0 ) {
+		info("登录失败($message) \n", 'bold yellow');
+		// exit();
+	} 
+}
+
+if ( !empty($user['_id']) ) {
+	$u->setSession( $user['_id'] );
+}
+
+
+if ( $getopt->get('--vv') )  {
+
+	error_reporting(E_ALL & ~E_NOTICE) ;
+
+	info( "登录成功: \n", 'bold green');
+
+	Utils::out( 
+		"       用户ID: ",  $user['_id'], 
+		"\n     用户姓名: " , $user['name'], 
+		"\n 是否是管理员: ", ($user['isAdmin']==0) ? '否' : '是', 
+		"\n" , "\n" );
+
+    info("Headers: \n", 'bold white');
+    Utils::out( $headers, "\n", "\n");
+
+    info("Cookies: \n", 'bold white');
+    Utils::out( $cookies, "\n", "\n");
+
+	info("Query: \n", 'bold white');
+	Utils::out( $query, "\n", "\n");
+
+	info("Data: \n", 'bold white');
+	Utils::out( $data, "\n", "\n");
+
+	info("File: \n", 'bold white');
+	$fileShow = $file;
+	foreach ($fileShow as $idx => $fd ) {
+		$fileShow[$idx]['content'] = '@' . $fd['tmp_name'];
+	}
+	Utils::out( $fileShow, "\n", "\n");
+
+}
+
+
+
+// 指令
+$cmd = $getopt->get(1);
+switch ( $cmd ) {
+
+    // 系统启动
+    case 'root':
+        echo TROOT;
+        break;
+
+	case 'app': // 运行应用数据 
+
+		$appcmd  = $getopt->get(2);
+
+		if ( $appcmd == 'run' ) {
+			app_run( $getopt );
+
+		} else if (  $appcmd == 'test' ) {
+			app_test( $getopt );
+
+		} else if (  $appcmd == 'list' ) {
+			app_list( $getopt );
+
+		} else if ( $appcmd == 'init' ) {
+			app_init( $getopt );
+
+		} else {
+			helper( "app {$appcmd} " );
+		}
+
+		exit();
+        break;
+        
+    // 启动服务器
+    case 'server':
+        server_start( $getopt );
+        break;
+    
+    // 系统启动
+    case 'boot':
+        boot_init( $getopt );
+        break;
+
+	case 'test':
+		core_test( $getopt );
+		exit();
+        break;
+        
+    case "api":
+        api_run(  $getopt );
+        break;
+	case 'config':
+		success(  "配置成功" );
+		break;
+
+	case 'run':
+		core_run( $getopt );
+		break;
+
+	case 'version':
+		core_version( $getopt );
+		break;
+
+	case 'que':
+		que( $getopt );
+		break;
+
+	case 'ws': 
+		ws_service( $getopt );
+		break;
+
+	case 'schedule': 
+		schedule( $getopt );
+		break;
+
+	case 'upgrade':  // 升级
+		upgrade($getopt);
+		break;
+
+	case 'install': // 安装应用
+		install_app( $getopt );
+		break;
+
+	case 'download': // 下载应用
+		download_app( $getopt );
+		break;
+
+	case 'codemaker': // 生成代码
+		codemaker( $getopt );
+
+	case 'push':
+		break;
+
+	case 'pull':
+		break;
+
+	case 'login':
+		break;
+
+	case 'passwd':  // 创建密码
+		passwd( $getopt );
+		break;
+
+	case 'adduser':  // 添加用户
+		adduser( $getopt );
+		break;
+
+	case 'setup': // 重新安装系统
+		setup( $getopt );
+		break;
+
+	case 'hi':
+		$str = in("请输入:");
+		info("str: " . $str . "\n", 'bold magenta');
+		break;
+	
+	default:
+		helper('No Command!');
+		break;
+}
+
+
+
+
+// =====  相关函数定义  =====
+
+/**
+ * 获取请求链接
+ */
+function request_uri( $REQUEST_URI = "" ) {
+
+	$host = getenv("HOST");
+	$cache = 'https';
+	$c = new Cache( [
+		"prefix" => '_system:',
+		"host" => Conf::G("mem/redis/host"),
+		"port" => Conf::G("mem/redis/port"),
+		"passwd"=> Conf::G("mem/redis/password")
+	]);
+
+
+	// 检查 HTTPS 是否开启
+	$https = $c->get($cache);
+	if ( $https === false ) {
+		$https = 'on';
+		try {
+			$resp = Utils::request("GET", "https://{$host}/__system__". time(), ["datatype"=>"html", "verifypeer"=>true, "verifyhost"=>2]);
+		} catch ( Excp $e ) {
+			$https = 'off';
+
+		} catch ( Exception $e ) {
+			$https = 'off';
+		}
+		// 缓存有效期1小时
+		$c->set($cache, $https, 3600);
+	}
+
+	$_SERVER['HTTPS'] = $https;
+	$_SERVER['HTTP_HOST'] = $host;
+	$_SERVER['REQUEST_URI'] = $REQUEST_URI;
+}
+
+
+/**
+ * 校验输入字符串信息
+ * @param  [type]  $slug [description]
+ * @return boolean       [description]
+ */
+function is_appslug( $slug ) {
+	if ( !preg_match("/^([0-9a-zA-Z\_\-]+)\/([0-9a-zA-Z\_\-]+)[:]*([0-9\.]*)$/", $slug, $match) ) {
+		return false;
+	}
+	return true;
+}
+
+
+/**
+ * 系统初始化
+ */
+function boot_init( $getopt ) {
+    info("启动系统服务....\n");
+    // 读取服务
+    $se = new \Xpmse\Service();
+    $services = $se->search([
+        "autostart" => 1
+    ]);
+
+    foreach( $services as $service ) {
+        // if( $service["isrunning"] ) {
+            $name = $service["name"];
+            $service_id = $service["service_id"];
+            info("\t正在启动{$name}...");
+            try {
+                $se->start( $service_id );
+            } catch( Excp $e ) {
+                $e->log();
+                error($e->getMessage()." [失败]\n");
+                continue;
+            }
+            success("[完毕]\n");
+        // }
+    }
+
+    success("所有启动项运行完毕\n");
+
+}
+
+/**
+ * 启动服务器
+ */
+function server_start( $getopt ) {
+    
+    $type = $getopt->get('-t');
+
+
+    if ( empty( $type) ) {
+        error("未指定服务类型信息");
+        return false;
+    }
+
+    $config_text = $getopt->get('-c'); 
+
+    if ( empty( $config_text) ) {
+        error("未找到配置信息");
+        return false;
+    }
+
+    $config = json_decode( $config_text, true );
+    if ( $config === false ) {
+        error("配置信息格式不正确");
+        return false;
+    }
+  
+    // 启动队列服务
+    if ( $type == "queue" ) {
+
+        $options_text = $getopt->get('-o'); 
+        if ( empty( $options_text) ) {
+            error("未找到队列服务设置信息");
+            return false;
+        }
+
+        $options = json_decode( $options_text, true );
+        if ( $options === false ) {
+            error("队列服务设置信息格式不正确");
+            return false;
+        }
+
+        $job = new Job( $options );
+        try {
+            $job->server( $config );
+            echo "success";
+            exit;
+        }catch( Excp $e ) { 
+            $e->log(); 
+            echo "failure"; 
+            exit;
+        }
+        return;
+
+    // 启动 WebSocket 服务
+    } else if ( $type == "websocket" ) {
+
+        $options_text = $getopt->get('-o'); 
+        if ( empty( $options_text) ) {
+            error("未找到WebSocket服务设置信息");
+            return false;
+        }
+
+        $options = json_decode( $options_text, true );
+        if ( $options === false ) {
+            error("WebSocket服务设置信息格式不正确");
+            return false;
+        }
+        
+        $ws = new WebSocket( $options );
+        try {
+            $ws->server( $config );
+            echo "success";
+            exit;
+        }catch( Excp $e ) { 
+            $e->log(); 
+            echo "failure"; 
+            exit;
+        }
+        return;
+    }
+
+    
+
+    error("未知服务类型(type={$type})");
+}
+
+	
+/**
+ * 部署生成器生成代码
+ * @param  [type] $getopt [description]
+ * @return [type]         [description]
+ */
+function codemaker( $getopt ) {
+
+	global $query, $data, $file;
+
+	$app = basename( CWD );
+	$path_arr = explode('/', str_replace( _XPMAPP_ROOT, '', CWD)); 
+	$depts = count($path_arr);
+	$org = 'xpmse';
+	if ( !empty($path_arr[$depts-2]) ) {
+		$org = $path_arr[$depts-2];
+	}
+
+	$GLOBALS['_cm_app'] = $app;
+	$GLOBALS["_cm_org"] = $org;
+
+	$id = $getopt->get(2);
+	$name = $getopt->get(3);
+    $force = $getopt->get('--force');
+    $merge = $getopt->get('--merge');
+
+	$code = new \Xpmse\Model\Code;
+	$history = $code->getHistory($id);
+	$files = $code->getCodeFiles( $history['history_id'] ); // 所有代码文件 Files
+
+	// 部署指定文件
+	if ( !empty($name) ) {
+		$file = $files['map'][$name];
+		if ( is_dir($file['path']) ) {
+
+			$code->eachCodeFiles($file['children'], function( $file ) use( $history, $force ) {
+				codemaker_deploy( $file, $history['data'], $force, $merge);
+			});
+		} else {
+			codemaker_deploy( $file, $history['data'], $force, $merge,  $code);
+		}
+
+		return true;
+	}
+
+	// 部署所有文件
+	foreach ($files['map'] as $file) {
+		if ( !is_dir($file['path']) ) {
+			if ( $file['ignore'] !== true ) {
+				codemaker_deploy( $file, $history['data'], $force, $merge, $code);
+			}
+		}
+	}
+}
+
+
+/**
+ * 部署单条文件
+ * @param  [type]  $file  [description]
+ * @param  [type]  $data  [description]
+ * @param  boolean $force [description]
+ * @param  boolean $merge 
+ * @return [type]         [description]
+ */
+function codemaker_deploy( $file, & $data, $force=false, $merge=false, & $code ) {
+	
+	if ( empty($code) ) {
+		$code = new \Xpmse\Model\Code;
+	}
+
+	$target = CWD . $file['name'];
+
+	if ( !$force ){ // 检查文件是否存在
+		if ( file_exists($target) ){
+			$resp = in("$target 已经存在，继续会覆盖现有数据。是否继续？[Y/N]");
+			if ( strtolower($resp) !== "y" ) {
+				error( $target . " 写入失败(取消部署)\n");
+				return;
+			}
+		}
+	}
+
+	try {
+        $content = $code->codeGetContent( $file['path'], $data, $file );
+	} catch( Exception $e ) {
+		$message =  $e->getMessage();
+		error( $target . " 写入失败\n");
+		error ( "$message {$file['path']} \n");
+		return;
+	}
+
+	$path = dirname($target);
+	if ( !is_dir( $path) ) {
+		mkdir($path, 0755, true);
+	}
+
+    // 合并代码
+    if ( $merge && file_exists($target) ) {
+        $content = $code->codeMergeContent($target, $content);
+    }
+
+	$resp = file_put_contents( $target, $content );
+	if ( $resp ) {
+		success($target . " 写入成功\n");
+		return;
+	}
+
+	error( $target . " 写入失败\n");
+}
+
+
+/**
+ * 安装应用
+ * @param  [type] $getopt [description]
+ * @return [type]         [description]
+ */
+function install_app( $getopt ) {
+
+	request_uri();
+	$store = M('Appstore');
+	$id = $getopt->get(2);
+	if ( is_appslug( $id) ) {
+		$id = $store->getAppid( $id, true);
+	}
+
+	if ( empty($id) ) {
+		error("未知应用或应用不存在\n");
+		exit;
+	}
+
+	// 检查应用是否存在
+	if ( $store->isExist($id) ) {
+		$resp = in('应用已经存在，继续安装会覆盖现有数据。是否继续？[Y/N]');
+
+		if ( strtolower($resp) !== "y" ) {
+			error("用户取消安装\n");
+			exit;
+		}
+	}
+
+	// 下载应用
+	if ( download_app( $getopt ) === false ) {
+		return false;
+	} 
+
+	
+	info( "安装中, 这可能花费数分钟的时间 ... ");
+	try {
+		$app = $store->install( $id );
+	} catch( Excp $e  ) {
+		error("失败\n");
+		error( $e->getMessage() . "\n");
+		return false;
+	}
+
+	success("安装成功\n");
+	return true;
+}
+
+
+/**
+ * 下载应用
+ * @param  [type] $getopt [description]
+ * @return [type]         [description]
+ */
+function download_app( $getopt ) {
+
+	request_uri();
+	
+	$id = $getopt->get(2);
+	if ( is_appslug( $id) ) {
+		$id = M('Appstore')->getAppid( $id, true);
+	}
+
+	if ( empty($id) ) {
+		error("未知应用, 请填写应用ID/名称\n");
+		exit;
+	}
+
+	$store = M('Appstore');
+
+	try {
+		$task = $store->download( $id );
+	} catch( Excp $e  ) {
+		error("失败\n");
+		error( $e->getMessage() . "\n");
+		return false;
+	}
+
+	// 获取程序下载状态
+	while( $store->isDownloading($id) ) {
+		$data = $store->downloadStatus( $id );
+		info("\r{$data['message']} {$data['progress']}%\t");
+		sleep(1);
+	}
+
+	$data = $store->downloadStatus( $id );
+	info("\r{$data['message']} {$data['progress']}%\t");
+	if ( $data['status'] == 'failure' ) {
+		error("下载失败\n");
+		exit;
+	}
+
+	success("下载成功\n");
+	return true;
+}
+
+
+
+/**
+ * 启动 WEB Socket
+ */
+function ws_service( $getopt ) {
+	$cmd = $getopt->get(2);
+	if ( empty($cmd)) {
+		$cmd = 'start';
+	}
+
+	switch ($cmd) {
+		case 'start':
+			// system("ps aux |grep 'php /bin/xpm ws' | grep -v grep ");
+
+			exec( "ps aux |grep 'php /bin/xpm ws' | grep -v grep |wc -l", $lines);
+			$line = end($lines);
+			if ( $line != 1 ) {
+				error( "WEB Socket 服务已启动\n");
+				exit;
+			}
+			
+		    $pid = pcntl_fork();
+			if ( $pid == -1) {
+				error( "WEB Socket 服务启动失败\n");
+				exit;
+			} 
+			else if (!$pid) { //we are the child
+
+				$app = new \Ratchet\App( '127.0.0.1', 10086 );
+			    $app->route('/ws-server/wxapp', new Wxappserver, array('*') );
+			    $app->route('/ws-server/echo', new \Ratchet\Server\EchoServer, array('*'));
+			    $app->run();
+			}
+			exit;
+			break;
+
+		case 'stop':
+			exec("ps aux |grep 'php /bin/xpm ws' | awk '{print $2}'|xargs kill -9");
+			exec( "ps aux |grep'php /bin/xpm ws' | grep -v grep |wc -l", $lines);
+			$line = end($lines);
+			if ( $line == 0){
+				success("WEB Socket 服务关闭成功");
+			} else {
+				error( "WEB Socket 服务关闭失败{$line}");
+			}
+			exit;
+			break;
+
+		default:
+			# code...
+			break;
+	}
+}
+
+
+/**
+ * 启动 schedule
+ */
+function schedule( $getopt ) {
+
+	$cli_name = __FILE__;
+	$cmd = $getopt->get(2);
+	if ( empty($cmd)) {
+		$cmd = 'start';
+	}
+
+	switch ($cmd) {
+		case 'start':
+			// exec("ps aux |grep 'php /bin/xpm schedule' | awk '{print $2}'|xargs kill -9");
+			// system("ps aux |grep 'php /bin/xpm schedule start' | grep -v grep | wc -l ");
+			exec("ps aux |grep '$cli_name schedule start' | grep -v grep |wc -l", $lines);
+			$line = end($lines);
+			if ( $line > 1 ) {
+				error( "Schedule 服务已启动");
+				exit;
+			}
+
+		    $pid = pcntl_fork();
+			if ( $pid == -1) {
+				error( "Schedule 服务启动失败");
+				exit;
+			} 
+			else if (!$pid) { //we are the child
+				success("Schedule 服务启动成功");
+				$t = M('Task');
+				$t->schedule();
+			}
+			exit;
+			break;
+
+		case 'stop':
+			exec("ps aux |grep '$cli_name schedule start' | awk '{print $2}'|xargs kill -9");
+			exec("ps aux |grep '$cli_name schedule start' | grep -v grep |wc -l", $lines);
+			$line = end($lines);
+			if ( $line == 0){
+				success("Schedule 服务关闭成功");
+			} else {
+				error( "Schedule 服务关闭失败{$line}");
+			}
+			exit;
+			break;
+
+		default:
+			# code...
+			break;
+	}
+}
+
+
+/**
+ * 队列管理
+ */
+function que( $getopt ) {
+	$cli_name = __FILE__;
+
+	$cmd = $getopt->get(2);
+	if ( empty($cmd) ) {
+		helper( 'que');
+		exit;
+	}
+
+	switch ($cmd) {
+		case 'start':
+			$worker = $getopt->get(3); 
+			if ( empty($worker) ) {
+				$worker = 2; // 默认2个 worker
+			}
+
+			// echo "ps aux |grep '{$cli_name} que start' | grep -v grep |wc -l";
+			exec( "ps aux |grep '{$cli_name}\\ que\\ start' | grep -v grep |wc -l", $lines);
+			$line = intval(end($lines));
+			if ( $line > 1 ) {
+				error( "队列服务已启动, Worker: {$line} 个\n");
+				exit;
+			}
+
+				
+			$pid = pcntl_fork();
+			if ( $pid == -1) {
+				error( "队列服务启动失败");
+				exit;
+			} 
+			else if (!$pid) { //we are the child
+				success("队列服务启动成功");
+
+				$que = SEROOT . "/bin/que ";
+				putenv("COUNT={$worker}");
+				system( $que );
+			}
+			exit;
+			break;
+
+		case 'stop':
+			exec("ps aux |grep '{$cli_name}\\ que\\ start' | awk '{print $2}'|xargs kill -9");
+			exec( "ps aux |grep '{$cli_name}\\ que\\ start' | grep -v grep |wc -l", $lines);
+			$line = end($lines);
+			if ( $line == 0){
+				success("队列服务关闭成功\n");
+			} else {
+				error( "队列服务关闭失败{$line}\n");
+			}
+			exit;
+			break;
+		
+		case 'status': 
+			exec( "ps aux |grep '{$cli_name}\\ que\\ start'| grep -v grep |wc -l", $lines);
+			$line = end($lines);
+			if ( $line != 0 ) {
+				info( "队列服务已启动, Worker: {$line} 个\n");
+				exit;
+			} else {
+				info( "队列服务未启动\n");
+			}
+
+			break;
+
+		case 'ps':
+			$task = new \Xpmse\Task;
+			$jobs = $task->getRunning();
+			info("队列\t\tjob_id\t\t\t\t\ttask_id\t\t开始时间\t\t进度\t\t名称\n");
+			foreach ($jobs as $job ) {
+				$runat = date("Y-m-d H:i:s",intval($job['run_at']));
+				info( "{$job['queue']}\t{$job['id']}\t{$job['task']['task_id']}\t{$runat}\t{$job['task']['progress']}%\t{$job['task']['name']}\n");
+			}
+			break;
+
+		default:
+			# code...
+			break;
+	}
+}
+
+
+function run_in_background($Command, $Priority = 0) {
+    if($Priority)
+        $PID = shell_exec("nohup nice -n $Priority $Command 2> /dev/null & echo $!");
+    else
+        $PID = shell_exec("nohup $Command 2> /dev/null & echo $!");
+    return($PID);
+}
+
+
+
+
+
+function utf8_unicode($name) {  
+    $name = iconv('UTF-8', 'UCS-2', $name);  
+    $len  = strlen($name);  
+    $str  = '';  
+    for ($i = 0; $i < $len - 1; $i = $i + 2){  
+        $c  = $name[$i];  
+        $c2 = $name[$i + 1];  
+        if (ord($c) > 0){   //两个字节的文字  
+            $str .= '\u'.base_convert(ord($c), 10, 16).str_pad(base_convert(ord($c2), 10, 16), 2, 0, STR_PAD_LEFT);  
+
+            //$str .= base_convert(ord($c), 10, 16).str_pad(base_convert(ord($c2), 10, 16), 2, 0, STR_PAD_LEFT);  
+        } else {  
+            $str .= '\u'.str_pad(base_convert(ord($c2), 10, 16), 4, 0, STR_PAD_LEFT);  
+            //$str .= str_pad(base_convert(ord($c2), 10, 16), 4, 0, STR_PAD_LEFT);  
+        }  
+    }  
+    $str = strtoupper($str);//转换为大写  
+    return $str;  
+}
+
+
+/**
+ * 重置密码
+ * @param  [type] $getopt [description]
+ * @return [type]         [description]
+ */
+function passwd( $getopt ) {
+	
+	$u = M('User');
+	$mobile = $getopt->get(2);
+	if (empty($mobile)) {
+		helper( 'passwd');
+		exit;
+	}
+
+
+	$user = $u->getLine("WHERE mobile=? LIMIT 1", [], [$mobile] );	
+	if ( count( $user) == 0 ) {
+		error( "用户 {$mobile} 不存在! \n");
+		exit();
+	}
+
+	$passwd = inpass("请输入新密码: ");
+	if ( strlen($passwd) < 6 ) {
+		error( "密码输入有误, 至少6位 \n");
+		exit();
+	}
+
+	$repasswd = inpass("再次输入新密码: ");
+	if ( $passwd != $repasswd) {
+		error( "两次输入密码不一致 \n");
+		exit();
+	}
+
+	$passwd_hash = $u->hashPassword( $passwd );
+	$resp = $u->update($user['_id'], ['password'=>$passwd_hash]);
+	$vv = $getopt->get('--vv');
+	if ( $vv ) {  // 显示调用参数 
+		
+		Utils::out( $resp );
+	}
+
+	if ( $resp['mobile'] == $mobile) {
+
+		success("密码设置成功\n");
+		exit();
+	}
+
+	error("密码设置失败\n");
+
+}
+
+
+
+/**
+ * 创建用户
+ * @param  [type] $getopt [description]
+ * @return [type]         [description]
+ */
+function adduser( $getopt ) {
+
+	$mobile = in("请输入手机号码: ");
+	if( !preg_match("/^1[34578]\d{9}$/", $mobile, $match ) ) {
+		error( "手机号码不正确 \n");
+		adduser( $getopt );
+		return;
+	}
+
+	$u = M('User');
+	$user = $u->getLine("WHERE mobile=? LIMIT 1", [], [$mobile] );	
+	if ( count($user) > 0 ) {
+		error( "用户 {$mobile} 已存在! \n");
+		adduser( $getopt );
+		return;
+	}
+
+	$name = in("请输入姓名: ");
+	if( empty($name) ) {
+		error( "请输入姓名 \n");
+		adduser( $getopt );
+		return;
+	}
+
+	$admin = in("是否为管理员? (y/n): ");
+	$isAdmin = false;
+	if ( trim(strtolower($admin)) == "y" ) {
+		$isAdmin = true;
+	}
+
+	$passwd = inpass("请输入密码: ");
+	if ( strlen($passwd) < 6 ) {
+		error( "密码输入有误, 至少6位 \n");
+		return;
+	}
+
+	$repasswd = inpass("再次输入密码: ");
+	if ( $passwd != $repasswd) {
+		error( "两次输入密码不一致 \n");
+		return;
+	}
+
+	info("手机号: {$mobile} \n");
+	info("姓名: {$name} \n");
+	info("管理员: ".($isAdmin ? "是" : "否")." \n");
+
+	$confirm =  in("确认创建该用户？(y/n)");
+	if ( trim(strtolower($confirm)) != "y" ) {
+		error("您已取消创建改用户\n");
+		exit;
+	}
+
+	$passwd_hash = $u->hashPassword( $passwd );
+	$resp = $u->create([
+		"mobile" => $mobile,
+		"name" => $name,
+		"password" => $passwd_hash,
+		"department" => [1],
+		"isAdmin" => $isAdmin
+	]);
+
+
+	$vv = $getopt->get('--vv');
+	if ( $vv ) {  // 显示调用参数 
+		Utils::out( $resp );
+	}
+
+	if ( $resp['mobile'] == $mobile) {
+		success("用户创建成功\n");
+		return;
+	}
+
+	error("用户创建失败\n");
+}
+
+
+
+/**
+ * 安装系统
+ * @param  [type] $getopt [description]
+ * @return [type]         [description]
+ */
+function setup( $getopt ) {
+
+	$cfile = $getopt->get('-c');
+	
+	// 更新缓存
+	(new Conf())->renew();
+
+	$conf = Conf::G('general');
+
+	if ( !is_readable($cfile) ) {
+		$c['user']['mobile'] = in("请输入管理员手机号码:");
+		if( !preg_match("/^1[34578]\d{9}$/", $c['user']['mobile'], $match ) ) {
+			error( "手机号码不正确 \n");
+			setup( $getopt );
+			return;
+		}
+
+		$c['user']['password'] =  inpass("请输入管理员密码:");
+		$repasswd = inpass("再次输入密码: ");
+		if ( $c['user']['password'] != $repasswd) {
+			error( "两次输入密码不一致 \n");
+			return;
+		}
+		$c['user']['name'] = in("请输入管理员姓名:");
+
+		$c['company'] = $conf['company'];
+		if ( empty($conf['company']) ) {
+			$c['company'] = in("请输入公司名称");
+		}
+
+		$c['name'] = $conf['name'];
+		if ( empty($conf['name']) ) {
+			$c['name'] = in("请输入系统名称");
+		}
+
+		$c['short'] = $conf['short'];
+		if ( empty($conf['short']) ) {
+			$c['short'] = in("请输入系统简称");
+		}
+
+	} else {
+		$ctext = file_get_contents($cfile);
+		$c = json_decode( $ctext , true );
+		$c['company'] = !empty($conf['company']) ?  $conf['company'] : "我的公司";
+		$c['name'] = !empty($conf['name']) ?  $conf['name'] :  "又一个简墨";
+		$c['short'] = !empty($conf['short']) ?  $conf['short'] : "简墨";
+
+	}
+
+	if ( empty($c['user']['mobile']) || empty($c['user']['password'])  || empty($c['user']['name']) ) {
+		error("缺少管理员身份信息\n");
+		return;
+	}
+
+	if ( empty($c['company']) ) {
+		error("缺少公司名称信息\n");
+		return;
+	}
+
+	if ( empty($c['name']) ) {
+		error("缺少系统名称信息\n");
+		return;
+	}
+
+	if ( empty($c['short']) ) {
+		error("缺少系统简称信息\n");
+		return;
+	}
+
+	$db = Conf::G('supertable/storage');
+	$db_option = $db['option'];
+	$db_name = $db_option['db_name'];
+	$db_prefix = $db['prefix'];
+	$db_master =current($db_option['master']);
+	$stor = Conf::G("storage/local/bucket");
+
+
+	// 提醒用户
+	if ( !$getopt->get('--force') ) {
+		info("\n\n请确认如下信息是否正确: \n");
+		info("====================================================\n");
+		info("管理员手机号: {$c['user']['mobile']} \n");
+		info("管理员姓名: {$c['user']['name']} \n");
+		
+		info("\n公司名称:  {$c['company']}\n");
+		info("系统名称:  {$c['name']}\n");
+		info("系统简称:  {$c['short']}\n");
+
+		info("\n数据库实例:  {$db_master['host']}:{$db_master['port']}\n");
+		info("数据库账号:  {$db_master['user']}\n");
+		info("数据库密码:  {$db_master['pass']}\n");
+		info("数据库名称:  {$db_name}\n");
+		info("数据表前缀:  {$db_prefix}\n");
+
+		info("\n存储空间(公开):  {$stor['public']['root']}\n");
+		info("存储空间(私有):  {$stor['private']['root']}\n");
+		info("====================================================\n\n");
+
+		$confirm =  in("重新安装后数据将会丢失，建议提前备份数据。\n继续重新安装系统？(y/n)");
+		if ( trim(strtolower($confirm)) != "y" ) {
+			error("用户取消重新安装");
+			return;
+		}
+	}
+
+
+	// 创建数据表
+	upgrade( $getopt );
+
+	info("重置数据: \n", 'bold white');
+	// 清空数据
+	$tabs = [
+		'api' =>  ['name'=>'api', 'cname'=>'开发者表', 'get' => function() {  return M('Secret'); }],
+		'tabacl' =>  ['name'=>'tabacl', 'cname'=>'BaaS权限表', 'get' => function() {  return M('Tabacl'); }],
+		'app' =>  ['name'=>'app_local', 'cname'=>'应用表', 'get' => function() {  return M('App'); }],
+		'project' =>  ['name'=>'project', 'cname'=>'项目表', 'get' => function() {  return M('Project'); }],
+		'page' =>  ['name'=>'page', 'cname'=>'页面表', 'get' => function() {  return M('Page'); }],
+		'media' =>  ['name'=>'media', 'cname'=>'媒体文件表', 'get' => function() {  return M('Media'); }],
+		'dept' => ['name'=>'dept',  'cname'=>'部门表', 'get' => function() {  return  M('Department'); }],
+		'user' => ['name'=>'user',  'cname'=>'用户表',  'get' => function() {  return  M('User'); }],
+		'task' => ['name'=>'task',  'cname'=>'任务表',  'get' => function() {  return  M('task'); }],
+        'option' => ['name'=>'option',  'cname'=>'配置表',  'get' => function() {  return  M('Option'); }],
+        'service' => ['name'=>'service',  'cname'=>'服务表',  'get' => function() {  return  M('Service'); }],
+        'search' => ['name'=>'search',  'cname'=>'全文检索表',  'get' => function() {  return new \Xpmse\Search();}],
+		'code' => ['name'=>'code',  'cname'=>'代码模板表',  'get' => function() {  return  M('Code'); }],
+		'domain' => ['name'=>'domain',  'cname'=>'域名表',  'get' => function() {  return  M('Domain'); }]
+	];
+
+	foreach ( $tabs as $m=>$t ) {
+		try {
+			$tab = $t['get']();
+			if ( method_exists($tab, 'truncate') ) {
+				info( "   清空数据表{$t['cname']}..." );
+				$tab->truncate();
+				info(" 完成\n");
+			}			
+		} catch ( Excp $e ) {
+			echo $e->toJSON();
+			die();
+		} catch ( Exception $e  ) {
+			echo Excp::etoJSON( $e );
+			die();
+		}
+	}
+
+	info("添加新数据: \n", 'bold white');
+	// 创建部门
+	$d = M('Department');
+	info( "   创建部门{$c['company']}..." );
+	try {
+		$resp = $d->create([
+			'id'=>1,
+			'name'=>$c['company'],
+			'parentid' => 1,
+			'createDeptGroup'=>true
+		]);
+	} catch(Excp $e ) { error(" 失败(". $e->getMessage() . ")"); return; }
+	info(" 完成\n");
+
+	// 创建用户
+	$u = M('User');
+	info( "   创建管理员{$c['user']['name']}..." );
+	$passwd_hash = $u->hashPassword( $c['user']['password'] );
+	try {
+		$resp = $u->create([
+			"mobile" => $c['user']['mobile'],
+			"name" => $c['user']['name'],
+			"password" => $passwd_hash,
+			"department" => [1],
+			"isAdmin" => 1
+		]);
+	} catch(Excp $e ) { error(" 失败(". $e->getMessage() . ")"); return;  }
+	info(" 完成\n");
+
+	// 创建API
+	$a = M('Secret');
+	$keypair = $a->genKeyPair();
+	info( "   生成密钥{$keypair['appid']}..." );
+	try {
+		$resp = $a->create($keypair);
+	} catch(Excp $e ) { error(" 失败(". $e->getMessage() . ")"); return;  }
+	info(" 完成\n");
+
+	// 清空缓存
+	$mem = new \Xpmse\Mem(false, '');
+	$mem->delete("");
+
+	success("\n系统安装成功\n");
+}
+
+
+
+/**
+ * [core_version description]
+ * @return [type] [description]
+ */
+function core_version(  $getopt ) {
+
+	$a = $getopt->get('-a');
+	$last = $getopt->get('-o');
+
+	if ( !defined("__VERSION") ) {
+		define('__VERSION', "1.1" );
+	}
+
+	if ( !defined("__REVISION") ) {
+		define('__REVISION', _XPMSE_REVISION );
+	}
+
+	if ( !defined("_XPMSE_VERSION") ) {
+		define('_XPMSE_VERSION', "1.1" );
+	}
+
+	if ( $a ) {  // 显示调用参数 
+		if ( $last ) {
+			info("  VERSION: "._XPMSE_VERSION, 'bold magenta');
+			info(" REVISION: ". _XPMSE_REVISION, 'bold white');
+			return;
+		}
+
+		$v = __GET_VISION();
+		$sev = __GET_SE_VISION();
+
+		info("    VERSION: ". $v['version'], 'bold magenta');
+		info("   REVISION: ". $v['revision'] , 'bold white');
+		info("");
+		info(" SE_VERSION: ". $sev['version'], 'bold magenta');
+		info("SE_REVISION: ". $sev['revision'] , 'bold white');
+
+
+	} else {
+		if ( $last ) {
+			outln( _XPMSE_VERSION );
+			return;
+		}
+		outln(__VERSION );
+
+	}
+
+}
+
+
+/**
+ * 运行控制器
+ * @param  [type] $getopt [description]
+ * @return [type]         [description]
+ */
+function core_run( $getopt ) {
+
+	global $query, $data, $file;
+
+	$q = parseParams( $getopt, 2 );
+	$vv = $getopt->get('--vv');
+
+
+
+	if ( $vv ) {  // 显示调用参数 
+		info("运行控制器: \n", 'bold magenta');
+		info("  namespace: {$q['ns']} \n");
+		info("  controller: {$q['c']} \n");
+		info("      action: {$q['a']} \n");
+		info("运行结果: \n", 'bold cyan');
+	}
+
+
+	core_run_action( $q );
+	// outln( $content );
+}
+
+
+/**
+ * 运行API 
+ */
+function api_run( $getopt ) {
+
+    global $query, $data, $file;
+    $vv = $getopt->get('--vv');
+    
+    $class = $getopt->get("-a");
+    $method= $getopt->get("-m");
+
+
+	if ( $vv ) {  // 显示调用参数 
+		info("调用API: \n", 'bold magenta');
+		info("   API: {$class} \n");
+		info("Method: {$method} \n");
+		info("运行结果: \n", 'bold cyan');
+    }
+    
+    // print_r( $cookies );
+    if ( !class_exists($class) ) {
+        throw new Excp("API({$class})不存在.", 400, ["class"=>$class, 'query'=>$query,'data'=>$data,'files'=>$files]);	
+    }
+
+    if( !method_exists($class, $method) ){
+        throw new Excp("METHOD({$class}::{$method})方法不存在", 400, ["class"=>$class, "method"=>$method,'query'=>$query, "data"=>$data, 'files'=>$files]);
+        return;
+    }
+
+    $option=['query'=>$query,'data'=>$data,'files'=>$files];
+    $api = new $class($option);
+    $resp =  $api->call($method, $query, $data, $files);
+    Utils::out( $resp );
+}
+
+
+function core_run_action( $q, $slient = false ){
+
+	$controller = explode('.', $q['c']);
+
+	if ( end($controller) == 'class' ) {
+		$q['c'] = $controller[0];
+	} else {
+		$controller[1] = 'class';
+	}
+
+	$q['ns'] = str_replace('-', '/', $q['ns'] );
+
+	if ( $q['ns'][0] == '/') {
+		$_GET['n'] = substr(str_replace('/', '-', $q['ns'] ), 1);
+	} else {
+		$_GET['n'] = str_replace('/', '-', $q['ns'] );
+	}
+
+
+	$_GET['c'] = $q['c'];
+	$_GET['a'] = $q['a'];
+
+	$_GET = array_merge( $query, $_GET );
+	$_POST = array_merge( $data, $_POST );
+	$_REQUEST = array_merge( $_REQUEST , $_GET, $_POST );
+	$_FILES = $file;
+
+	$class_file = TROOT .'/controller/' . $q['ns'] . '/' . implode('.', $controller) . '.php' ;
+	$class_name = '\\' . str_replace('/', '', $q['ns'] ) . $q['c'] . 'Controller';
+
+	if ( !file_exists( $class_file) ) {
+		error('控制器类文件不存在 ( '. $class_file .' )');
+		exit;
+	}
+	require_once( $class_file );
+
+	if ( !class_exists($class_name) ) {
+
+		error('控制器类不存在 ( '. $class_name .' )');
+		exit;
+	}
+
+
+	try {
+		$api = new $class_name();
+
+		if ( $slient != true ) {
+			call_user_func([$api, $q['a']] );
+			return;
+		}
+
+		ob_start();
+		call_user_func([$api, $q['a']] );
+		$content = ob_get_contents();
+        ob_clean();
+
+        $resp = json_decode( $content, true );
+
+        if ( $resp !== false  && $resp !== null) {
+        	return json_encode($resp, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES );
+        } else {
+        	return $content;
+        }
+
+	} catch( Excp $e ) {
+		error( $e->getMessage() . "\n" );
+	}
+}
+
+
+
+/**
+ * 运行应用控制器
+ * @param  [type] $getopt [description]
+ * @return [type]         [description]
+ */
+function app_run( $getopt ) {
+
+	global $query, $data, $file;
+
+	$q = parseParams( $getopt );
+	$vv = $getopt->get('--vv');
+	
+	if ( $vv ) {  // 显示调用参数 
+		info("运行控制器: \n", 'bold magenta');
+		info("       route: ".TROOT .'/controller/core/app/route.class.php'." \n");
+		info("         org: {$q['org']} \n");
+		info("         app: {$q['app']} \n");
+		info("  controller: {$q['c']} \n");
+		info("      action: {$q['a']} \n");
+		info("运行结果: \n", 'bold cyan');
+	}
+
+	require_once( TROOT .'/controller/core/app/route.class.php' );
+	$content = app_run_action($q, $query, $data );
+
+}
+
+function app_run_action ($q, $query=[], $data=[], $slient = false ) {
+
+	$_GET['n'] = 'core-app';
+	$_GET['c'] = 'route';
+	$_GET['a'] = $q['i'];
+	$_GET['app_name'] = $q['app'];
+	$_GET['app_org'] = $q['org'];
+	$_GET['app_c'] = $q['c'];
+	$_GET['app_a'] = $q['a'];
+	$_GET = array_merge( $query, $_GET );
+	$_POST = array_merge( $data, $_POST );
+	$_REQUEST = array_merge( $_REQUEST , $_GET, $_POST );
+	$_FILES = $file;
+
+	try {
+        $route = new \coreAppRouteController();
+        call_user_func([$route, $q['i']] );
+	} catch( Excp $e ) {
+		error( $e->getMessage() . "\n" );
+	}
+
+}
+
+	
+/**
+ * 读取应用列表
+ * @param  [type] $getopt [description]
+ * @return [type]         [description]
+ */
+function app_list( $getopt ) {
+	
+	$a = M('App');
+	$apps  = $a->getInstalled( true );
+	foreach ( $apps['data'] as $app ) {
+		info( $app['name'], 'bold green' );
+	}
+
+	$apps = $a->getUninstalled( true );
+	foreach ( $apps['data'] as $app ) {
+		info( $app['name'], ' white' );
+	}
+}
+
+
+
+/**
+ * 解析应用参数
+ * @param  [type] $getopt [description]
+ * @return [type]         [description]
+ */
+function parseParams( $getopt, $base=3 ) {
+
+	$q = ['app'=>'', 'c'=>'', 'a'=>'' ];
+
+	$app = $getopt->get( $base );
+	if ( $app == null ) {
+		helper( 'app' ) ; 
+		exit;
+	}
+
+	$appinfo = explode('.', $app);
+	if ( end($appinfo) == 'php' ) {
+
+		if ( $app[0] != '/' ) {
+			 $app = CWD . '/' . $app;
+		}
+
+		if ( !file_exists($app) ) {
+			error( "控制器文件不存在! {$app} ");
+			exit;
+		}
+		
+		$pi = pathinfo( $app );
+		
+		$path = explode( '/controller', $pi['dirname'] );
+		if ( count($path) == 1 ) {
+
+			Utils::out( $path );
+			error( "非法控制器文件! {$app} ");
+			exit;
+		} else if ( $path[1] == "" ) {
+			$q['ns'] = '';
+		} else {
+			$q['ns'] = $path[1];
+		}
+
+		
+
+		$path = explode( '/', $pi['dirname'] );
+		$org = $path[count($path)-3];
+		$q['app'] = $path[count($path)-2];
+		$q['org'] =  (_XPMAPP_ROOT == "/$org") ?  'xpmse' : $path[count($path)-3];
+		$q['c'] = $pi['filename'];
+		$q['a'] = $getopt->get( $base + 1 );
+		$q['i'] = $getopt->get( $base + 2 );
+
+		
+	} else {
+
+		$q['app'] = $app;
+		$q['ns'] =  $app;
+		$q['c'] =  $getopt->get( $base + 1 );
+		$q['a'] =  $getopt->get( $base + 2 );
+		$q['i'] = $getopt->get( $base + 3 );
+
+	}
+
+	$q['c'] =  ( $q['c'] == null ) ? 'default' : $q['c'];
+	$q['a'] =  ( $q['a'] == null ) ? 'index' : $q['a'];
+	$q['i'] =  ( $q['i'] == null ) ? 'noframe' : $q['i'];
+
+	return $q;
+}
+
+
+/**
+ * 运行单元测试程序
+ * @param  [type] $getopt [description]
+ * @return [type]         [description]
+ */
+function app_test( $getopt ) {
+	
+
+	$test_file = $getopt->get(3);
+
+	if ( $test_file[0] != '/' ) {
+		 $test_file = CWD . '/' . $test_file;
+	}
+
+	if ( !file_exists($test_file) ) {
+		error( "单元测试文件不存在! {$test_file} ");
+		exit;
+	}
+
+	$APP_ROOT = dirname( dirname($test_file) );
+	$appname = basename( $APP_ROOT );
+
+	request_uri();
+	// $_SERVER['HTTPS'] = $https;
+	// $_SERVER['HTTP_HOST'] = $host;
+	// $_SERVER['REQUEST_URI'] = $REQUEST_URI;
+
+	// echo "SEROOT=" . SEROOT . " XPMAPP_ROOT=" . _XPMAPP_ROOT . " TROOT=" . TROOT . " CWD=" . CWD .  " APP_ROOT=" .  $APP_ROOT ;
+
+	system( "HOST=" . $_SERVER['HTTP_HOST'] . " HTTPS=" . $_SERVER['HTTPS'] .  " SEROOT=" . SEROOT . " _XPMAPP_ROOT=" . _XPMAPP_ROOT . " XPMAPP_ROOT=" . _XPMAPP_ROOT . " TROOT=" . TROOT . " CWD=" . CWD .  " APP_ROOT=" .  $APP_ROOT .  " /usr/bin/env phpunit " . $test_file );
+
+}
+
+	
+/**
+ * 初始化应用目录
+ * @param  [type] $getopt [description]
+ * @return [type]         [description]
+ */
+function app_init( $getopt ) {
+	
+	$sample = SEROOT . DS . 'loader' . DS . 'app-sample';
+	$curr = CWD;
+
+	$package_text = file_get_contents( $sample . DS . 'package.json');
+	$appname = basename( CWD );
+	
+	$path_arr = explode('/', str_replace( _XPMAPP_ROOT, '', CWD)); 
+	$depts = count($path_arr);
+	$org = 'xpmse';
+	if ( !empty($path_arr[$depts-2]) ) {
+		$org = $path_arr[$depts-2];
+	}
+
+	success( '        Name : ' . $appname . "\n");
+	success( 'Organization : ' . $org . "\n");
+
+
+	$cname = in("应用中文名: ");
+	$cname = empty( $cname) ?  'XpmSE应用' : $cname;
+
+	$version = in("应用版本号: ");
+	$version = empty( $version) ?  '1.0' : $version;
+
+	$package_text = str_replace("{{name}}", $appname, $package_text);
+	$package_text = str_replace("{{org}}", $org, $package_text);
+	$package_text = str_replace("{{version}}", $version, $package_text);
+	$package_text = str_replace("{{cname}}", $cname, $package_text);
+
+	$pack = json_decode( $package_text , true );
+	$package = json_encode($pack, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES );
+
+	system("cp -rf {$sample}/* $curr/");
+	file_put_contents("{$curr}/package.json", $package );
+
+	// 替换字段
+	$files = [
+		"$curr/api/Pet.php",   // API 
+		"$curr/model/Pet.php",  // Model
+		"$curr/controller/Default.php",  // Default Controller
+		"$curr/controller/Setup.php",  // Setup Controller
+		"$curr/view/pet/index.tpl.html",  // pet view
+	];
+
+	$appname = ucfirst(strtolower($appname));
+	$org = ucfirst(strtolower($org));
+
+	foreach ($files as $f ) {
+		if ( !file_exists($f) ) {
+			continue;
+		}
+
+		$content = file_get_contents($f);
+		$content = str_replace("{{name}}", $appname, $content);
+		$content = str_replace("{{org}}", $org, $content);
+		$content = str_replace("{{version}}", $version, $content);
+		$content = str_replace("{{cname}}", $cname, $content);
+		file_put_contents($f, $content );
+	}
+
+
+
+	success("应用初始化成功\n");
+
+}
+
+
+/**
+ * 运行单元测试程序
+ * @param  [type] $getopt [description]
+ * @return [type]         [description]
+ */
+function core_test( $getopt ) {
+
+	$test_file = $getopt->get(2);
+
+	if ( $test_file != '/' ) {
+		 $test_file = CWD . '/' . $test_file;
+	}
+
+	if ( !file_exists($test_file) ) {
+		error( "单元测试文件不存在! {$test_file} ");
+		exit;
+	}
+
+	system("/usr/bin/env phpunit " . $test_file );
+}
+
+function upgrade( $getopt ){ 
+
+	info("升级数据表: \n", 'bold white');
+
+	$tabs = [
+		'api' =>  ['name'=>'api', 'cname'=>'开发者表', 'get' => function() {  return M('Secret'); }],
+		'tabacl' =>  ['name'=>'tabacl', 'cname'=>'BaaS权限表', 'get' => function() {  return M('Tabacl'); }],
+		'app' =>  ['name'=>'app_local', 'cname'=>'应用表', 'get' => function() {  return M('App'); }],
+		'project' =>  ['name'=>'project', 'cname'=>'项目表', 'get' => function() {  return M('Project'); }],
+		'page' =>  ['name'=>'page', 'cname'=>'页面表', 'get' => function() {  return M('Page'); }],
+		'media' =>  ['name'=>'media', 'cname'=>'媒体文件表', 'get' => function() {  return M('Media'); }],
+		'dept' => ['name'=>'dept',  'cname'=>'部门表', 'get' => function() {  return  M('Department'); }],
+		'user' => ['name'=>'user',  'cname'=>'用户表',  'get' => function() {  return  M('User'); }],
+		'task' => ['name'=>'task',  'cname'=>'任务表',  'get' => function() {  return  M('task'); }],
+        'option' => ['name'=>'option',  'cname'=>'配置表',  'get' => function() {  return  M('Option'); }],
+        'service' => ['name'=>'service',  'cname'=>'服务表',  'get' => function() {  return  M('Service'); }],
+        'search' => ['name'=>'search',  'cname'=>'全文检索表',  'get' => function() {  return new \Xpmse\Search();}],
+		'code' => ['name'=>'code',  'cname'=>'代码模板表',  'get' => function() {  return  M('Code'); }],
+		'domain' => ['name'=>'domain',  'cname'=>'域名表',  'get' => function() {  return  M('Domain'); }]
+	];
+
+	foreach ( $tabs as $m=>$t ) {
+		try {
+			$tab = $t['get']();
+			if ( method_exists($tab, '__schema') ) {
+				$p = $p + 1;
+				info( "   升级数据表{$t['cname']}..." );
+                $tab->__schema();
+
+                // 初始化默认数据
+                if ( method_exists($tab, '__defaults') ) {
+                    $tab->__defaults();
+                }
+				info(" 完成\n");
+            }
+            
+		} catch ( Excp $e ) {
+			echo $e->toJSON();
+			die();
+		} catch ( Exception $e  ) {
+			echo Excp::etoJSON( $e );
+			die();
+		}
+	}
+
+	// 调用升级控制器
+	info( "   升级微信配置信息...");
+	core_run_action(['ns'=>'baas/admin', 'c'=>'conf', 'a'=>'upgrade'], true);
+	info(  " 完成\n" );
+
+	info( "   升级证书配置信息...");
+	core_run_action(['ns'=>'baas/admin', 'c'=>'cert', 'a'=>'upgrade'], true);
+	info(  " 完成\n");
+
+	// 升级系统配置
+	info( "   升级系统配置信息... " );
+	sys_option();
+	info(  " 完成\n" );
+
+	success("   升级成功\n");
+}
+
+
+function sys_option() {
+
+	// 注册桌面
+	$opt = new \Xpmse\Option;
+	$dashboard = $opt->get("dashboard");
+	if ( $dashboard === null ) {
+		$opt->register(
+			"控制台地址", 
+			"dashboard", 
+			"",
+			10
+		);
+    }
+    
+    $custmenu = $opt->get("custmenu");
+	if ( $custmenu === null ) {
+        $data = [
+            "active" => false,
+            "menu" => []
+        ];
+        $menufile = __DIR__ . "/../config/menu.json";
+        if ( file_exists($menufile) ) {
+            $text = file_get_contents( $menufile );
+            $json_data = json_decode( $text, true );
+            if ( $json_data !== false ) {
+                $data = [
+                    "active" => false,
+                    "menu" => $json_data
+                ];
+            }
+        }
+        
+		$opt->register(
+			"自定义菜单", 
+			"custmenu", 
+			json_encode($data,JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES),
+			2
+		);
+	}
+}
+
+
+
+// Helper Out
+function helper( $cmd = null ) {
+	outln( "Helper {$cmd}" );
+}
+	
+
+/**
+ * 输出还有 BUG 
+ * @param  [type] $tips  [description]
+ * @param  string $style [description]
+ * @param  [type] $io    [description]
+ * @return [type]        [description]
+ */
+function in( $tips,  $style='white bold', $io = null ) {
+	global $stdio;
+	if ( $io == null ) {
+		$io = $stdio;
+	}
+	$io->out("<<$style>>" .  $tips  . '<<reset>>' );
+
+
+	$str = trim($stdio->in());
+	$code = mb_detect_encoding($str);
+
+	if ( $code != 'UTF-8') {
+		$str = iconv($code, 'UTF-8', $str);  
+		$code = 'UTF-8';
+	}
+
+	$len = mb_strlen($str, $code);
+	$lastchar = mb_substr($str, $len-1);
+
+	if ( utf8_unicode($lastchar) == null ) {
+		$str = substr($str, 0, strlen($str)-2);
+	}
+
+	// echo "UCHAT: " . utf8_unicode($lastchar) . "\n";
+
+	return $str;
+}
+
+function inpass( $tips,  $style='white bold', $io = null ) {
+	global $stdio;
+	if ( $io == null ) {
+		$io = $stdio;
+	}
+	$io->out("<<$style>>" .  $tips  . '<<reset>>' );
+
+
+	// $str = trim($stdio->in());
+
+	system('stty -echo');
+	$str = trim(fgets(STDIN));
+	system('stty echo');
+	$io->out("\n");
+
+	$code = mb_detect_encoding($str);
+
+	if ( $code != 'UTF-8') {
+		$str = iconv($code, 'UTF-8', $str);  
+		$code = 'UTF-8';
+	}
+
+	$len = mb_strlen($str, $code);
+	$lastchar = mb_substr($str, $len-1);
+
+	if ( utf8_unicode($lastchar) == null ) {
+		$str = substr($str, 0, strlen($str)-2);
+	}
+
+	// echo "UCHAT: " . utf8_unicode($lastchar) . "\n";
+
+	return $str;
+}
+
+
+function error( $message, $io=null ) {
+	
+	global $stdio;
+	if ( $io == null ) {
+		$io = $stdio;
+	}
+
+	$io->err('<<red>>' .  $message  . '<<reset>>');
+}
+
+
+function success( $message, $io=null ) {
+	
+	global $stdio;
+	if ( $io == null ) {
+		$io = $stdio;
+	}
+
+	$io->out('<<green>>' .  $message  . '<<reset>>');
+}
+
+
+function info( $message, $style='white', $io = null ) {
+	global $stdio;
+	if ( $io == null ) {
+		$io = $stdio;
+	}
+
+	$io->out("<<$style>>" .  $message  . '<<reset>>');
+}
+
+
+function outln( $message , $io = null ) {
+	global $stdio;
+	if ( $io == null ) {
+		$io = $stdio;
+	}
+
+	$io->outln( $message);
+}
+
+
+
+// Utils::out( "cmd is: " , $cmd , "\n");
+// Utils::out( "query is:\n--------\n" ,  $query  , "\n----------\n");
+// Utils::out( "data is:\n--------\n" ,  $data  , "\n----------\n");
+
+?>

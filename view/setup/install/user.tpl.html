@@ -1,0 +1,174 @@
+<?php include_once(tpl('setup/head')); ?>
+
+<!-- Install Content -->
+<div class="content overflow-hidden">
+
+    <div class="row">
+         <div class="col-lg-6 col-lg-offset-3  col-md-6 col-md-offset-3  col-sm-6 col-sm-offset-3 p push-15-t">
+             <!-- Step Form Content -->
+             <div class="block block-shadow block-radius">
+                <div class="block-header">
+                    <h3 class="block-title font-w300 pull-right text-muted push-10-t push-5-r "> 
+                       <?=$currIdx?>/<?=$total?>
+                    </h3>
+                    <h3 class="block-title font-w300  push-10-t push-5-l" style="text-transform:none"> 
+                        <i class="iconfont icon-xpmse push-5-l"></i> 
+                        安装向导
+                        <i class="fa fa-angle-right"></i> 
+                        系统管理员
+                    </h3>
+                </div>
+
+				<div class="block-content block-content-full block-content-narrow text-center" style="padding-left: 10%;padding-right: 10%;">	
+                    <form 
+                        action=""
+                        id="user-form"
+                        method="post" class="form-horizontal" >
+
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon font-w400" style="min-width:100px;"> 姓名 </span>
+                                <input class="form-control" type="text" id="name" name="name" 
+                                    value="<?=setupController::V('user','name', '')?>"
+                                    placeholder="请填写管理员姓名">
+                            </div>
+                        </div>
+
+        
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon font-w400" style="min-width:100px;"> 手机号 </span>
+                                <input class="form-control disabled" type="text"  id="mobile" name="mobile"  
+                                    value="<?=setupController::V('user','mobile', '')?>"
+                                    placeholder="请填写管理员手机号"  >
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon font-w400" style="min-width:100px;"> 登录密码 </span>
+                                <input class="form-control" type="password" id="password" name="password" 
+                                    value=""
+                                    placeholder="请填写登录密码">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon font-w400" style="min-width:100px;"> 密码确认 </span>
+                                <input class="form-control" type="password" id="repassword" name="repassword" 
+                                    value=""
+                                    placeholder="再输入一遍登录密码">
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <!-- <button 
+                                class="btn btn-primary pull-left font-w300 push-15-r tryit se-action"
+                                data-action="/setup.php?a=tryit&se=user"
+                                data-form="#user-form"
+                                type="button" > 
+                                校验配置
+                            </button>
+     -->
+                            <span class="pull-left tryit-status hidden" > <i class="fa fa-refresh fa-spin"></i> 正在校验系统配置  </span>
+                            
+                            <?php if ( !empty($next)) :?>
+                            <button class="btn btn-primary pull-right font-w300 saveit se-action" 
+                                data-action="/setup.php?a=saveit&se=user"
+                                data-form="#user-form"
+                                type="button">  
+                                下一步  <i class="fa fa-angle-double-right"></i> 
+                            </button>
+                            <?php else: ?>
+                                <button class="btn btn-primary pull-right font-w300 saveit se-action" 
+                                data-action="/setup.php?a=saveit&se=user"
+                                data-form="#user-form"
+                                type="button"> 
+                                开始安装  <i class="fa fa-angle-double-right"></i> 
+                            </button>
+
+                            <?php endif; ?>
+            
+                            <?php if ( !empty($prev)) :?>
+                            <a class="btn btn-default pull-right font-w300 push-15-r se-action" href="/setup.php?s=<?=$prev?>"> 
+                                <i class="fa fa-angle-double-left"></i> 上一步   
+                            </a>
+                            <?php endif; ?>
+
+                        </div>
+
+                     </form>
+				</div>
+             </div> <!-- Step Form Content -->
+        </div>
+    </div>
+</div>
+
+<?php include_once(tpl('setup/foot')); ?>
+<script src="/static/assets/js/plugins/select2/select2.full.min.js"></script>
+<script src="/static/assets/js/plugins/dropzonejs/dropzone.min.js"></script>
+<script src="/static/assets/js/plugins/cropper/cropper.min.js"></script>
+<script src="/static/js/setup.js"></script>
+<script type="text/javascript">
+$(function(){
+    
+    App.initHelpers('file-uploader', {});
+    App.initHelpers(['select2','image-crop']);
+
+    // 连接测试按钮
+    seActionInit('.tryit', function( status, resp ) {
+
+        if ( status == 'success') {
+            App.notify('校验成功!');
+        } else if ( status == 'warning' ) {
+            message = resp['message'] || '';
+            App.notify( '校验成功 | 警告:' + message, 'fa fa-warning','warning');
+        } else {
+            message = resp['message'] || '校验失败';
+            App.notify(message, 'fa fa-times','danger');
+        }
+
+    }, {
+        'status':'.tryit-status',
+        'action':'.se-action',
+        'doing':'<i class="fa fa-refresh fa-spin"></i> 正在校验, 可能花费数秒钟... ',
+        'mute':true
+    });
+
+    // 下一步按钮
+    seActionInit('.saveit', function( status, resp ) {
+        var next = '<?=(!empty($next))? $next : 'install'?>';
+        var nextUrl = '/'
+            if ( next !== '') {
+                nextUrl = '/setup.php?s=' + next;
+            } 
+
+        if ( status == 'success') {
+            window.location = nextUrl;
+
+        } else if ( status == 'warning' ) {
+            message = resp['message'] || '';
+            App.notify( '警告:' + message, 'fa fa-warning','warning');
+            setTimeout(function(){ window.location = nextUrl; }, 1500);
+
+        } else {
+            message = resp['message'] || '保存失败';
+            App.notify( '保存失败 | ' + message, 'fa fa-times','danger');
+        }
+
+    }, {
+        'status':'.tryit-status',
+        'action':'.se-action',
+        'hidden':'.tryit',
+        'doing':'<i class="fa fa-refresh fa-spin"></i> 正在校验并保存, 可能花费数秒钟...',
+        'mute':true
+    });
+
+});
+</script>
+
+<?php include_once(tpl('setup/footer')); ?>

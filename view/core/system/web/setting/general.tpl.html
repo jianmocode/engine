@@ -1,0 +1,246 @@
+<div class="block-content"
+ data-toggle="slimscroll" 
+ data-height="screen-height"
+ data-offset='60'
+ id="TAB_14671151760376891_BLOCK">
+
+    <form id="general-form"
+          class="js-validation-CustTypeFormStep1 form-horizontal" 
+          action="" method="post">
+        <div class="form-group">
+            <div class="col-lg-12">
+                 <div class="form-material">
+                     <input class="form-control" type="text" id="homepage" name="homepage" value="<?=!empty($data['homepage'])? $data['homepage'] :'';?>" placeholder="请填写系统地址">
+                     <label for="name">系统地址</label>
+                 </div>
+            </div>
+        </div>
+        
+        
+        <div class="form-group">
+            <div class="col-lg-12">
+                 <div class="form-material">
+                     <input class="form-control" type="text" id="name" name="name" value="<?=!empty($data['name'])? $data['name'] :'';?>" placeholder="请填写系统名称">
+                     <label for="name">系统名称</label>
+                 </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-lg-12">
+                 <div class="form-material">
+                     <input class="form-control" type="text" id="short" name="short" value="<?=!empty($data['short'])? $data['short'] :'';?>" placeholder="请填写系统简称">
+                     <label for="name">系统简称</label>
+                 </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-lg-12">
+                 <div class="form-material">
+                     <input class="form-control" type="text" id="company" name="company" value="<?=!empty($data['company'])? $data['company'] :'company';?>" placeholder="请填写公司名称">
+                     <label for="name">公司名称</label>
+                 </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-lg-12">
+                 <label for="headimgurl_path">公司 LOGO</label>
+                 <div class="form-material">
+                     <div name="logo" class="file-uploader rounded rounded-4"
+                          data-api = '<?=R("core-storage","public","upload")?>'
+                          data-title='团队标识'
+                          data-width="150px"
+                          data-height="150px"
+                          data-icon="fa fa-image" 
+                          data-placeholder="点击或拖入图片" 
+                          data-allow-types="image/png,image/jpg,image/jpeg"
+                          data-maxsize="400"
+                          data-progress="yes"
+                          data-draggable="yes"
+                          data-src="<?=!empty($data['logo_url'])? $data['logo_url']:NULL?>"
+                          data-path="<?=!empty($data['logo_path'])? $data['logo_path']:NULL?>"
+                          ></div>
+                      <div 
+                         class="file-uploader-preview rounded rounded-4 box box-grey push-30-l"
+                         data-source="logo"
+                         data-width="90px"
+                         data-height="90px"></div>
+                      <div 
+                         class="file-uploader-preview rounded rounded-4 box box-grey push-10-l"
+                         data-source="logo"
+                         data-width="50px"
+                         data-height="50px"></div>
+                 </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+           <!--  按钮组 (btngroup) -->
+            <div class="col-lg-12">
+                    <!-- refresh -->
+                    <button  id="ID_14671172870094912_1" 
+                        type="button" 
+                        data-form="#general-form"
+                        data-action="<?=R('core-system', 'settingapi','tryit', ['se'=>'general'])?>"
+                        class="btn btn-primary font-w300 push-20-r tryit se-action">
+                       <span class="tryit"><i class="fa fa-refresh"></i> 校验配置</span>
+                        <span class="pull-left tryit-status hidden" > <i class="fa fa-refresh fa-spin"></i> 正在校验</span>
+                    </button>
+
+                    <button  id="ID_14671172870094912_1" 
+                        type="button"
+                        data-form="#general-form"
+                        data-action="<?=R('core-system', 'settingapi','saveit', ['se'=>'general','id'=>$data['_id']])?>"
+                        class="btn btn-primary font-w300  push-20-r saveit">
+                        <i class="fa fa-plus push-5-r"></i> 
+                        保存资料
+                    </button>
+              
+           </div><!-- END   按钮组 (btngroup)-->
+        </div> <!-- END FORM GROUP GROUP_14671172870081144 -->
+         <!-- 快捷功能操作面板 开始-->
+        <div class="block block-quickpanel">
+            <div class="block-quickpanel-content text-center " >
+                <div class="form-group">
+                    <!--   按钮组 (btngroup)-->
+                    <div class="col-lg-12 push-20-t">
+                            <!-- refresh -->
+                            <button  id="ID_14671172870094912_1" 
+                                type="button" 
+                                data-form="#general-form"
+                                data-action="<?=R('core-system', 'settingapi','tryit', ['se'=>'general'])?>"
+                                class="btn btn-primary font-w300 push-20-r tryit se-action">
+                               <span class="tryit"><i class="fa fa-refresh"></i> 校验配置</span>
+                                <span class="pull-left tryit-status hidden" > <i class="fa fa-refresh fa-spin"></i> 正在校验</span>
+                            </button>
+
+                            <button  id="ID_14671172870094912_1" 
+                                type="button"
+                                data-form="#general-form"
+                                data-action="<?=R('core-system', 'settingapi','saveit', ['se'=>'general','id'=>$data['_id']])?>"
+                                class="btn btn-primary font-w300  push-20-r saveit">
+                                <i class="fa fa-plus push-5-r"></i> 
+                                保存资料
+                            </button>
+                    </div>
+                </div>
+                <div class="bg-primary text-white text-center bottom-line"></div>   
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <div class="col-lg-12">
+          
+            </div>
+        </div>
+
+        <div class="form-group"></div>
+    </form>
+</div>
+
+<!-- 图片裁切插件 id="_image-crop-modal" -->
+<?php include_once(tpl('common/web/imagecrop.mod')); ?>
+
+
+<script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/select2/select2.full.min.js"></script>
+<script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/jquery-validation/jquery.validate.min.js"></script>
+<script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
+<script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/dropzonejs/dropzone.min.js"></script>
+<script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/cropper/cropper.min.js"></script>
+<script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/jquery-tags-input/jquery.tagsinput.min.js"></script>
+<script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/jquery-tags-input/jquery.tagsinput2.js"></script>
+<script src="/static/js/setup.js"></script>
+
+<script type="text/javascript">
+    $(function () {
+        
+        
+        // File Uploader 
+        App.initHelpers('file-uploader', {'home':'<?=C("upload_home")?>'});
+        
+        // Image Crop 
+        App.initHelpers('image-crop');
+
+    });
+
+</script>
+<script type="text/javascript">
+$(function(){
+
+    App.initHelpers(['slimScroll']);
+    // 隐藏按钮
+    $('.block-quickpanel').addClass('hidden').hide();
+    // // 自动显示 QuickPanel
+     $('#TAB_14671151760376891_BLOCK').slimScroll().bind('slimscrolling', function(e, pos){
+        var max =  e.target.scrollHeight - e.target.offsetHeight;
+        if ( max - pos > 0 ) {
+            $('.block-quickpanel', '#TAB_14671151760376891_BLOCK').removeClass('hidden').show();
+        } else  {
+            $('.block-quickpanel', '#TAB_14671151760376891_BLOCK').addClass('hidden').hide();
+            
+        }
+     })
+
+})
+
+
+</script>
+
+
+<!-- 校验程序 -->
+<script>
+$(function(){
+    
+        // 连接测试按钮
+        seActionInit('.tryit',function( status, resp )  {
+
+                if ( status == 'success') {
+                   
+                    App.notify('校验成功!');
+
+                }  else {
+                    message = resp['message'] || '校验失败';
+                    App.notify(message, 'fa fa-times','danger');
+                }
+        }, {
+            'status':'.tryit-status',
+            'action':'.se-action',
+            'hidden':'.tryit',
+            'doing':'<i class="fa fa-refresh fa-spin"></i> 正在校验, 可能花费数秒钟... ',
+            'mute':false
+        });
+
+})
+
+
+$(function(){
+        
+        // 保存
+        seActionInit('.saveit',function( status, resp )  {
+                
+                if( status=='success') {
+                     App.notify('保存成功!');
+                   
+                
+                }else  if( status == 'error' ) {
+
+                    App.notify( '保存失败 | 警告:' + resp['message'], 'fa fa-times','danger');
+                }else{
+
+                     App.notify('保存失败!','fa fa-times','danger');
+                }
+        },{
+            'status':'.tryit-status',
+            'action':'.se-action',
+            'hidden':'.tryit',
+            'doing':'<i class="fa fa-refresh fa-spin"></i> 正在校验, 可能花费数秒钟... ',
+            'mute':false
+        });
+})
+
+</script>
+
+

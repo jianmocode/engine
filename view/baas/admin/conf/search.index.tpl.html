@@ -1,0 +1,204 @@
+<?php use \Xpmse\Utils; ?>
+<!-- 单行搜索框 开始 -->
+<!-- Page Content -->
+<div class="content" >
+    
+    <div class="block-group">
+        <!-- 添加客户 -->
+        <div 
+            id="customer-create"
+            class="block block-slider block-left " 
+            data-offset='80'
+            option-autoclose='0'
+            option-duration='500'
+            style="margin:0px;" 
+            >
+        </div>
+       <!-- 右侧弹出窗口 -->
+        <div 
+            id="window-left"
+            class="block block-slider block-left " 
+            data-offset='80'
+            option-autoclose='0'
+            option-duration='500'
+            style="margin:0px;" 
+        >
+        </div> 
+        <!-- 右侧弹出end -->
+        <div class="block">
+            <!-- tab开始 -->
+            <ul class="nav nav-tabs nav-tabs-alt" data-toggle="tabs">
+                <li class="active"> 
+                    <a id="tabs-document" href="#tabs-content-all"  class="font-w300 tabs-menu"> 
+                       <i class="fa fa-th-list push-5-r"></i> 
+                       <span > 微信配置 </span>
+                    </a>
+                </li> 
+                <li class="pull-right">
+
+                  
+                </li> 
+
+
+            </ul>
+            <!-- TAB内容开始 -->
+            <div class="block-content tab-content" style="min-height:600px;">
+                <div class="tab-pane hide" id="tab-pane-error" >
+                    <div class="alert alert-danger push-50-l push-50-r push-20-t ">
+                        <h3 class="font-w300 push-15">载入失败</h3>
+                        <p>{HTML}</p>
+                    </div>
+                    <div class="row"  style="min-height:300px;" ></div>
+                </div>
+                <div class="tab-pane active" id="tabs-status-0">
+                    <div class="row items-push remove-margin">
+                        <?php if(empty($rs) || $total == 0 ) :?>
+
+                        <span class="push-20-r">没有找到数据 </span>
+                        <?php else: ?>
+                      
+
+                        <!-- 配置项表单 -->
+                        <div class="tab-pane active" id="tabs-content-all">
+                            <!-- 列表页 -->
+                            <table class="js-table-sections table table-hover">
+                                <thead>
+                                    <th class="font-w300" style="width:80px;" >分组</th>
+                                    <th class="font-w300" style="width:30%;">配置名称</th>
+                                    <th class="font-w300">配置数值</th>
+                                    <th class="font-w300" style="width:200px;" >修改时间</th>
+                                </thead>
+                                
+                                <?php $i=0;
+                                foreach($groups as $gname => $group ) : $i++; ?>
+                                <tbody class="js-table-sections-header <?=($i==1)?'open':''?>">
+                                    <tr>
+                                        <td class="text-center">
+                                            <i class="fa fa-angle-right font-w600"></i>
+                                        </td>
+                                        <td class="font-w600" colspan="3">
+                                            <?=$gname?>  <em class="text-muted font-w300 font-s12">
+                                                （ 订阅号/服务号/小程序/企业微信 ）
+                                            </em>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tbody>
+                                    <?php foreach( $group as $rs ) :?>  
+                                    <tr style="cursor: pointer;" 
+                                        class="list-modify"  data-toggle="block-group" data-block="#window-left" >
+                                        <td class="font-w300 _id hidden" ><?=$rs['_id']?></td>
+                                        <td class="text-center"></td>
+                                        <td class="font-w300"> <?=$rs['cname']?> </td>
+                                        <td class="font-w300">
+                                             <?php 
+                                                if ( is_bool($rs['value']) ) {
+                                                    echo json_encode($rs['value']);
+                                                } else if ( is_numeric($rs['value']) ) {
+                                                    echo "<span class='label label-info  font-s12'>{$rs['value']}</span>";
+                                                } else if ( empty($rs['value']) ) {
+                                                    echo "<span class='label label-danger font-s12' >尚未设置</span>";
+                                                } else if ( is_array($rs['value']) ) {
+                                                    Utils::out( $rs['value'] ); 
+                                                } else {
+                                                    echo "<span class='label label-info  font-s12'>{$rs['value']}</span>";
+                                                }
+                                            ?>
+                                        </td>
+                                        <td>
+                                            <?=$rs['updated_at']?>
+                                        </td>
+                                    </tr>
+                                    <?php endforeach; ?>
+                                    
+                                </tbody>
+                                <?php endforeach; ?>
+
+                                <?php endif ?>
+                            </table>
+                            <!-- 列表页结束 -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+
+    $(function(){
+
+        App.initHelpers([ 'select2', 'slimscroll','ajax-confirm', 'ajax-submit','tab','block-group']);
+        $('.mobadminxiugai').on('success', function(event,data){
+            // 判断是否成功
+            if (data==true) {
+                App.notify( '删除成功' );
+                }else{
+                App.notify( '删除失败', 'fa fa-times','danger');   
+            };
+        });
+    })
+
+    // 防止重复启动
+    $(function(){
+        $('.data-create').click(function(event) {
+            $('#window-left').close();
+        });
+    })
+
+    /**
+     * 搜索方法
+     * @return {[type]} [description]
+     */
+    $(function(){
+        // 搜索按钮点击
+        $('.ser-task').click(function(){
+            sourseek();
+        });
+    })
+
+
+    // 提交get请求
+    function sourseek(){
+       // 获取查询内容
+        var keyword =  $('.search-content').val();
+        var url ="<?=R('ReportSearch','index',['page'=>'1','type'=>'r','order'=>'ct','keyword'=>""])?>"+keyword;
+        window.location.href=url; 
+    }
+
+    // 创建按钮启动
+    $(function(){
+        $('.data-create-material').click(function(){
+            $('#customer-create').remote({
+                url:"<?=R('baas-admin','conf','panel',['type'=>'update','table'=>$table['name'],'_id'=>''])?>",
+                // 载入页面
+                success: function( html, xhr ) {
+                    $('#customer-create').html(html);
+                },
+                // 如果报错返回错误
+                error: function( xhr, status, statusText ) {
+
+                },
+            });
+        });
+
+        // 打开配置(修改)
+        $('.list-modify').click(function(){
+
+            var _id =$(this).find('._id').html();
+            $('#window-left').remote({
+                url:"<?=R('baas-admin','conf','panel',['type'=>'update','table'=>$table['name'],'_id'=>''])?>"+_id,
+                // 载入页面
+                success: function( html, xhr ) {
+                    $('#window-left').html(html);
+                },
+                // 如果报错返回错误
+                error: function( xhr, status, statusText ) {
+
+                },
+            });
+        })
+    })
+</script>
+
+

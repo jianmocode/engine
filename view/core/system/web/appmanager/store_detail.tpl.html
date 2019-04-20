@@ -1,0 +1,131 @@
+<div class="block block-themed remove-margin">
+	<div class="block-header bg-primary">
+		<ul class="block-options">
+			<li>
+				 <button type="button" onclick="$('#_app_browser').modal('hide');"><i class="fa fa-times"></i></button>
+			</li>
+		</ul>
+		<h3 class="block-title"> <i class="fa fa-arrow-right"></i> <?=$app['cname']?> </h3>
+	</div>
+	<div class="block-content" style="padding-top:10px;padding-bottom: 20px;">
+		<div class="list-group-item clearfix" style="border: 0px;">
+			<a class="item item-rounded pull-left push-10-r bg-info" href="<?=$app['homepage']?>" target="_blank">
+				<?php if ($app['icontype']=="img") : ?>
+					<img src="<?=$app['image']['light']?>" style="width:48px;height:48px;" >
+				<?php else:  ?>
+					<i class="<?=$app['icontype']?> <?=$app['icon']?> text-white-op"></i>
+				<?php endif;  ?>
+			</a>
+
+			<div class="push-5 clearfix pull-right " style="min-width:300px;width:90%;">
+				<div class="text-danger pull-right font-s16 status-text">
+					<?=sprintf('%.2f', $app['price']/100);?> 元/<?=$app['unit']?>
+				</div>
+				<a class="font-w600 font-s16" href="<?=$app['homepage']?>" target="_blank"><?=$app['cname']?></a>
+				<span class="text-muted font-s16"><?=$app['version']?></span>
+				<div class="font-s14 text-muted push-5-t app-intro" style="min-height: 36px;">
+					<?=$app['detail']?>
+				</div>
+			</div>
+		</div>
+		
+		<div style="padding-left:96px;padding-top:10px;">
+		
+			<?php if ($app['status'] == 'downloading') : ?>
+			<!-- 下载中，呈现进度条 -->
+			<div class="progress">
+				<div class="progress-bar progress-bar-primary" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" 
+					style="width:0%">下载中，请稍候 0%</div>
+			</div>
+			<button class="btn btn-sm btn-default font-w300 hidden"  data-id="<?=$app['appid']?>" >取消下载 </button>  
+
+			<?php elseif ($app['status'] == 'close') : ?>
+			<button class="btn btn-sm btn-default disabled font-w300" disabled   data-id="<?=$app['appid']?>" >封禁</button>
+			<?php elseif ($app['status'] == 'expired') : ?>
+			<button class="btn btn-sm btn-danger  font-w300 buy" data-id="<?=$app['appid']?>" >立即续费</button>
+			<?php elseif ($app['status'] == 'downloaded') : ?>
+			<button class="btn btn-sm btn-primary  font-w300 install"	data-id="<?=$app['appid']?>" >立即安装</button>
+			<?php elseif ($app['status'] == 'uninstalled') : ?>
+			<button class="btn btn-sm btn-primary  font-w300 download"	data-id="<?=$app['appid']?>" >立即下载</button>
+			<?php elseif ($app['status'] == 'installed') : ?>
+			<button class="btn btn-sm btn-default disabled font-w300 push-10-r" disabled   data-id="<?=$app['appid']?>" >已安装</button>  
+			<button class="btn btn-sm btn-primary font-w300 ui" data-id="<?=$app['appid']?>"  data-lid="<?=$app['local_appid']?>" >客户端下载</button>  
+			<?php elseif ($app['status'] == 'complete') : ?>
+			<button class="btn btn-sm btn-default disabled font-w300" disabled   data-id="<?=$app['appid']?>" >已授权</button> 
+			<?php elseif ($app['status'] == 'new_version') : ?>
+			<button class="btn btn-sm btn-danger  font-w300 upgrade" data-id="<?=$app['appid']?>" >立即升级</button>
+			<?php else: ?>
+			<button class="btn btn-sm btn-success font-w300 buy"  data-id="<?=$app['appid']?>"  data-id="100" >购买并下载</button>
+			<?php endif; ?> 
+
+		</div>
+
+		<hr class=" remove-padding" />
+
+		<div class="js-slider slick-nav-white slick-nav-hover" data-slider-dots="true" data-slider-arrows="true" style="min-height:520px;">
+			<?php foreach($app['images'] as $img ): ?>
+			<div>  <img width="860" src="<?=$img?>" > </div>
+			<?php endforeach; ?>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+
+/**
+ * 查询应用状态
+ * @return 
+ */
+function queryStatus() {
+
+	$.post('<?=R("core-system", "appmanager", "storeStatus", ["id"=>$app["appid"]])?>', function(data) {
+		
+		var progress = data['progress'];
+		var message = data['message'] || '';
+		var status = data['status'];
+		$('.progress-bar').css('width', progress + '%');
+		$('.progress-bar').html( message + ' ' + progress + '%');
+		if ( status == 'downloading' ) {
+			setTimeout(queryStatus, 2000);
+
+		// 刷新数据
+		} else if ( status == 'done' ) {
+			detail('<?=$app["appid"]?>');
+		}
+	}, 'json');
+}
+
+
+$(function(){
+	App.initHelpers('slick');
+
+	// 购买功能
+	$('.buy').click(function(){
+		var id = $(this).attr('data-id');
+		buy(id);
+	});
+
+	// 立即下载
+	$('.download').click(function(){
+		var id = $(this).attr('data-id');
+		download(id);
+	});
+
+	// 立即安装
+	$('.install').click(function(){
+		var id = $(this).attr('data-id');
+		install(id);
+	});
+
+	// 客户端下载
+	$('.ui').click(function(){
+		var id = $(this).attr('data-id');
+		var lid = $(this).attr('data-lid');
+		ui(id,lid);
+	});
+
+	<?php if ($app['status'] == 'downloading') : ?>
+	queryStatus();
+	<?php endif; ?>
+})
+</script>

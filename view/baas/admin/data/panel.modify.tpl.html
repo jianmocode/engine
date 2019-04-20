@@ -1,0 +1,278 @@
+<?php use \Xpmse\Utils; ?>
+<div class="content" style="min-height: 600px;">
+    <form class="form-horizontal push-10-t js-panel-create" 
+        action="<?=R('baas-admin','data','save',['table'=>$table['name']])?>" method="post">
+        
+        <input 
+            type="hidden" id="_id" name="_id" 
+            value="<?=!empty($rs['_id'])?$rs['_id']:''?>" >
+
+        <div class="form-group">
+            <div class="col-sm-4">
+                <div class="form-material">
+                    <input class="form-control disabled" type="text" id="_id" name="_id" 
+                        value="<?=!empty($rs['_id'])?$rs['_id']:''?>"
+                        placeholder="自动生成" required disabled>
+                    <label for="material-text">数据表ID</label>
+                </div>
+            </div>
+
+            <div class="col-sm-4">
+                <div class="form-material">
+                    <input class="form-control" type="text" id="created_at" name="created_at" 
+                        value="<?=!empty($rs['created_at'])?$rs['created_at']:''?>"
+                        placeholder="请填写创建时间" >
+                    <label for="material-text">创建时间</label>
+                </div>
+            </div>
+
+            <div class="col-sm-4">
+                <div class="form-material">
+                    <input class="form-control" type="text" id="updated_at" name="updated_at" 
+                        value="<?=!empty($rs['updated_at'])?$rs['updated_at']:''?>"
+                        placeholder="请填写修改时间" >
+                    <label for="material-text">修改时间</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+
+            <div class="col-sm-4">
+                <div class="form-material">
+                    <input class="form-control" type="text" id="_acl" name="_acl" 
+                        value="<?=!empty($rs['_acl'])?$rs['_acl']:''?>"
+                        placeholder="请填写权限" >
+                    <label for="material-text">权限</label>
+                </div>
+            </div>
+
+            <div class="col-sm-4">
+                <div class="form-material">
+                    <input class="form-control" type="text" id="_user" name="_user" 
+                        value="<?=!empty($rs['_user'])?$rs['_user']:''?>"
+                        placeholder="请填写用户" >
+                    <label for="material-text">用户</label>
+                </div>
+            </div>
+
+            <div class="col-sm-4">
+                <div class="form-material">
+                    <input class="form-control" type="text" id="_group" name="_group" 
+                        value="<?=!empty($rs['_group'])?$rs['_group']:''?>"
+                        placeholder="请填写用户组" >
+                    <label for="material-text">用户组</label>
+                </div>
+            </div>
+        </div>
+
+        <?php foreach($columns as $col ):?>
+        <div class="form-group">
+            <div class="col-sm-12">
+                <div class="form-material">
+                    <?php if ( is_bool($rs[$col]) ) : ?>
+                    <input class="form-control" type="text" id="<?=$col?>" name="<?=$col?>" 
+                        value="<?=$rs[$col]?>"
+                        placeholder="请填写<?=$col?> ">
+
+                    <?php elseif ( is_numeric($rs[$col]) ) : ?>
+                    <input class="form-control" type="text" id="<?=$col?>" name="<?=$col?>" 
+                        value="<?=$rs[$col]?>"
+                        placeholder="请填写<?=$col?> ">
+
+                    <?php elseif 
+                        ( is_array($rs[$col]) ||  
+                          $cmaps[$col]['comment'] == '{__JSON__}' ) : ?>
+
+                    <textarea class="form-control" 
+                        id="<?=$col?>" name="<?=$col?>"
+                        data-type="JSON"
+                        rows="5"  placeholder="请填写<?=$col?>"><?=empty($rs[$col]) ? '' : htmlspecialchars(Utils::get($rs[$col]))?></textarea>
+
+                    <?php elseif ( empty($rs[$col]) ) : ?>
+                    <input class="form-control" type="text" id="<?=$col?>" name="<?=$col?>" 
+                        value="<?=$rs[$col]?>"
+                        placeholder="请填写<?=$col?> ">
+
+                   
+
+                    <?php else : ?>
+                    <input class="form-control" type="text" id="<?=$col?>" name="<?=$col?>" 
+                        value="<?=!empty($rs[$col])?$rs[$col]:''?>"
+                        placeholder="请填写<?=$col?> ">
+                    <?php endif; ?>
+                    <label for="material-text"><?=$col?></label>
+                </div>
+            </div>
+        </div>
+
+        <?php endforeach;?>
+        
+        <div class="form-group">
+            <div class="col-xs-12">
+                <button class="btn btn-minw btn-primary push-20-r" type="submit">保存数据</button>
+   
+                <button 
+                    confirm-title="确认删除数据"
+                    confirm-content="您确定要删除数据吗？"
+                    confirm-action="<?=R('baas-admin','data','remove',['table'=>$table['name']])?>"
+                    confirm-dismiss = "关闭窗口"
+                    confirm-submit= "确认删除"
+                    data-param-id="<?=$rs['_id']?>" 
+                    class="btn btn-minw btn-danger push-20-r ajax-confirm confirm-remove" 
+                    type="button"> 删除数据
+                </button>
+
+                <button class="btn btn-minw btn-primary pull-right change-type content-yuedu" type="button">阅读模式</button>
+            </div>
+        </div>
+
+        <div class="form-group"></div>
+
+    </form>
+</div>
+
+<script type="text/javascript">
+
+    $(function(){
+        App.initHelpers(['block-group','ajax-confirm']);
+        $('.confirm-remove').on('success', function(event,data){
+            if ( data.code == 0 ) {
+                 App.notify( '删除成功' );
+                App.loading().hide();
+                setTimeout(function() {
+                    window.location = "<?=R('baas-admin','data','index',['table'=>$table['name']])?>";
+                },3000);
+            }
+        });
+    });
+
+    $(function(){
+        $('.content-yuedu').click(function(event){
+            $('.yuedutype').removeClass('hide');
+            $('.xiugaitype').removeClass('show');
+            $('.yuedutype').addClass('show');
+            $('.xiugaitype').addClass('hide');
+        });
+    });
+    
+    // 表单验证
+    $(function(){
+        
+        $('.js-panel-create').validate({
+            errorClass: 'help-block text-right animated fadeInDown',
+            errorElement: 'div',
+            errorPlacement: function(error, e) {                
+                jQuery(e).parents('.form-group .form-material').append(error);
+            },
+            highlight: function(e) {
+                jQuery(e).closest('.form-group .form-material').parent().removeClass('has-error').addClass('has-error');
+                jQuery(e).closest('.help-block').remove();
+            },
+            unhighlight:function(e){
+                jQuery(e).closest('.form-group .form-material').parent().removeClass('has-error');
+                jQuery(e).closest('.help-block').remove();
+            },
+            success: function(e) {
+                jQuery(e).closest('.form-group .form-material').parent().removeClass('has-error');
+                jQuery(e).closest('.help-block').remove();
+            },
+
+            submitHandler: function(form) {
+
+                var self = this;
+                try {
+                    // 把from提交的内容进行截断,调用UserDataSubmit方法;
+                    DataSubmit(self,form,function callback(){
+                        App.notify( '操作成功' );
+                        App.loading().hide();
+                        setTimeout(window.location.reload(),3000);
+                    });
+
+                    return false;
+                    
+                } catch( e ){
+                    console.log( e);
+                    return false;
+                }
+
+                return true;
+            },
+            rules: {
+                '_id':{required:true}
+            },
+            
+            messages: {
+            },
+        });
+
+    })
+    
+
+    /**
+     * 提交表单 
+     * @param {[type]} validation [description]
+     * @param {[type]} form       [description]
+     */
+    function DataSubmit( validation, form , callback ) {
+        App.loading({message:'正在储存...'}).show();
+        var api = $(form).attr('action');
+        var next = $(form).attr('data-next');
+        var submits = $('button[type="submit"]', form);
+
+
+        $(submits).attr('disabled', 'disabled');
+        $(submits).addClass('disabled');
+
+        var data = {};
+        var formData =  $(form).serializeArray();
+        for( var i=0; i<formData.length; i++ ) {
+            var name = formData[i]['name'];
+            var value = formData[i]['value'];
+
+            if ( value != '' && $('textarea[name=' + name + ']').attr('data-type') == 'JSON' ) {
+                
+                console.log( (value == '') );
+
+                try {  // 验证 JSON 格式
+                    $.parseJSON(value); } catch(e) {
+                    App.loading().hide();
+                    App.notify(  name +  ' JSON: ' +   e.message, 'fa fa-times','danger');
+
+                    $(submits).removeAttr('disabled');
+                    $(submits).removeClass('disabled');
+                    return;
+                }
+
+                value = "__JSON_TEXT__|" + value;
+            }
+
+            if (value !== "") {
+                data[name] = value;
+            }
+        }
+
+       data = jQuery.extend(data, {});
+
+       $.post( api, data, function(data, textStatus, xhr) {
+
+            $(submits).removeAttr('disabled');
+            $(submits).removeClass('disabled');
+
+            if (data['code'] != 0  ){
+                App.notify( '操作失败'+data['content'], 'fa fa-times','danger');
+                return;
+            };
+
+            callback();
+            return;
+
+        },'json')
+
+    }
+</script>
+<style>
+    .mustbe{
+        color: red;
+    }
+</style>

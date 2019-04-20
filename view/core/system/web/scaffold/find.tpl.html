@@ -1,0 +1,222 @@
+<style type="text/css">
+	#data_view {width: 100%; height: 300px; }
+	 .ht_clone_top{ margin-left: 20px; margin-top:20px; } 
+	 .CodeMirror {border: 1px solid #ddd; }
+</style>
+
+
+<div class="block block-transparent remove-margin">
+    <div class="block-header">
+        <ul class="block-options">
+            <li>
+                共 <?=$total?> 条， 每页显示 <input type="text" id="perpage" 
+                	classs="form-control input-sm text-center" 
+                	style="width:30px;text-align: center;" 
+                	value="<?=$perpage?>"> 条
+            </li>
+        </ul>
+        <h3 class="block-title font-w300" style="text-transform:capitalize;"> 
+        	<?=$_NAME?> (<span style="text-transform:none;"> <?=$index?> </span>)
+
+        </h3>
+    	
+    	<form id="sqlQueryForm" name="sqlQueryForm" method="GET" action="<?=R('core-system','scaffold', 'find',['model_name'=>$_GET['model_name']])?>" >
+	    	<div class="push-30-t">
+	          		<textarea id="sql" name="sql" class="codejson" rows="4" ><?=$_sql?></textarea>
+	        </div>
+	        <div>
+	        	<button class="btn btn-primary btn-sm push-15-t" type="button">查询</button>
+	        </div>
+
+	        <?php if (is_array($error) ) : ?>
+	       	<div>
+				<span class="text-danger push-15-t"><?=$error['message']?>
+	        	<?php if (isset($error['extra']['sql'])): ?>
+	        	 ( <?=$error['extra']['sql']?> ) 
+	        	<?php endif; ?>
+	        	</span>
+	        </div>
+	       <?php endif; ?>
+
+        </form>
+	
+    </div>
+
+
+	<div class="block-content" id="data_view"></div>
+	<div class="push-30-t">
+		<nav>
+            <ul class="pagination">
+          
+                <?php 
+                if(is_array($pages)) : 
+                foreach ($pages as $pg ) :
+                ?>
+                <li <?php if($currPage==$pg) :?> class="active" <?php endif;?> >
+                	<?php if($currPage==$pg) :?>
+                    	<a href="javascript:void(0)"><?=$pg?></a>
+                    <?php else : ?>
+                    	<a href="javascript:reloadPage(  cms[0].getValue(), <?=$pg?> )"><?=$pg?></a>
+                    <?php endif;?>
+
+                </li>
+            	<?php 
+            	endforeach;
+            	endif; ?>
+            </ul>
+        </nav>
+	</div>
+
+	<div class="hidden">
+	 	<button  
+				 id="delete_agent"
+	 			 confirm-action="<?=R('core-system','scaffold', 'datadelete',['model_name'=>$_GET['model_name']])?>"
+                 confirm-title="请确认删除选中记录"
+                 confirm-content="请确认删除 <strong class='text-danger'>确认卸载，该应用所有数据将被删除</strong>， 此操作不可恢复!"
+                 confirm-submit="确认删除"
+                 data-param-id="0"
+                 data-param-row="0"
+                 data-param-col="0"
+                 class="btn btn-sm btn-danger font-w300 push-5-t ajax-confirm 
+                 uninstall-submit action-submit">删除</button>
+	</div>
+</div>
+
+
+<script type="text/javascript">
+
+var cms = [];
+
+/**
+ * 初始化 jsoninput 字符串
+ * @return {[type]} [description]
+ */
+function init_jsoninput() {
+    var objs = document.getElementsByClassName('codejson');
+    for( var i=0; i<objs.length; i++ ) {
+        var rows = parseInt($(objs[i]).attr('rows'));
+            if ( rows == 0 ){
+                 rows = 8;   
+            }
+
+        var height = rows * 20;
+        cms[i] = CodeMirror.fromTextArea(objs[i], {
+            mode: "text/x-mysql", //mode: "javascript",
+            keyMap: "sublime",
+            autoCloseBrackets: true,
+            matchBrackets: true,
+            showCursorWhenSelecting: true,
+          // lineNumbers:true,    
+          // theme: "monokai",
+            tabSize: 4
+        });
+        cms[i].setSize(null, height);
+    }
+}
+
+
+/**
+ * 刷新页面
+ * @param  {[type]} sql     [description]
+ * @param  {[type]} page    [description]
+ * @param  {[type]} perpage [description]
+ * @return {[type]}         [description]
+ */
+function reloadPage( sql, page, perpage ) {
+	sql = escape(sql)  || "WHERE";
+	page = page || 1;
+	perpage = perpage || $('#perpage').val();
+	var url = '<?=R('core-system','scaffold', 'find',['model_name'=>$_GET['model_name']])?>' + '&sql='+ sql + '&page='+page + '&perpage='+perpage;
+	$('#tabs_find').attr('data-remote', url  );
+	$('#tabs_find').trigger('click');
+}
+
+
+function deleteRS( id, pos ) {
+	$('#delete_agent').attr('confirm-title', '请确认删除选中记录 #' + id);
+	$('#delete_agent').attr('confirm-content',"请确认删除记录 <strong class='text-danger'>#" + id + "</strong>， 此操作不可恢复!");
+	$('#delete_agent').attr('data-param-id', id);
+	$('#delete_agent').attr('data-param-row', pos.row);
+	$('#delete_agent').attr('data-param-col', pos.col);
+	$('#delete_agent').trigger('click');
+}
+
+
+function updateRS(id, pos) {
+
+	var url = '<?=R('core-system','scaffold', 'dataform',['model_name'=>$_GET['model_name']])?>' + '&_id='+ id;
+	$('#tabs_update').attr('data-remote', url  );
+	$('#tabs_update').html('修改数据 #'+id);
+	$('#tabs_update').parent().removeClass('hidden');
+	$('#tabs_update').trigger('click');
+
+}
+
+
+</script>
+
+
+<script type="text/javascript">
+
+$(function(){
+
+	App.initHelpers(['ajax-confirm', 'ajax-submit']);
+
+
+	var data = <?=json_encode($data)?>;
+	var container = document.getElementById('data_view');
+	var height = $(document.body).height() - 560;
+	var hot = new Handsontable(container, {
+		data: data,
+		width: '100%',
+		height:height,
+		autoWrapCol:true,
+		autoWrapRow:true,
+		readOnly:true,
+		// rowHeights: 48,
+		colHeaders:<?=json_encode($head)?>,
+		contextMenu:true,
+		contextMenu:{
+			callback: function (key, options) {
+				
+				var headers = <?=json_encode($head)?>;
+				var pos = headers.indexOf('_id');
+				var cell = hot.getDataAtCell(options['start'].row, pos);
+				
+				if ( key == 'delete' && cell != "") {
+					deleteRS(cell, options['start']);
+				} else if ( key == 'edit' && cell != "") {
+					updateRS(cell, options['start']);
+				}
+
+			},
+			items:{
+				"delete": {name: '删除本条记录'},
+				"edit": {name: '编辑本条记录'},
+			}
+		}
+	});
+
+
+	init_jsoninput();
+	$('button', '#sqlQueryForm').click(function(event) {
+		reloadPage(  cms[0].getValue()  );
+	});
+
+	$('.action-submit').on('error', function(event, error) {
+         App.notify( '操作失败 (' + error['message'] + ')', 'fa fa-times','danger');
+    });
+
+    $('.action-submit').on('success', function(event, data ) {
+        var id = $(this).attr('data-param-id');
+        var row = $(this).attr('data-param-row');
+        var col = $(this).attr('data-param-col');
+        var message = '操作成功 #'+id + '已删除';
+        	App.notify( message  );
+        	reloadPage(  cms[0].getValue()  );
+
+    });
+
+});
+
+</script>

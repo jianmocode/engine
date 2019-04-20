@@ -1,0 +1,36 @@
+<?php
+use \Xpmse\Utils;
+?>
+<link rel="stylesheet" href="/static/assets/js/plugins/highlightjs/github-gist.min.css">
+<link rel="stylesheet" href="/static/assets/js/plugins/highlightjs/styles/darkula.css">
+<script src="/static/assets/js/plugins/highlightjs/highlight.pack.js"></script>
+
+<div class="block block-themed remove-margin">
+	<div class="block-header bg-smooth-darker">
+		<ul class="block-options">
+			<li>
+				 <button type="button" onclick="$('#_app_browser').modal('hide');"><i class="fa fa-times"></i></button>
+			</li>
+		</ul>
+        <h3 class="block-title"> <i class="fa fa-arrow-right"></i> 
+            <?=$se["cname"]?>
+            <span style="text-transform:none;">( <?=$se['service_name']?> )</span>
+        </h3>
+	</div>
+	<div class="block-content" style="padding:0px;margin:0px;" data-height="320px" data-toggle="slimscroll">
+		
+		<div class="content content-full bg-white " style="height:auto;padding:0px; margin:0px;">
+             <pre class="pre-sh"><code class="javascript" style="padding:20px">//<?=$se["cname"]?> (<?=$se['service_name']?>)
+<?=Utils::out($se)?></code></pre>
+        </div>
+	</div>
+</div>
+
+<script type="text/javascript">
+$(function(){
+	$('pre code').each(function(i, block) {
+		hljs.highlightBlock(block);
+	});
+    App.initHelpers('slimscroll', {"height":300});
+});
+</script>

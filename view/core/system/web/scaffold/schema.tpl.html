@@ -1,0 +1,127 @@
+<div class="block block-transparent remove-margin">
+    <div class="block-header">
+        <ul class="block-options">
+            <li>
+            	<button 
+                    confirm-action="<?=R('core-system','scaffold', 'rebuildschema',['model_name'=>$_GET['model_name']])?>"
+                 	confirm-title="请确认是否重建数据表"
+                 	confirm-content="请确认重建数据表 <strong class='text-danger'>确认后，该数据表所有数据将被删除</strong>， 此操作不可恢复!"
+                	confirm-submit="确认重建"
+                	data-name="重建"
+                    class="btn btn-xs btn-default pull-right font-s13 ajax-confirm scan-submit "
+                    name="error" id="error" type="submit" >
+                    <i class="fa fa-exchange"></i> 重建
+                 </button>
+
+                 <button 
+                    data-action="<?=R('core-system','scaffold', 'updateschemaindex',['model_name'=>$_GET['model_name']])?>"
+                    data-name="重建索引"
+                    class="btn btn-xs btn-default pull-right font-s13 ajax-submit scan-submit  push-15-r"
+                    name="error" id="error" type="submit" >
+                    <i class="fa fa-refresh"></i> 重建索引
+                 </button>
+
+                <button 
+                    data-action="<?=R('core-system','scaffold', 'updateschema',['model_name'=>$_GET['model_name']])?>"
+                    data-name="更新"
+                    class="btn btn-xs btn-default pull-right font-s13 ajax-submit scan-submit  push-15-r"
+                    name="error" id="error" type="submit" >
+                    <i class="fa fa-refresh"></i> 更新
+                 </button>
+
+                 
+            </li>
+        </ul>
+        <h3 class="block-title font-w300" style="text-transform:capitalize;"> <?=$_NAME?> (<span style="text-transform:none;"> <?=$index?> </span>) 数据结构 </h3>
+    </div>
+</div>
+
+
+<table class="js-table-sections table table-hover">
+	<thead>
+	    <tr>
+	        <th style="width: 30px;"></th>
+	        <th style="width: 50%;" class="font-w300">字段名称</th>
+	        <th style="width: 50%;"  class="font-w300">字段类型</th>
+	    </tr>
+	</thead>
+
+	<?php foreach ($columns as $type ) :
+		  $t = $type->toArray();
+		  $labelClass = [
+		  		'BaseString'=>'info', 
+		  		'BaseFloat'=>'default', 
+		  		'BaseInt'=>'default', 
+		  		'BaseDate'=>'success',
+		  		'BaseBool'=>'danger',
+		  		'BaseArray'=>'warning',
+		  		'BaseNested'=>'warning',
+		  		'BaseObject'=>'warning' ];
+
+		  $label = $labelClass[$t['type']];
+
+	?>
+	<tbody class="js-table-sections-header">
+	    <tr>
+	        <td class="text-center">
+	            <i class="fa fa-angle-right"></i>
+	        </td>
+	        <td class="font-w500"> <?=$type->get('column_name')?> <small class="text-muted font-w300" > 【 <?=$type->get('screen_name')?> 】 </small> </td>
+	        <td>
+	            <span class="label label-<?=$label?>"><?=$t['type']?></span>
+	        </td>
+	    </tr>
+	</tbody>
+	<tbody>
+		 <tr>
+	        <td class="text-center"></td>
+	        <td class="font-w500"> 参数名 </td>
+	        <td>
+	            参数值
+	        </td>
+	    </tr>
+
+		<?php foreach ($t['data'] as $param_name=>$param_value ): ?>
+	    <tr>
+	        <td class="text-center"></td>
+	        <td class="font-w600"> <?=$param_name?> </td>
+	        <td>
+	            <?=var_export($param_value,true)?> 
+	        </td>
+	    </tr>
+		<?php endforeach; ?>
+	</tbody>
+
+	<?php endforeach;?>
+</table>
+
+<script type="text/javascript">
+$(function(){
+
+	App.initHelpers(['ajax-confirm', 'ajax-submit','table-tools']);
+
+
+	$('.scan-submit').on('before', function(event){
+		var name = $(this).attr('data-name');
+        $('.scan-submit').addClass('disabled').attr('disabled','disabled');
+        $(this).html(
+            '<i class="fa fa-refresh push-10-r fa-spin"></i>' + 
+            '正在'+name+'，这大概会花费1分钟的时间..'
+        );
+    });
+
+    $('.scan-submit').on('error', function(event, error) {
+        window.setTimeout(function(){
+            $('#tabs_schema').trigger('click');
+        }, 6000);
+    });
+
+    $('.scan-submit').on('success', function(event, data ) {
+        window.setTimeout(function(){
+            $('#tabs_schema').trigger('click');
+        }, 2000);
+    });
+});
+
+
+</script>

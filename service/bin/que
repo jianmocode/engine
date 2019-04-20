@@ -1,0 +1,188 @@
+#!/usr/bin/env php
+<?php
+namespace Xpmse\Cli;
+
+$dir_array = explode(DIRECTORY_SEPARATOR,__DIR__);
+$dir_array?array_pop($dir_array):1;
+$dir_array?array_pop($dir_array):1;
+$troot = implode(DIRECTORY_SEPARATOR,$dir_array);
+define('TROOT', $troot );
+define( 'DS' , DIRECTORY_SEPARATOR );
+define( 'AROOT' , TROOT . DS  );
+define( 'SEROOT', TROOT . DS . 'service'  );
+define( 'CWD', getcwd() );
+
+chdir( '/' );
+
+// ps aux |grep resque-1.2 | awk '{print $2}'|xargs kill -9
+
+include_once( TROOT .'/_lp/cli.init.php' );
+include_once( TROOT .'/service/lib/Inc.php' );
+require_once( SEROOT. '/lib/queue-jobs/httptask.job.php');
+require_once( SEROOT. '/lib/queue-jobs/apptask.job.php');
+
+use \Exception as Exception;
+use \Xpmse\Mem as Mem;
+use \Xpmse\PsrLogger as PsrLogger;
+use \Xpmse\JobHttpTask as JobHttpTask;
+use \Resque as Resque;
+use \Resque_Job_Status as Resque_Job_Status;
+use \Resque_Worker as Resque_Worker;
+use \Resque_Log as Resque_Log;
+use \Resque_Event as Resque_Event;
+use \Mina\Cache\Redis as Cache;
+use \Xpmse\Utils;
+use \Xpmse\Conf;
+
+
+function get_request_uri( $REQUEST_URI = "" ) {
+
+    $host = getenv("HOST");
+    $cache = 'https';
+    $c = new Cache( [
+        "prefix" => '_system:',
+        "host" => Conf::G("mem/redis/host"),
+        "port" => Conf::G("mem/redis/port"),
+        "passwd"=> Conf::G("mem/redis/password")
+    ]);
+
+
+    // 检查 HTTPS 是否开启
+    $https = $c->get($cache);
+    if ( $https === false ) {
+        $https = 'on';
+        try {
+            $resp = Utils::request("GET", "https://{$host}/__system__". time(), ["datatype"=>"html", "verifypeer"=>true, "verifyhost"=>2]);
+        } catch ( Excp $e ) {
+            $https = 'off';
+
+        } catch ( Exception $e ) {
+            $https = 'off';
+        }
+        // 缓存有效期1小时
+        $c->set($cache, $https, 3600);
+    }
+
+    $_SERVER['HTTPS'] = $https;
+    $_SERVER['HTTP_HOST'] = $host;
+    $_SERVER['REQUEST_URI'] = $REQUEST_URI;
+}
+
+
+get_request_uri();
+
+
+$QUEUE = '*';
+
+
+$logLevel = false;
+$LOGGING = getenv('LOGGING');
+$VERBOSE = getenv('VERBOSE');
+$VVERBOSE = getenv('VVERBOSE');
+if(!empty($LOGGING) || !empty($VERBOSE)) {
+    $logLevel = true;
+} else if(!empty($VVERBOSE)) {
+    $logLevel = true;
+}
+
+$APP_INCLUDE = getenv('APP_INCLUDE');
+if($APP_INCLUDE) {
+    if(!file_exists($APP_INCLUDE)) {
+        die('APP_INCLUDE ('.$APP_INCLUDE.") does not exist.\n");
+    }
+    require_once $APP_INCLUDE;
+}
+
+// See if the APP_INCLUDE containes a logger object,
+// If none exists, fallback to internal logger
+if (!isset($logger) || !is_object($logger)) {
+    define('_XPMSE_LOG_CHANNEL', 'Queue');
+    $logger = new PsrLogger($logLevel);
+}
+
+
+// 设定后端
+$m = new Mem;
+$redis = $m->redis();
+if ( $redis != null ) {
+    $DB = getenv('REDIS_DB');
+    if ( empty( $DB )) {
+        $DB  = 2;
+    }
+    $host = $redis->getHost();
+    $port = $redis->getPort();
+    $auth = $redis->getAuth();
+    $dsn = "redis://{$host}:{$port}";
+    if ( is_string($auth) ){
+        $dsn = "redis://user:{$auth}@{$host}:{$port}";
+    }
+
+    /**
+     * - host:port
+     * - redis://user:pass@host:port/db?option1=val1&option2=val2 (user not useed)
+     * - tcp://user:pass@host:port/db?option1=val1&option2=val2
+     * - unix:///path/to/redis.sock
+     */
+    Resque::setBackend($dsn, $DB);
+    $logger->log(\Psr\Log\LogLevel::NOTICE, 'Backend set to redis {dsn} database {db}', ['dsn'=>$dsn, 'db'=>$DB]);
+
+    
+    $PREFIX = __VHOST_NAME ? __VHOST_NAME . ':' . getenv('PREFIX') : 'local:'. getenv('PREFIX');
+    if(!empty($PREFIX)) {
+        $logger->log(\Psr\Log\LogLevel::INFO, 'Prefix set to {prefix}', array('prefix' => $PREFIX));
+        \Resque_Redis::prefix($PREFIX);
+    }
+
+}
+
+
+$BLOCKING = getenv('BLOCKING') !== FALSE;
+
+$interval = 5;
+$INTERVAL = getenv('INTERVAL');
+if(!empty($INTERVAL)) {
+    $interval = $INTERVAL;
+}
+
+$count = 1;
+$COUNT = getenv('COUNT');
+if(!empty($COUNT) && $COUNT > 1) {
+    $count = $COUNT;
+}
+
+if($count > 1) {
+    for($i = 0; $i < $count; ++$i) {
+        $pid = Resque::fork();
+        if($pid == -1) {
+            $logger->log(\Psr\Log\LogLevel::EMERGENCY, 'Could not fork worker {count}', array('count' => $i));
+            exit;
+        }
+
+      
+        // Child, start the worker
+        else if (!$pid) {
+            $queues = explode(',', $QUEUE);
+            $worker = new Resque_Worker($queues);
+            $worker->setLogger($logger);
+            $logger->log(\Psr\Log\LogLevel::NOTICE, 'Starting worker {worker}', array('worker' => $worker));
+            $worker->work($interval, $BLOCKING);
+            break;
+        }
+    }
+}
+// Start a single worker
+else {
+    $queues = explode(',', $QUEUE);
+    $worker = new Resque_Worker($queues);
+    $worker->setLogger($logger);
+
+    $PIDFILE = getenv('PIDFILE');
+    if ($PIDFILE) {
+        file_put_contents($PIDFILE, getmypid()) or
+            die('Could not write PID information to ' . $PIDFILE);
+    }
+
+    $logger->log(\Psr\Log\LogLevel::NOTICE, 'Starting worker {worker}', array('worker' => $worker));
+    $worker->work($interval, $BLOCKING);
+}
+?>

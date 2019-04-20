@@ -1,0 +1,826 @@
+<div class="block-content">
+    <form id="DeptUserForm" 
+          class="js-validation-CoreDeptUserForm form-horizontal" 
+          action="<?=R('core-dept', 'api','UserSave')?>" method="post" >
+          
+        <div class="form-group">
+
+            <div class="col-lg-6">
+                <div class="form-material">
+                    <input class="form-control" type="text" id="name" name="name" value="<?=$user['name']?>" placeholder="请填写真实姓名">
+                    <label for="name">姓名</label>
+                </div>
+            </div>
+
+
+            <div class="col-lg-6">
+                <div class="form-material">
+                    <input class="form-control" type="text" id="jobnumber" name="jobnumber" value="<?=$user['jobnumber']?>" placeholder="请填写用户工号">
+                    <label for="jobnumber">工号</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-lg-6">
+                <div class="form-material">
+                    <input class="form-control" type="text" id="mobile" name="mobile" value="<?=$user['mobile']?>" placeholder="请填写手机号码">
+                    <label for="mobile">手机号码</label>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="form-material">
+                    <input class="form-control" type="text" id="email" name="email" value="<?=$user['email']?>" placeholder="请填写邮箱">
+                    <label for="email">邮箱</label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-lg-12">
+                <div class="form-material">
+                    <select class="js-select2 form-control" id="department" name="department" style="width: 100%;" data-placeholder="请选择部门..." multiple>
+                        <option></option><!-- Required for data-placeholder attribute to work with Select2 plugin -->
+                        
+                        <?php 
+                        $deptMap = (isset($depts['map'])) ? $depts['map'] : [];
+                        $deptData = (isset($depts['data'])) ? $depts['data'] : [];
+                  
+                        foreach ($deptData as $dept) :
+                            $name = $dept['name'];
+                            $parentid = $dept['parentid'];
+
+
+                            while ( isset($deptMap[$parentid]) && $parentid != 1 &&  !empty($deptMap[$parentid])  ) {
+                                $id = $deptMap[$parentid]['id'];
+                                $parentid  = $deptMap[$parentid]['parentid'];
+                                $name = $deptMap[$id]['name'] . "::" . $name;
+                            }
+                        ?>
+
+                       <?php if (!is_array($user['department'])) : // 添加员工 ?> 
+                            <option value="<?=$dept['id']?>"  <?php if( $dept['id'] == 1 || $_dept_id == $dept['_id'] ) :?> selected <?php endif;?>><?=$name?></option>
+                        <?php else:  // 修改员工 ?>
+                            <option value="<?=$dept['id']?>"  <?php if( in_array($dept['id'], $user['department'])) :?> selected <?php endif;?>><?=$name?></option>
+                        <?php endif; ?>
+
+                        <?php endforeach; ?>
+                    </select>
+                    <label for="department">所在部门</label>
+                </div>
+            </div>
+
+            
+        </div>
+
+        <div class="form-group">
+            <div class="col-lg-6">
+                <div class="form-material">
+                    <input class="form-control" type="password" id="password" name="password" value="" placeholder="请填写新登录密码,不想修改请留空">
+                    <label for="password">登录密码</label>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                    <div class="form-material">
+                        <input class="form-control" type="password" id="repassword" name="repassword" value="" placeholder="请再次输入登录密码">
+                        <label for="password">密码确认</label>
+                    </div>
+                </div>
+        </div>
+
+
+     
+        
+        <!-- 以下部分忽略显示 -->
+        <div class="hide fullinfo"> <!-- More Info hide-->
+
+        <div class="form-group">
+            <div class="col-lg-6">
+                 <label for="avatar">用户头像</label>
+                 <div class="form-material">
+                     <div name="avatar" class="file-uploader rounded rounded-4"
+                          data-api = '<?=R("core-storage","public","upload")?>'
+                          data-title='头像'
+                          data-width="150px"
+                          data-height="150px"
+                          data-icon="fa fa-image" 
+                          data-placeholder="点击或拖入图片" 
+                          data-allow-types="image/png,image/jpg,image/jpeg"
+                          data-maxsize="400"
+                          data-progress="yes"
+                          data-draggable="yes"
+                          data-src="<?=$user['avatarUrl']?>"
+                          data-path="<?=$user['avatar']?>"
+                          ></div>
+                      <div 
+                         class="file-uploader-preview rounded rounded-4 box box-grey push-30-l"
+                         data-source="avatar"
+                         data-width="90px"
+                         data-height="90px"
+                       ></div>
+
+                       <div 
+                         class="file-uploader-preview rounded rounded-4 box box-grey push-10-l"
+                         data-source="avatar"
+                         data-width="50px"
+                         data-height="50px"
+                       ></div>
+                       
+                 </div>
+             </div>
+        </div>
+
+
+
+        <div class="form-group">
+
+            <div class="col-lg-6">
+                 <div class="form-material">
+                     <input class="form-control" type="text" id="tel" name="tel" value="<?=$user['tel']?>" placeholder="请填写分机号码">
+                     <label for="tel">分机号码</label>
+                 </div>
+            </div>
+
+            <div class="col-lg-6">
+                 <div class="form-material">
+                     <input class="form-control" type="text" id="workPlace" name="workPlace" value="<?=$user['workPlace']?>" placeholder="请填写办公地点">
+                     <label for="workPlace">办公地点</label>
+                 </div>
+            </div>
+
+        </div>
+
+        <div class="form-group">
+
+            <div class="col-lg-6">
+                 <div class="form-material">
+                     <input class="form-control" type="text" id="position" name="position" value="<?=$user['position']?>" placeholder="请填职位">
+                     <label for="position">职位</label>
+                 </div>
+            </div>
+
+            <div class="col-lg-6">
+                 <div class="form-material">
+                     <input class="js-datepicker form-control" type="text" id="birthday" name="birthday" data-date-format="yyyy-mm-dd" placeholder="yyyy-mm-dd" 
+                            value="<?=(isset($user['birthday']) && $user['birthday'] != '0000-01-01 00:00:00') ? explode(' ',$user['birthday'])[0] : '' ?>">
+                     <label for="birthday">生日</label>
+                 </div>
+            </div>
+
+        </div>
+
+        <div class="form-group">
+
+            <div class="col-lg-6">
+                 <div class="form-material">
+                     <input class="form-control" type="text" id="idcard" name="idcard" value="<?=$user['idcard']?>" placeholder="请填职位">
+                     <label for="idcard">身份证号码</label>
+                 </div>
+            </div>
+
+            <div class="col-lg-6">
+                 <div class="form-material">
+                    <div>
+                        <label class="css-input css-radio css-radio-primary push-10-r">
+                            <input type="radio" name="sex" value="1" <?php if($user['sex'] == 1) : ?> checked <?php endif;?> > <span></span> 男
+                        </label>
+                        <label class="css-input css-radio css-radio-primary">
+                            <input type="radio" name="sex" value="0"  <?php if($user['sex'] == 1) : ?> checked <?php endif;?>  ><span></span> 女
+                        </label>
+                    </div>
+                    <label for="sex">性别</label>
+                 </div>
+            </div>
+
+        </div>
+
+        <div class="form-group">
+
+            <div class="col-lg-6">
+                 <div class="form-material">
+                     <input class="form-control" type="text" id="country" name="country" value="<?=$user['country']?>" placeholder="请填写国家">
+                     <label for="country">国家</label>
+                 </div>
+            </div>
+
+            <div class="col-lg-6">
+                 <div class="form-material">
+                     <input class="form-control" type="text" id="province" name="province" value="<?=$user['province']?>" placeholder="请填写省份">
+                     <label for="province">省份</label>
+                 </div>
+            </div>
+
+        </div>
+
+        <div class="form-group">
+
+            <div class="col-lg-6">
+                 <div class="form-material">
+                     <input class="form-control" type="text" id="city" name="city" value="<?=$user['city']?>" placeholder="请填写城市">
+                     <label for="city">城市</label>
+                 </div>
+            </div>
+
+             <div class="col-lg-6">
+                 <div class="form-material">
+                     <input class="form-control" type="text" id="remark" name="remark" value="<?=$user['remark']?>" placeholder="请填写备注">
+                     <label for="remark">备注</label>
+                 </div>
+            </div>
+        </div>
+
+        <!-- 管理员Only 选项 -->
+        <div class="form-group"></div>
+        
+        <div class="form-group">
+            <div class="col-lg-3">
+                 <div class="form-material">
+                     <div>
+                        <label class="css-input switch switch-primary switch-sm">
+                            <input name="active" id="active" type="checkbox" value="1" data-uncheck-value="0"
+                                <?php if( ($user['active'] == true) || !isset($user['active']) ) : ?> checked <?php endif;?> 
+                            ><span></span> 
+                        </label>
+                     </div>
+                     <label for="active">账号是否有效</label>
+                 </div>
+            </div>
+            
+
+            <div class="col-lg-3">
+                 <div class="form-material">
+                     <div>
+                        <label class="css-input switch switch-primary switch-sm">
+                            <input name="isAdmin" id="isAdmin" type="checkbox"  data-uncheck-value="0"
+                                <?php if($user['isAdmin'] == true) : ?> checked <?php endif;?> 
+                            ><span></span> 
+                        </label>
+                     </div>
+                     <label for="isAdmin">是否是管理员</label>
+                 </div>
+            </div>
+
+            <div class="col-lg-3">
+                 <div class="form-material">
+                     <div>
+                        <label class="css-input switch switch-primary switch-sm">
+                            <input name="isHide" id="isHide" type="checkbox" data-uncheck-value="0"
+                                <?php if($user['isHide'] == true) : ?> checked <?php endif;?> 
+                            ><span></span> 
+                        </label>
+                     </div>
+                     <label for="isHide">不公开手机号码</label>
+                 </div>
+            </div>
+
+            <div class="col-lg-3">
+                 <div class="form-material">
+                     <div>
+                        <label class="css-input switch switch-primary switch-sm">
+                            <input name="isBoss" id="isBoss" type="checkbox" data-uncheck-value="0"
+                                <?php if($user['isBoss'] == true) : ?> checked <?php endif;?> 
+
+                            ><span></span> 
+                        </label>
+                     </div>
+                     <label for="isBoss">是否是老板</label>
+                 </div>
+            </div>
+
+        </div>
+
+
+        </div> <!-- Hide 标签-->
+
+        <div class="form-group">
+            <div class="col-lg-8 col-lg-offset-2 push-20-t text-center">
+                <button class="btn btn-default switch-form-display-btn  font-w300" type="button" style="width:100%;"> 
+                    <i class="fa fa-angle-double-down push-5-r"></i> 显示更多选项 
+                </button>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-lg-12">
+                <div class="form-material">
+                    <input class="form-control" type="hidden" id="_id" name="_id" value="0" placeholder="">
+                    <button class="btn btn-primary UserFormSubmit font-w300" type="submit" name="error" > 
+                        <i class="fa fa-plus push-5-r"></i> 添加员工 
+                    </button>
+                    
+                    
+                    <button 
+                        class="btn btn-danger push-15-l UserDeleteSubmit font-w300
+                        <?php if ( !isset($user['_id']) ) :  // 查看用户时候显示  ?>  hidden <?php endif;?> " 
+                        type="button" name="delete"  
+                        data-toggle="modal" data-target="#modal-delete"
+                        data-backdrop="static"
+                    > 
+                        <i class="fa fa-times push-5-r"></i> 删除 <?=$user['name']?>
+                    </button>
+                    
+
+                    <a class="btn btn-primary pull-right font-w300" type="button" name="UserList"  href="<?=R('core-dept','default','index')?>" > 
+                        <i class="fa fa-list push-5-r"></i> 返回联系人列表
+                    </a>
+
+                </div>
+            </div>
+
+        </div>
+
+        <div class="form-group"></div>
+
+    </form>
+</div>
+
+<!-- 图片裁切插件 id="_image-crop-modal" -->
+<?php include_once(tpl('common/web/imagecrop.mod')); ?>
+
+<!-- 删除用户确认弹窗 -->
+<div class="modal fade" id="modal-delete" tabindex="-1" 
+     role="dialog" aria-hidden="true" 
+     data-action="<?=R('core-dept','api','UserDelete', ['_id'=>$user['_id']])?>"
+     data-goback="<?=R('core-dept','default','index')?>"
+    >
+    <div class="modal-dialog modal-dialog-top">
+        <div class="modal-content">
+            <div class="block block-themed block-transparent remove-margin-b">
+                <div class="block-header bg-primary">
+                    <ul class="block-options">
+                        <li> <button data-dismiss="modal" type="button"><i class="si si-close"></i></button> </li>
+                    </ul>
+                    <h3 class="block-title">确认删除【<?=$user['name']?>】吗？</h3>
+                </div>
+                <div class="block-content">
+                    <p>请确认删除用户 【<?=$user['name']?>】，此操作不可恢复，请谨慎操作!</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-sm btn-default" type="button" data-dismiss="modal">取消操作</button>
+                <button class="btn btn-sm btn-danger DeleteConfirm" type="button"><i class="fa fa-check"></i> 确认删除</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END 删除用户确认弹窗 -->
+
+
+<script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/select2/select2.full.min.js"></script>
+<script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/jquery-validation/jquery.validate.min.js"></script>
+<script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
+<script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/dropzonejs/dropzone.min.js"></script>
+<script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/cropper/cropper.min.js"></script>
+<script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/jquery-tags-input/jquery.tagsinput.min.js"></script>
+<script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/jquery-tags-input/jquery.tagsinput2.js"></script>
+
+
+<script type="text/javascript"> 
+
+
+// 将表单修改为更新状态
+function UserUpdate( data, updateForm ) {
+
+    if ( typeof updateForm == 'undefined' )  updateForm = false; 
+    data = data || [];
+
+    var id = data['_id'] || null;
+    var name = data['name'] || '更新用户';
+    var remoteLink = "<?=R('core-dept','default', 'userform', ['_id'=>''])?>" + id;
+
+    if ( id == null ) {
+        UserCreate();
+        return ;
+    }
+
+    $('input[name="_id"]').val(id);
+    $('#tabs-link-userform').html(name);
+    $('#tabs-link-userform').attr('data-remote', remoteLink );
+    $('.UserFormSubmit', '#DeptUserForm').html('<i class="fa fa-refresh push-5-r"></i> 更新资料');
+
+    if ( updateForm ) { // 为表单赋值
+
+    }
+}
+
+
+
+// 将表单修改为创建状态
+function UserCreate() {
+    $('#tabs-link-userform').html('添加员工');
+    $('input[name="_id"]').val("");
+    $('.UserFormSubmit', '#DeptUserForm').html('<i class="fa fa-plus push-5-r"></i> 添加员工');
+}
+
+
+/**
+ * 删除用户
+ * @param {[type]} id [description]
+ */
+function UserDelete() {
+    var buttons = $('button', '#modal-delete');
+        buttons.attr('disabled','disabled');
+        buttons.addClass('disabled');
+
+    var content = $('.block-content', '#modal-delete');
+    var content_text = content.html();
+        content.html('<p> <i class="fa fa-refresh fa-spin"></i> 正在删除请稍后... </p>');
+
+    var action = $('#modal-delete').attr('data-action');
+    var goback = $('#modal-delete').attr('data-goback');
+
+    $.post(action, {}, function(data, textStatus, xhr) {
+      
+
+        code = data['code'] || 0;
+        extra = data['extra'] || [];
+
+        if ( typeof extra == 'object' && isNaN(extra.length) ) {
+            extra = [extra];
+        }
+
+        if ( parseInt(code) == 302 ) {
+            window.location.reload(true);
+            return;
+        }
+
+        if ( code != 0 ) {
+            message = data['message'] || '出错啦';
+            content.html('<p class="text-danger"> <i class="fa fa-times"></i> 删除失败! '+message+' </p>');
+            window.setTimeout(function(){
+                content.html(content_text);
+            },2000);
+
+            $(buttons).removeAttr('disabled');
+            $(buttons).removeClass('disabled');
+            return;
+        }
+
+        // 全局通知
+        content.html('<p class="text-success"> <i class="fa fa-check"></i> 删除成功! 即将返回联系人列表 <i class="fa fa-refresh fa-spin"></i> </p>');
+        window.setTimeout(function(){
+            window.location = goback;
+        },1000);
+
+    }, 'json')
+
+    .error( function(xhr, status, statusText ){
+        $(buttons).removeAttr('disabled');
+        $(buttons).removeClass('disabled');
+        content.html('<p class="text-danger"> <i class="fa fa-times"></i> 删除失败! '+statusText+' </p>');
+        window.setTimeout(function(){
+            content.html(content_text);
+        },2000);
+        return;
+    });
+}
+
+
+/**
+ * 提交表单 
+ * @param {[type]} validation [description]
+ * @param {[type]} form       [description]
+ */
+function UserDataSubmit( validation, form  ) {
+
+    var api = $(form).attr('action');
+    var next = $(form).attr('data-next');
+    var submits = $('button[type="submit"]', form);
+        $(submits).attr('disabled', 'disabled');
+        $(submits).addClass('disabled');
+
+    var data = {};
+
+    var formData =  $(form).serializeArray();
+        for( var i=0; i<formData.length; i++ ) {
+            var name = formData[i]['name'];
+            var value = formData[i]['value'];
+
+            if (value !== "") {
+                data[name] = value;
+            }
+        }
+
+   
+    data = $(form).serializeData();
+    // 特殊数值处理
+    if ( typeof data['department'] != 'undefined' ) {        
+        data['department'] =  $('select[name="department"]').val();
+    }
+
+    if ( typeof data['avatar_path'] != 'undefined' ) {        
+        data['avatar'] =  data['avatar_path'];
+        delete data['avatar_path'];
+        delete data['avatar_url'];
+    }
+
+
+    data = jQuery.extend(data, {});
+    $.post( api, data, function(data, textStatus, xhr) {
+
+        $(submits).removeAttr('disabled');
+        $(submits).removeClass('disabled');
+
+        code = data['code'] || 0;
+        extra = data['extra'] || [];
+
+        if ( typeof extra == 'object' && isNaN(extra.length) ) {
+            extra = [extra];
+        }
+
+        if ( parseInt(code) == 302 ) {
+            window.location.reload(true);
+            return;
+        }
+
+        if ( code != 0 ) {
+
+            for( i=0; i<extra.length; i++ ) {
+                field = extra[i]['_FIELD'] || null;
+                if ( field != null ) {
+                    message = data['message'] || '出错啦';
+                    if ( typeof extra[i]['message'] != 'undefined' ) {
+                        message = extra[i]['message'];
+                    }
+                    var err = {};
+                        err[field] = message;
+
+                    validation.showErrors(err);
+                }
+            }
+
+            App.notify( '操作失败 (' + data['message'] + ')', 'fa fa-times','danger');
+
+            return;
+        }
+
+        var user = data['data'];
+            UserUpdate(user); // 变更为修改
+
+        // 全局通知
+        App.notify( '操作成功' );
+        // console.log('ok');
+
+        return;
+
+    },'json')
+
+    .error( function(xhr, status, statusText ){
+
+        validation.showErrors({'error': statusText.toString()} );
+             $(submits).removeAttr('disabled');
+             $(submits).removeClass('disabled');
+
+        App.notify( '操作失败', 'fa fa-times','danger');
+
+        return;
+    });
+
+}
+
+
+/**
+ * 表单验证
+ */
+var CoreDeptUserForm = function() {
+    var initValidation = function(){
+        jQuery('.js-validation-CoreDeptUserForm').validate({
+            errorClass: 'help-block text-right animated fadeInDown',
+            errorElement: 'div',
+            errorPlacement: function(error, e) {                
+                jQuery(e).parents('.form-group .form-material').append(error);
+            },
+            highlight: function(e) {
+                jQuery(e).closest('.form-group .form-material').parent().removeClass('has-error').addClass('has-error');
+                jQuery(e).closest('.help-block').remove();
+            },
+            unhighlight:function(e){
+                jQuery(e).closest('.form-group .form-material').parent().removeClass('has-error');
+                jQuery(e).closest('.help-block').remove();
+            },
+            success: function(e) {
+                jQuery(e).closest('.form-group .form-material').parent().removeClass('has-error');
+                jQuery(e).closest('.help-block').remove();
+            },
+
+            submitHandler: function(form) {
+                var self = this;
+                UserDataSubmit( self, form );
+            },
+            rules: {
+
+                'name': {
+                    required: true,
+                    minlength: 2,
+                    maxlength: 20,
+                },
+
+                'jobnumber': {
+                    minlength: 2,
+                    maxlength: 20,
+                },
+                
+                'mobile': {
+                    required: true,
+                    digits:true,
+                    minlength: 11,
+                    maxlength: 11,
+                },
+
+                'email': {
+                    email:true,
+                },
+
+                'department': {
+                    required: true,
+                },
+
+                <?php if ( !isset($user['_id']) ) :  // 更新用户时，不校验密码  ?>
+                'password': {
+                    required: true,
+                    minlength: 6,
+                    maxlength: 50,
+                },
+                <?php endif; ?>
+
+                'tel': {
+                    digits:true,
+                },
+
+                'workPlace': {
+                    minlength: 2,
+                    maxlength: 100,
+                },
+
+                'position': {
+                    minlength: 2,
+                    maxlength: 100,
+                },
+
+                'birthday': {
+                    date: true,
+                },
+
+                'idcard': {
+                    minlength: 2,
+                    maxlength: 100,
+                },
+
+                'country': {
+                    minlength: 2,
+                    maxlength: 100,
+                },
+
+                'province': {
+                    minlength: 2,
+                    maxlength: 100,
+                },
+
+                'city': {
+                    minlength: 2,
+                    maxlength: 100,
+                },
+
+                'remark': {
+                    minlength: 2,
+                    maxlength: 100,
+                }
+            },
+
+            messages: {
+                'name': {
+                    required: '请填写姓名',
+                    minlength: '姓名不能少于2个字',
+                    maxlength: '姓名不能超过20个字',
+                },
+
+                'jobnumber': {
+                    minlength: '工号不能少于2个字',
+                    maxlength: '工号不能超过20个字',
+                },
+                
+                'mobile': {
+                    required: '请填写手机号码',
+                    digits:'手机号码格式不正确',
+                    minlength: '手机号码格式不正确',
+                    maxlength: '手机号码格式不正确',
+                },
+
+                'email': {
+                    email:'邮箱格式不正确',
+                },
+
+                'department': {
+                    required: '请选择所在部门',
+                },
+
+                'password': {
+                    required: '请设置一个密码',
+                    minlength: '密码不能少于6个字符',
+                    maxlength: '密码不能超过50个字符',
+                },
+
+                'tel': {
+                    digits:'分机号格式不正确',
+                },
+
+                'workPlace': {
+                    minlength: '办公地点不能少于2个字',
+                    maxlength: '办公地点不能超过100个字',
+                },
+
+                'position': {
+                    minlength: '职位不能少于2个字',
+                    maxlength: '职位不能超过100个字',
+                },
+
+                'birthday': {
+                    date: '生日格式不正确',
+                },
+
+                'idcard': {
+                    minlength: '身份证号码不能少于2个字',
+                    maxlength: '身份证号码不能超过100个字',
+                },
+
+                'country': {
+                    minlength: '国家不能少于2个字',
+                    maxlength: '国家不能超过100个字',
+                },
+
+                'province': {
+                    minlength: '省份不能少于2个字',
+                    maxlength: '省份不能超过100个字',
+                },
+
+                'city': {
+                    minlength: '城市不能少于2个字',
+                    maxlength: '城市不能超过100个字',
+                },
+
+                'remark': {
+                    minlength: '备注不能少于2个字',
+                    maxlength: '备注不能超过100个字',
+                }
+            }
+        });
+    };
+
+    return {
+        init: function () {
+            initValidation();  // Init Form Validation
+        }
+    };
+}();
+</script>
+
+<script type="text/javascript">
+$(function () {
+
+    /** 各种数据初始化 **/
+
+    // 表单数据项切换
+    function switch_form_display() {
+        if ( $('.fullinfo').hasClass('hide') ) {
+            $('.fullinfo').removeClass('hide');
+            $('.switch-form-display-btn').html('<i class="fa fa-angle-double-up push-5-r"></i> 显示较少选项');
+        } else {
+            $('.fullinfo').addClass('hide');
+            $('.switch-form-display-btn').html('<i class="fa fa-angle-double-down push-5-r"></i> 显示更多选项');
+        }
+    }
+
+    // 事件绑定
+    $('.switch-form-display-btn').click(function() { // 表单切换按钮
+        switch_form_display();
+    });
+
+
+    /** 表单组件初始化 **/
+
+    // File Uploader 
+    App.initHelpers('file-uploader', {'home':'<?=$GLOBALS["_defaults"]["storage"]["public_upload_home"]?>'});
+
+    //DatePicker && image-crop
+    App.initHelpers(['datepicker', 'image-crop', 'select2']);
+
+    // 表单验证程序
+    CoreDeptUserForm.init();
+
+    
+    <?php if ( isset($user['_id']) ) :  // 如果有用户数据，则更新为修改表单  ?>
+    
+    // 表单修改用户
+    UserUpdate(<?=json_encode($user)?>, true);
+
+    // 删除用户逻辑
+    $('.DeleteConfirm').click(function(event) {
+        UserDelete('<?=$user['_id']?>');
+    });
+    <?php endif; ?>
+
+});
+
+</script>
+
+

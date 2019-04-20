@@ -1,0 +1,46 @@
+{
+ 	"company":{
+ 		"department": [
+			{
+				"cname":"创建部门",
+				"name" : "DeptCreate",
+				"default": ["boss","admin"]
+			},
+			{
+				"cname":"更新部门",
+				"name" : "DeptUpdate",
+				"default": ["boss","admin","manager"]
+			},
+			{
+				"cname":"删除部门",
+				"name" : "DeptDelete",
+				"default": ["boss","admin"]
+			},
+			{
+				"cname":"查看部门",
+				"name" : "DeptDetail",
+				"default": ["boss","admin","user","manager"]
+			},
+			{
+				"cname":"添加用户",
+				"name" : "UserCreate",
+				"default": ["boss","admin","manager"]
+			},
+			{
+				"cname":"更新用户",
+				"name" : "UserUpdate",
+				"default": ["boss","admin","manager"]
+			},
+			{
+				"cname":"删除用户",
+				"name" : "UserDelete",
+				"default": ["boss","admin","manager"]
+			},
+			{
+				"cname":"查看用户",
+				"name" : "UserDetail",
+				"default": ["boss","admin","user","manager"]
+			}
+		]
+ 	}
+}

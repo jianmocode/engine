@@ -1,0 +1,161 @@
+        <?php include_once(tpl('common/web/head')); ?>
+              
+        <!-- Page JS Plugins CSS -->
+        <link rel="stylesheet" href="/static/assets/js/plugins/slick/slick.min.css">
+        <link rel="stylesheet" href="/static/assets/js/plugins/slick/slick-theme.min.css">
+        <link rel="stylesheet" href="/static/assets/js/plugins/highlightjs/github-gist.min.css">
+        <link rel="stylesheet" href="/static/assets/js/plugins/highlightjs/styles/darkula.css">
+
+        <link rel="stylesheet" href="/static/assets/js/plugins/bootstrap-datepicker/bootstrap-datepicker3.min.css">
+        <link rel="stylesheet" href="/static/assets/js/plugins/select2/select2.min.css">
+        <link rel="stylesheet" href="/static/assets/js/plugins/select2/select2-bootstrap.min.css">
+        <link rel="stylesheet" href="/static/assets/js/plugins/jquery-tags-input/jquery.tagsinput.min.css">
+        <link rel="stylesheet" href="/static/assets/js/plugins/summernote/summernote.css">
+        <link rel="stylesheet" href="/static/assets/js/plugins/summernote/summernote-bs3.min.css">
+        <link rel="stylesheet" href="/static/assets/js/plugins/codemirror/lib/codemirror.css">
+        <link rel="stylesheet" href="/static/assets/js/plugins/codemirror/addon/fold/foldgutter.css">
+        <link rel="stylesheet" href="/static/assets/js/plugins/codemirror/addon/dialog/dialog.css">
+        <link rel="stylesheet" href="/static/assets/js/plugins/codemirror/theme/monokai.css">
+
+        <?php include_once(tpl('common/web/foot')); ?>
+
+        <script src="/static/assets/js/plugins/select2/select2.full.min.js"></script>
+        <script src="/static/assets/js/plugins/select2/i18n/zh-CN.js"></script>
+        <script src="/static/assets/js/plugins/dropzonejs/dropzone.min.js"></script>
+        <script src="/static/assets/js/plugins/cropper/cropper.min.js"></script>
+        <script src="/static/assets/js/plugins/jquery-tags-input/jquery.tagsinput.min.js"></script>
+        <script src="/static/assets/js/plugins/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
+        <script src="/static/assets/js/plugins/masked-inputs/jquery.maskedinput.min.js"></script>
+        <script src="/static/assets/js/plugins/jquery-validation/jquery.validate.min.js"></script>
+        <script src="/static/assets/js/plugins/jquery-ui/jquery-ui.min.js"></script>
+        <script src="/static/assets/js/plugins/summernote/summernote.min.js"></script>
+        <script src="/static/assets/js/plugins/summernote/lang/summernote-zh-CN.js"></script>
+        <script src="/static/assets/js/plugins/codemirror/lib/codemirror.js"></script>
+        <script src="/static/assets/js/plugins/codemirror/addon/search/searchcursor.js"></script>
+        <script src="/static/assets/js/plugins/codemirror/addon/search/search.js"></script>
+        <script src="/static/assets/js/plugins/codemirror/addon/dialog/dialog.js"></script>
+        <script src="/static/assets/js/plugins/codemirror/addon/edit/matchbrackets.js"></script>
+        <script src="/static/assets/js/plugins/codemirror/addon/edit/closebrackets.js"></script>
+        <script src="/static/assets/js/plugins/codemirror/addon/comment/comment.js"></script>
+        <script src="/static/assets/js/plugins/codemirror/addon/wrap/hardwrap.js"></script>
+        <script src="/static/assets/js/plugins/codemirror/addon/fold/foldcode.js"></script>
+        <script src="/static/assets/js/plugins/codemirror/addon/fold/brace-fold.js"></script>
+        <script src="/static/assets/js/plugins/codemirror/mode/javascript/javascript.js"></script>
+        <script src="/static/assets/js/plugins/codemirror/mode/shell/shell.js"></script>
+        <script src="/static/assets/js/plugins/codemirror/mode/sql/sql.js"></script>
+        <script src="/static/assets/js/plugins/codemirror/mode/python/python.js"></script>
+        <script src="/static/assets/js/plugins/codemirror/mode/go/go.js"></script>
+        <script src="/static/assets/js/plugins/codemirror/mode/php/php.js"></script>
+        <script src="/static/assets/js/plugins/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+        <script src="/static/assets/js/plugins/codemirror/mode/xml/xml.js"></script>
+        <script src="/static/assets/js/plugins/codemirror/mode/css/css.js"></script>
+        <script src="/static/assets/js/plugins/codemirror/mode/sass/sass.js"></script>
+        <script src="/static/assets/js/plugins/codemirror/mode/vue/vue.js"></script>
+        <script src="/static/assets/js/plugins/codemirror/mode/textile/textile.js"></script>
+        <script src="/static/assets/js/plugins/codemirror/mode/clike/clike.js"></script>
+        <script src="/static/assets/js/plugins/codemirror/mode/markdown/markdown.js"></script>
+        <script src="/static/assets/js/plugins/codemirror/keymap/sublime.js"></script>
+        <script src="/static/assets/js/plugins/highlightjs/highlight.pack.js"></script>
+        
+        <script type="text/javascript" language="javacript">
+        // CodeMirror, copyright (c) by Marijn Haverbeke and others
+        // Distributed under an MIT license: https://codemirror.net/LICENSE
+        // @see https://codemirror.net/doc/manual.html#addon_autorefresh
+        (function(mod) {
+        if (typeof exports == "object" && typeof module == "object") // CommonJS
+            mod(require("../../lib/codemirror"))
+        else if (typeof define == "function" && define.amd) // AMD
+            define(["../../lib/codemirror"], mod)
+        else // Plain browser env
+            mod(CodeMirror)
+        })(function(CodeMirror) {
+        "use strict"
+
+        CodeMirror.defineOption("autoRefresh", false, function(cm, val) {
+            if (cm.state.autoRefresh) {
+            stopListening(cm, cm.state.autoRefresh)
+            cm.state.autoRefresh = null
+            }
+            if (val && cm.display.wrapper.offsetHeight == 0)
+            startListening(cm, cm.state.autoRefresh = {delay: val.delay || 250})
+        })
+
+        function startListening(cm, state) {
+            function check() {
+            if (cm.display.wrapper.offsetHeight) {
+                stopListening(cm, state)
+                if (cm.display.lastWrapHeight != cm.display.wrapper.clientHeight)
+                cm.refresh()
+            } else {
+                state.timeout = setTimeout(check, state.delay)
+            }
+            }
+            state.timeout = setTimeout(check, state.delay)
+            state.hurry = function() {
+            clearTimeout(state.timeout)
+            state.timeout = setTimeout(check, 50)
+            }
+            CodeMirror.on(window, "mouseup", state.hurry)
+            CodeMirror.on(window, "keyup", state.hurry)
+        }
+
+        function stopListening(_cm, state) {
+            clearTimeout(state.timeout)
+            CodeMirror.off(window, "mouseup", state.hurry)
+            CodeMirror.off(window, "keyup", state.hurry)
+        }
+        });
+        </script>
+
+        <style>
+            .modal-backdrop {
+                z-index: 1032;
+            }
+        </style>
+
+       
+        <div id="page-container" class="sidebar-l sidebar-o side-scroll header-navbar-fixed <?=$_SIDEBAR_MINI?> main-sidebar">
+           
+           <!-- 左侧菜单-->
+           <?php include_once(tpl('common/web/menu')); ?>
+           <!-- 左侧菜单 结束-->
+
+ 		   <!-- Header Overlay-->
+           <?php include_once(tpl('common/web/header')); ?>
+           <!-- END Header  Overlay-->
+
+            <!-- Main Container -->
+            <main id="main-container" class="width-sidebar">
+
+             <?php 
+             $loadFile = tpl('baas/'. $_page);
+             if ( file_exists($loadFile) ) : ?>
+             <?php include_once($loadFile); ?>
+             <?php endif;?>
+
+            </main>
+            <!-- END Main Container -->
+
+             <!-- Footer Overlay-->
+           <?php include_once(tpl('common/web/footer')); ?>
+           <!-- END Footer Overlay-->
+        </div>
+        <!-- END Page Container -->
+        
+        <script>
+            $(function () {
+                // Init page helpers (Table Tools helper)
+                App.initHelpers('table-tools', { 
+                    onchange: function ( selectedCheckboxs ){
+                        if ( selectedCheckboxs.length == 0 ) {
+                            $('#removeAllMember').hide();
+                        } else {
+                            $('#removeAllMember').show();
+                        }
+                    }
+                });
+            });
+        </script>
+
+    </body>
+</html>

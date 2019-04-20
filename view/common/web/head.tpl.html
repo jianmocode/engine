@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<!--[if IE 9]>         <html class="ie9 no-focus"> <![endif]-->
+<!--[if gt IE 9]><!--> <html class="no-focus"> <!--<![endif]-->
+    <head>
+
+        <meta charset="utf-8">
+        
+        <title><?=$_TITLE?></title>
+        
+        <meta http-equiv="Access-Control-Allow-Origin" content="*">
+        <meta name="description" content="快速搭建下一代智能动态网站、小程序、移动应用、区块链应用、内容同步推送头条、微信、微博、百度、简墨媒体云等多家自媒体平台        ">
+        <meta name="author" content="JianMoApp.com">
+        <meta name="robots" content="noindex, nofollow">
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1.0">
+        <link rel="shortcut icon" href="<?=$_LOGO['custom_fav'] ? $_LOGO['custom_fav'] : $_LOGO['fav']?>">
+
+        <!-- Bootstrap and CBL CSS framework -->
+        <link rel="stylesheet" href="/static/assets/css/bootstrap.min.css">
+
+        <!-- Stylesheets 常用脚本 -->
+        <link rel="stylesheet" href="/static/assets/js/plugins/bootstrap-datepicker/bootstrap-datepicker3.min.css">
+        <link rel="stylesheet" href="/static/assets/js/plugins/select2/select2.min.css">
+        <link rel="stylesheet" href="/static/assets/js/plugins/jquery-tags-input/jquery.tagsinput.min.css">
+        <link rel="stylesheet" href="/static/assets/js/plugins/dropzonejs/dropzone.min.css">
+        <link rel="stylesheet" href="/static/assets/js/plugins/cropper/cropper.css">
+        <link rel="stylesheet" href="/static/assets/js/plugins/bootstrap-treeview/bootstrap-treeview.css">
+    
+
+        <?php if (is_array($css)) : foreach ($css as $file) :?>
+        <link rel="stylesheet" href="<?=$file?>" >
+        <?php endforeach; endif;?>
+
+        <link rel="stylesheet" id="css-main" href="/static/assets/css/xpmse.min.css">
+
+        <?php if (is_array($_css)) : foreach ($_css as $file) :?>
+        <link rel="stylesheet" href="<?=$file?>" >
+        <?php endforeach; endif;?>
+
+
+    </head>
+    <body class="body-container">
+    

@@ -1,0 +1,274 @@
+{
+	"manu_name": {
+		"name": "厂商名称",
+		"type": "input",
+		"placeholder": "请填写厂商名称, 例如: 阿里云",
+		"helper": "可以填写厂商常用名，比如阿里云，腾讯云等",
+		"attr": {
+			"data-param-id": "0"
+		},
+		"rule": {
+			"required":true,
+			"minlength":2,
+			"maxlength":5
+		},
+		"message":{
+			"required":"厂商名称不能为空",
+			"minlength":"厂商名称不能少于2个字",
+			"maxlength":"厂商名称不能超过5个字"
+		},
+		"struct": {
+			"type": "string",
+			"length": 40,
+			"index": true			
+		}
+	},
+
+	"short_name":{
+		"name": "厂商简称",
+		"type": "input",
+		"placeholder": "请填写厂商简称, 例如: 阿里云",
+		"rule": {
+			"required":true,
+			"minlength":2,
+			"maxlength":60
+		},
+		"message":{
+			"required":"厂商简称不能为空",
+			"minlength":"厂商简称不能少于2个字符",
+			"maxlength":"厂商简称不能大于2个字符"
+		},
+		"struct": {
+			"type": "string",
+			"length": 40,
+			"index": true			
+		}
+	},
+
+	"location": {
+		"name": "所在地",
+		"type": "group",
+		"fields": ["province", "city", "town", "loc_code"]
+	},
+	"province": {
+		"name": "省份",
+		"type": "select",
+		"placeholder": "省份",
+		"rule": {
+			"required":true
+		},
+		"message":"请选择省份",
+		"struct": {
+			"type": "string",
+			"length": 128,
+			"index": true		
+		}
+	},
+	"city": {
+		"name": "城市",
+		"type": "select",
+		"placeholder": "城市",
+		"rule": {
+			"required":true
+		},
+		"message":"请选择城市",
+		"struct": {
+			"type": "string",
+			"length": 128,
+			"index": true		
+		}
+	},
+	"town": {
+		"name": "市、区、县",
+		"type": "select",
+		"placeholder": "市、区、县",
+		"rule": {
+			"required":true
+		},
+		"message":"请选择区县",
+		"struct": {
+			"type": "string",
+			"length": 128,
+			"index": true		
+		}
+	},
+	"loc_code": {
+		"name": "所在地代码",
+		"type": "hidden",
+		"rule": {
+			"required":true
+		},
+		"message":"请选择所在地",
+		"struct": {
+			"type": "string",
+			"length": 20
+		}
+	},
+
+	"org_type": {
+		"name": "单位性质",
+		"type": "select",
+		"enum": {
+			"1":{
+				"name":"国有企业",
+				"value":"1",
+				"default":true
+			},
+			"2":"国有控股企业",
+			"3":"外资企业",
+			"4":"合资企业",
+			"5":"私营企业",
+			"6":"事业单位",
+			"7":"国家行政机关",
+			"8":"政府"
+		},
+		"rule": {
+			"required":true
+		},
+		"message":"请选择单位类型",
+		"struct": {
+			"type": "string",
+			"length": 100,
+			"index": true		
+		}
+	},
+
+	"org_licence": {
+		"name": "营业执照",
+		"type": "image",
+		"placeholder": "请上传营业执照彩色照片或者扫描件",
+		"helper": "图片文件大小不能超过2M, 必须为<s>彩色照片</s>",
+		"attr": {
+			"width":"200px",
+			"height":"300px",
+			"icon": "fa fa-image",
+			"allow": "image/png,image/jpg,image/jpeg,image/gif",
+			"maxsize": "2M",
+			"crop":false
+		},
+		"rule": {
+			"required":true
+		},
+		"message":"请上传营业执照",
+		"struct": {
+			"type": "string",
+			"length": 200
+		}
+	},
+
+	"summary": {
+		"name": "公司简介",
+		"type": "textarea",
+		"placeholder": "请填写公司简介，不要超过300个字",
+		"rule": {
+			"required":true,
+			"minlength":10,
+			"maxlength":300
+		},
+		"message":{
+			"required":"请填写公司简介",
+			"minlength":"公司简介不能少于10个字",
+			"maxlength":"公司简介不能超过300个字"
+		},
+		"struct": {
+			"type": "string",
+			"length": 400
+		}
+	},
+
+	"lp_sex": {
+		"name": "性别",
+		"type": "radio",
+		"enum": {
+			"0":{
+				"name":"男",
+				"value":"0",
+				"default":true
+			},
+			"1":"女"
+		},
+		"rule": {
+			"required":true
+		},
+		"struct": {
+			"type": "string",
+			"length": 1,
+			"index": true		
+		}
+	},
+
+	"checkbox_test": {
+		"name": "多选测试",
+		"type": "checkbox",
+		"enum": {
+			"0":{
+				"name":"选项一",
+				"value":"0",
+				"default":true
+			},
+			"1":"选项二",
+			"2":"选项三",
+			"3":{
+				"name":"选项四",
+				"value":"3",
+				"default":true
+			}
+		},
+		"rule": {
+			"required":true
+		},
+		"message":"请至少选择1个选项",
+		"struct": {
+			"type": "string",
+			"length": 1,
+			"index": true		
+		}
+	},
+
+	"file_test": {
+		"name": "文件上传测试",
+		"type": "file",
+		"placeholder": "请上传文件",
+		"helper": "文件大小不能超过2M",
+		"attr": {
+			"width":"100px",
+			"height":"150px",
+			"icon": "fa fa-image",
+			"allow": "image/png,image/jpg,image/jpeg,image/gif,.doc,.docx,.pdf",
+			"maxsize": "2M"		
+		},
+		"rule": {
+			"required":true
+		},
+		"message":"请上传文件",
+		"struct": {
+			"type": "string",
+			"length": 200
+		}
+	},
+
+	"date_test": {
+		"name": "日期选择器",
+		"type": "date",
+		"placeholder": "请选择日期",
+		"attr": {
+			"format":"YYYY年MM月DD日"
+		},
+		"rule": {
+			"required":true
+		},
+		"message":"请选择日期",
+		"struct": {
+			"type": "timestamp"
+		}
+	},
+
+	"manual_test": {
+		"name": "手工编写的字段",
+		"type": "manual",
+		"attr": {
+			"one":"第一个参数",
+			"two":"第二个参数"
+		}
+	}
+}

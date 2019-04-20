@@ -1,0 +1,87 @@
+/*!
+* XpmSE UI - v1.5.7 - Auto-compiled on 2019-01-26 - Copyright 2019 
+* @author Xpmse.com
+*/
+@gray-light : #f3f3f3；
+@brand-danger: #d26a5c;
+.webtable {
+  width: 100%;
+  min-height: 460px;
+}
+.webtable-block {
+  background: #f5f5f5;
+}
+.webtable-header {
+  background: #f0f0f0;
+  padding: 15px 15px;
+}
+.webtable-header .block-title {
+  line-height: 34px;
+}
+.webtable-header .block-options {
+  line-height: 46px;
+}
+.webtable-header .status {
+  line-height: 18px;
+}
+.webtable-content,
+.webtable-footer {
+  background: #f5f5f5;
+}
+.webtable-footer nav {
+  max-height: 64px;
+}
+.webtable-header > .block-options > li > button.highlight {
+  color: #232323;
+}
+.webtable-header > .block-options > li > button {
+  display: inline-block;
+}
+.webtable-header > .block-options > li > button > i {
+  font-size: 18px;
+  line-height: 24px;
+}
+.handsontable td:first-of-type,
+.handsontable.htRowHeaders thead tr th:nth-child(2) {
+  border-left: none;
+}
+.handsontable td.htInvalid {
+  color: #ffffff;
+  background: #d26a5c !important;
+}
+.handsontable th {
+  background: #ebebeb !important;
+  color: #646464;
+  font-weight: 400;
+}
+.ht_clone_top_left_corner th {
+  border: 1px solid #d1d1d1 !important;
+  border-left: none !important;
+}
+.ht_clone_left th {
+  border-right: 1px solid #ababab !important;
+  border-left: none !important;
+}
+.ht_clone_top th {
+  border-bottom: 1px solid #ababab !important;
+  border-top: 1px solid #d1d1d1 !important;
+  border-right: 1px solid #d1d1d1 !important;
+}
+.ht_master tr > td {
+  border-bottom: 1px solid #d4d4d4 !important;
+  border-right: 1px solid #d4d4d4 !important;
+}
+.handsontable td:last-child,
+.ht_clone_top th:last-child {
+  border-right: none !important;
+}
+.handsontable .currentRow {
+  background: #fbfbfb !important;
+}
+.handsontable .currentCol {
+  background: #fbfbfb !important;
+}
+.handsontable td.htSearchResult {
+  background: #fdf3e5 !important;
+  /*color: #fff !important;*/
+}

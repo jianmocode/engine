@@ -1,0 +1,391 @@
+<!-- _aclselector 权限选择器 Modal -->
+<div class="modal fade " id="_aclselector" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-fromtop modal-lg">
+        <div class="modal-content">
+            <div class="block block-themed block-transparent remove-margin-b">
+                <div class="block-header bg-primary">
+                    <ul class="block-options">
+                        <li>
+                            <button data-dismiss="modal" type="button"><i class="si si-close"></i></button>
+                        </li>
+                    </ul>
+                    <h3 class="block-title  font-w300"><?=$title?>::<?=$label?></h3>
+                </div>
+
+                <ul class="nav nav-tabs nav-tabs-alt" data-toggle="tabs"  id="tabforms-aclselector">
+                    <li class="active">  <!-- 手机不显示 -->
+                        <a href="#tabs-role">角色</a>
+                    </li>
+                    <li>
+                        <a href="#tabs-dept">部门</a>
+                    </li>
+                    <li>
+                        <a href="#tabs-user">员工</a>
+                    </li>
+                </ul>
+
+                <!-- TAB内容开始 -->
+                <div class="block-content tab-content">
+
+                    <div class="tab-pane hide" id="tab-pane-error" >
+                        <div class="alert alert-danger push-50-l push-50-r push-20-t ">
+                            <h3 class="font-w300 push-15">载入失败</h3>
+                            <p>{HTML}</p>
+                        </div>
+                        <div class="row"  style="min-height:300px;" ></div>
+                    </div>
+
+                    <!-- 角色列表 -->
+                    <div class="tab-pane active" id="tabs-role">
+                        <table id="aclselector-role-list" class="js-table-checkable table table-hover">
+                            <thead>
+                                <tr>
+                                    <th class="text-center " style="width: 80px;">
+                                        <label class="css-input css-checkbox css-checkbox-primary remove-margin-t remove-margin-b">
+                                            <input type="checkbox" id="check-all"  name="check-all"><span></span>
+                                        </label>
+                                    </th>
+                                    <th class="font-w300">角色</th>
+                                    <th class="font-w300" style="width:200px;" >权限标识</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php 
+                                foreach ( $roles['value_tags'] as $v=>$t) : ?>
+                                <tr>
+                                    <td class="text-center" >
+                                        <label class="css-input css-checkbox css-checkbox-primary">
+                                            <input type="checkbox" 
+                                                <?php if ( in_array($v, $acl['value']) ) :?> checked <?php endif ?>
+                                                id="aclSelector-roles-<?=$idx?>" 
+                                                data-value="<?=$v?>"
+                                                data-value-style="<?=$t['tag']?>|<?=$v?>|<?=$t['style']?>"
+                                                name="aclSelector-roles" 
+                                                class="aclSelector-roles"><span></span>
+                                        </label>
+                                    </td>
+                                    <td> <?=$t['tag']?> </td>
+                                    <td> <span class="label label-<?=$t['st']?> role push-15-t"><?=$t['tag']?></span> </td>
+                                </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div><!-- END 角色列表 -->
+
+                    <!-- 部门列表 -->
+                    <div class="tab-pane" id="tabs-dept" >
+                        <div id="tabs-dept-frame" data-toggle="slimscroll"   data-height="screen-height" data-offset='420'  > <!-- Scroll Frame -->
+                        <table id="aclselector-dept-list" class="js-table-checkable table table-hover" >
+                            <thead>
+                                <tr>
+                                    <th class="text-center " style="width: 80px;">
+                                        <label class="css-input css-checkbox css-checkbox-primary remove-margin-t remove-margin-b">
+                                            <input type="checkbox" id="check-all"  name="check-all"><span></span>
+                                        </label>
+                                    </th>
+                                    <th class="font-w300">部门</th>
+                                    <th class="font-w300" style="width:200px;" >权限标识</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                               
+                                <?php
+                                $deptMap = (isset($depts['map'])) ? $depts['map'] : [];
+                                foreach ($depts['data'] as $idx=>$dept) : 
+                                    $name = $dept['name'];
+                                    $labelName = $dept['name'];
+                                    $tagName = $dept['name'];
+                                    $parentid = $dept['parentid'];
+                                    while ( isset($deptMap[$parentid]) && $parentid != 1 ) {
+                                        $id = $deptMap[$parentid]['id'];
+                                        $parentid  = $deptMap[$parentid]['parentid'];
+                                        // $name = $deptMap[$id]['name'] . "::" . $name;
+                                        $tagName =   $deptMap[$id]['name']  . ' > ' . $tagName;
+                                        $labelName = $deptMap[$id]['name']  . '<i class="fa fa-angle-right push-5-l " ></i> '. $labelName;
+                                        $name =  $deptMap[$id]['name']  . '<i class="fa fa-angle-right push-10-l  push-5-r" ></i> ' . $name;
+                                    }
+                                ?>
+
+                                <tr>
+                                    <td class="text-center" >
+                                        <label class="css-input css-checkbox css-checkbox-primary">
+                                            <input type="checkbox"
+                                                <?php if ( in_array("dept-{$dept['id']}", $acl['value']) ) :?> checked <?php endif ?>
+                                                id="aclSelector-depts-<?=$dept['id']?>" 
+                                                data-value="dept-<?=$dept['id']?>"
+                                                data-value-style="<?=$tagName?>|dept-<?=$dept['id']?>|tag-info"
+                                                name="aclSelector-depts" 
+                                                class="aclSelector-depts"> <span></span>
+                                        </label>
+                                    </td>
+                                    <td> <?=$name?> </td>
+                                    <td> <span class="label label-info role push-15-t"><?=$labelName?></span> </td>
+                                </tr>
+                                <?php endforeach; ?>
+                                
+                            </tbody>
+                        </table>
+                        </div> <!-- End Frame -->
+                    </div><!-- END 部门列表 -->
+
+
+                    <!-- 员工列表 -->
+                    <div class="tab-pane " id="tabs-user">
+                        <div id="tabs-user-frame" data-toggle="slimscroll"   data-height="screen-height" data-offset='420'  > <!-- Scroll Frame -->
+                        <table id="aclselector-users-list" class="js-table-checkable table table-hover" >
+                            <thead>
+                                <tr>
+                                    <th class="text-center " style="width: 80px;">
+                                        <label class="css-input css-checkbox css-checkbox-primary remove-margin-t remove-margin-b">
+                                            <input type="checkbox" id="check-all"  name="check-all"><span></span>
+                                        </label>
+                                    </th>
+                                    <th class="font-w300">员工</th>
+                                    <th class="font-w300" style="width:200px;" >权限标识</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                <?php 
+                                foreach ($users['data'] as $idx=>$user) : ?>
+                                <tr>
+                                    <td class="text-center" >
+                                        <label class="css-input css-checkbox css-checkbox-primary">
+                                            <input type="checkbox"
+                                            <?php if ( in_array("user-{$user['userid']}", $acl['value']) ) :?> checked <?php endif ?>
+                                             id="aclSelector-depts-<?=$user['userid']?>" 
+                                             data-value="user-<?=$user['userid']?>"
+                                             data-value-style="<?=$user['name']?>|user-<?=$user['userid']?>|tag-info"
+                                             name="aclSelector-users" 
+                                             class="aclSelector-users"><span></span>
+                                        </label>
+                                    </td>
+                                    <td> <?=$user['name']?> </td>
+                                    <td> <span class="label label-info role push-15-t"><?=$user['name']?></span> </td>
+                                </tr>
+                                <?php endforeach; ?>
+                                
+                            </tbody>
+                        </table>
+                        </div> <!-- End Frame -->
+                    </div><!-- END 员工列表 -->
+
+                </div>
+            </div>
+            
+            <!-- 操作面板 -->
+            <div class="modal-footer push-15-t">
+               <form class="form-horizontal" action="#" method="post" >
+                    <div class="form-group">
+                       <div class="col-lg-12 col-md-12 col-xs-12 col-sm-12 push-20-t">
+                           <div class="form-material">
+                                <input 
+                                    id="aclselector-preview"  
+                                    name="aclselector-preview"  class=" js-tags-input form-control " type="text" 
+                                    value="<?=$acl['value_style_string']?>" >
+                                <label for="aclselector-preview"><?=$title?>::<?=$label?></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-lg-12 col-md-12 col-xs-12 col-sm-12 text-center">
+
+                            <button
+                                class="btn btn-primary font-w300 push-15-t push-15-r acl-submit " 
+                                type="button"> 保存 </button>
+
+                            <button 
+                                class="btn btn-default font-w300 push-15-t " 
+                                type="button" data-dismiss="modal"> 取消 </button>
+                        </div>
+                    </div>
+               </form>
+
+            </div> <!-- END 操作面板 -->
+        </div>
+    </div>
+</div>
+<!-- END _aclselector 权限选择器 Modal -->
+
+<script type="text/javascript">
+$(function() {
+
+    App.initHelper('nav-tabs', {'id':'#tabforms-aclselector'});
+    App.initHelper('slimscroll');
+
+
+    // 初始化权限选择器 (预览)
+    $('input[name=aclselector-preview]').tagsinput2({
+        link: '',
+        onClick: function( tagObj ) {},
+        onChange: function( tagObj ) {},
+        onAddTag: function( tagObj  ){},
+        onRemoveTag: function( tagObj ){
+            var value = tagObj['value'];
+            $('input[data-value='+value+']').removeAttr('checked');
+        }
+    });
+
+
+    // 所有角色数值清单
+    var rolesTags = [];
+    $('input[name=aclSelector-roles]', '#aclselector-role-list' ).each( function(idx, elm ) {
+        var value = $(elm).attr('data-value');
+        rolesTags.push(value);
+    });
+
+
+    // 所有部门数值清单
+    var deptsTags = [];
+    $('input[name=aclSelector-depts]', '#aclselector-dept-list' ).each( function(idx, elm ) {
+        var value = $(elm).attr('data-value');
+        deptsTags.push(value);
+    });
+
+    // 所有用户数值清单
+    var usersTags = [];
+    $('input[name=aclSelector-users]', '#aclselector-users-list' ).each( function(idx, elm ) {
+        var value = $(elm).attr('data-value');
+        usersTags.push(value);
+    });
+
+
+    // 角色选择菜单
+    App.initHelper('table-tools', {'id':'#aclselector-role-list', onchange:function(selected) {
+
+        var needremoveTags = [], selectedTags = []; 
+        $(selected).each(function(idx, elm){
+            var value_style = $(elm).attr('data-value-style');
+            var value = $(elm).attr('data-value');
+            selectedTags.push(value);
+            if ( !$('input[name=aclselector-preview]').tagExist2(value) ){
+                $('input[name=aclselector-preview]').importTags2(value_style);
+            }
+        });
+
+        // 计算需要移除的标签
+        $.grep(rolesTags, function(el) {
+            if (jQuery.inArray(el, selectedTags) == -1) {
+                needremoveTags.push(el);
+            }
+        });
+
+        // 移除标签
+        $(needremoveTags).each(function(idx, value ){
+            if ( $('input[name=aclselector-preview]').tagExist2(value) ){
+                $('input[name=aclselector-preview]').removeTag2( value );
+            }
+        });
+
+    }});
+
+
+    // 部门选择菜单 ( 需要优化 )
+    App.initHelper('table-tools', {'id':'#aclselector-dept-list', onchange:function(selected){
+
+        var needremoveTags = [], selectedTags = []; 
+        $(selected).each(function(idx, elm){
+            var value_style = $(elm).attr('data-value-style');
+            var value = $(elm).attr('data-value');
+            selectedTags.push(value);
+            if ( !$('input[name=aclselector-preview]').tagExist2(value) ){
+                $('input[name=aclselector-preview]').importTags2(value_style);
+            }
+        });
+
+        // 计算需要移除的标签
+        $.grep(deptsTags, function(el) {
+            if (jQuery.inArray(el, selectedTags) == -1) {
+                needremoveTags.push(el);
+            }
+        });
+
+
+        // 移除标签
+        $(needremoveTags).each(function(idx, value ){
+            if ( $('input[name=aclselector-preview]').tagExist2(value) ){
+                $('input[name=aclselector-preview]').removeTag2( value );
+            }
+        });
+
+    }});
+
+    // 用户选择菜单 ( 需要优化 )
+    App.initHelper('table-tools', {'id':'#aclselector-users-list', onchange:function(selected){
+
+        var needremoveTags = [], selectedTags = []; 
+        $(selected).each(function(idx, elm){
+            var value_style = $(elm).attr('data-value-style');
+            var value = $(elm).attr('data-value');
+            selectedTags.push(value);
+            if ( !$('input[name=aclselector-preview]').tagExist2(value) ){
+                $('input[name=aclselector-preview]').importTags2(value_style);
+            }
+        });
+
+        // 计算需要移除的标签
+        $.grep(usersTags, function(el) {
+            if (jQuery.inArray(el, selectedTags) == -1) {
+                needremoveTags.push(el);
+            }
+        });
+
+        // 移除标签
+        $(needremoveTags).each(function(idx, value ){
+            if ( $('input[name=aclselector-preview]').tagExist2(value) ){
+                $('input[name=aclselector-preview]').removeTag2( value );
+            }
+        });
+
+    }});
+
+
+    // 保存权限信息 （ 并回写 ）
+    $('.acl-submit').click(function(event) {
+
+        $('#_aclselector').modal('hide');
+        App.loading({message:'正在保存权限'}).show();
+
+        var action = '<?=R('core-system','aclmanager', 'aclUpdate')?>';
+        var elm = 'input[name=<?=$elm?>]';
+        var key = '<?=$key?>';
+        var value = $("input[name=aclselector-preview]").value(true);
+
+
+        $.post( action, {key: key, value:value}, function(data, textStatus, xhr) {
+            code = data['code'] || 0;
+            if ( code != 0 ) { // Error
+                data['message'] =  data['message'] || '保存失败';
+                App.notify(data['message'], 'fa fa-times','danger');
+                return;
+            }
+
+            var oldData = $(elm).value(true);
+            var newData = $("input[name=aclselector-preview]").valueString(false);
+            $(oldData).each(function( idx, v ){
+                if ($(elm).tagExist2(v)){
+                    $(elm).removeTag2(v);
+                }
+            });
+            $(elm).importTags2(newData);
+
+        }, 'json')
+
+        .error(function( error, xhr ) {
+            App.notify('保存失败', 'fa fa-times','danger');
+        })
+
+        .done(function(){
+            // console.log('done');
+            App.loading().hide();
+        });
+    });
+
+
+
+    $('#_aclselector').on('hidden.bs.modal',function(){
+        $(this).removeData();  // 清空 Ajax 缓存
+    });
+});
+</script>

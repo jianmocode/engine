@@ -1,0 +1,125 @@
+
+# 简墨搜索引擎测试数据
+# @author Max<https://github.com/trheyi>
+# @license Apache 2.0 license <https://www.apache.org/licenses/LICENSE-2.0>
+# @copyright 2019 Jianmo.ink
+
+# 字段说明
+# String          :doc_id         [选填]文档ID, 不存在则创建, 存在则更新. 仅支持精确查询.
+# String          :title          [必填]标题, 支持匹配查询
+# String          :summary        [必填]摘要, 支持匹配查询
+# String          :url            [必填]访问地址
+# TimestamptZ     :published_at   [必填]发布时间, 支持范围/精确查询, 可排序.
+# String          :content        [必填]文档正文, 支持匹配查询
+# String          :type           [必填]文档类型, 支持精确/匹配, 默认为 text.  text 文本, markdown Markdown格式文本, json JSON格式文本, html HTML格式文本, yaml YAML格式文本, image 图片, video 视频, audio 语音
+# Array[string]   :tags           [选填]文档标签, 支持精确/匹配, 可以按标签过滤结果
+# Array[string]   :categories     [选填]文档类目, 支持精确/匹配, 可以按类目过滤结果
+# Array[string]   :users          [选填]文档所属用户, 支持精确/匹配, 可以按用户过滤结果
+# Boolen          :similar        [选填]是否开启相似搜索, 默认为 0.  0 不开启, 1 开启
+# String          :origin         [选填]文档来源, 支持精确/匹配, 可以按来源过滤结果
+# String          :author         [选填]文档作者, 支持精确/匹配, 可以按作者过滤结果
+# Integer         :priority       [选填]用户自定义权重, 可排序.
+# Object          :data           [选填]传入数据, 不支持查询, 搜索后按原值返回.
+-
+  doc_id: unit-test-1552050001
+  origin_id: 1552050001
+  title: 二月初二 | 今天为什么要剪头发？
+  summary: 3月8日，在湖北襄阳市保康县一家婴幼儿理发店里，理发师为一名小朋友在“剃龙头”。当日是农历二月初二，民间有“二月二，剃龙头”的传统习俗。 新华社发（杨韬 摄）
+  url: https://mp.weixin.qq.com/s?src=11&timestamp=1552050001&ver=1472&signature=jRBKq6RVP8oc0eqrLbR6PECOW4YSRE2z2GYij8N5K0NJnRCiqzanwBRFvAakpfsVrONp0g4S4qfWR8rD*DKY68NQaJ04k86zliyTTpJphdfW-DP-MNPNyJDCovv95inY&new=1
+  published_at: 2019-02-22 22:22:33
+  content: 3月8日，在湖北襄阳市保康县一家婴幼儿理发店里，理发师为一名小朋友在“剃龙头”。当日是农历二月初二，民间有“二月二，剃龙头”的传统习俗。 新华社发（杨韬 摄）
+    “二月二，龙抬头
+
+    孩子大人要剪头发”
+
+    又到农历二月二
+
+    一句民谚唱出了人们的精气神儿 中国人
+
+    也唱出了很多人的疑惑
+
+    为啥二月二要剪头发？
+
+  type: text
+  tags:
+    - 二月二
+    - 龙抬头
+    - 剪头发
+  categories:
+    - 民俗
+    - 新闻
+  users:
+    - 103981
+    - 1393883
+  origin: unit-test-article
+  author: 新华网
+  priority: 99
+  data: 
+    cover: https://mmbiz.qpic.cn/mmbiz_jpg/O9F3NTo58yq8B08wibOQVmd8kBI5cyqIQUZyaju5r3T8icDV6eVPFaDUF3eHLlR81KyicXn1EqgnplLQibRC5sdSdg/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1
+    key: 毕竟
+  similar: 0
+
+-
+  doc_id: unit-test-1552050002
+  origin_id: 1552050002
+  title: 谈孟晚舟案和华为事件，王毅举起了拳头
+  summary: 3月8日上午10时，十三届全国人大二次会议新闻中心在梅地亚中心新闻发布厅举行记者会，邀请国务委员兼外交部长王毅就“中国外交政策和对外关系”相关问题回答中外记者提问。
+  url: https://mp.weixin.qq.com/s?src=11&timestamp=1552050001&ver=1472&signature=jRBKq6RVP8oc0eqrLbR6PECOW4YSRE2z2GYij8N5K0NJnRCiqzanwBRFvAakpfsVrONp0g4S4qfWR8rD*DKY68NQaJ04k86zliyTTpJphdfW-DP-MNPNyJDCovv95inY&new=1
+  published_at: 2019-02-21 22:22:33
+  content: 记者：
+
+    大家都非常关心孟晚舟案，这一事件在昨天又有新的进展，加拿大法院决定将延后引渡聆讯，而华为则宣布控告美国政府。在这件事情上，很多舆论认为，很明显是美国在对中国的高技术企业进行政治打压，您怎么看？
+      中国人
+    王毅：
+     
+    只要秉持客观公正立场都不难看出，最近针对中国特定企业和个人的行为根本不是什么单纯的司法案件，而是蓄意的政治打压。对此，我们已经并将继续采取一切必要措施，坚决维护中国企业和公民的正当合法权益，这是中国政府义不容辞的职责。同时，我们也支持相关企业和个人拿起法律武器来维护自身权益，不当“沉默的羔羊”。
+
+    公道自在人心，正义终将到来。我们今天要维护的，不仅仅是一个企业的权益，而是一个国家、一个民族的正当发展权利，更是世界上所有希望提高自身科技发展水平国家的应有权利。我们希望各方都能够遵守规则，摒弃偏见，共同为各国企业营造一个公平竞争的市场环境，共同为各国人士提供一个安全可靠的交往环境。谢谢。
+
+  type: text
+  tags:
+    - 华为
+    - 孟晚舟
+    - 两会
+  categories:
+    - 时政
+    - 新闻
+  users:
+    - 103981
+    - 1393883
+  origin: unit-test-article
+  author: 新浪网
+  priority: 1
+  data: 
+    cover: https://mmbiz.qpic.cn/mmbiz_gif/x6iaHWKibUzk0iaia70znehkaibK7ReVYhIRIEbxnPhsAfru2XxNo45yrVasFQniczubeFp8vEIEkpk9CsVIdtuwPzuA/640?wx_fmt=gif&tp=webp&wxfrom=5&wx_lazy=1
+    hello: 你好
+  similar: 0
+
+-
+  doc_id: unit-test-1552050003
+  title: Trump must be dancing for joy at Sherrod Brown news
+  summary: Paul Begala, a Democratic strategist and CNN political commentator, was a political consultant for Bill Clinton's presidential campaign in 1992 and was counselor to Clinton in the White House. The opinions expressed in this commentary are his. View more opinion articles on CNN.
+  url: https://edition.cnn.com/2019/03/07/opinions/trump-must-be-dancing-the-dougie-at-sherrod-brown-news-begala/index.html
+  published_at: 2019-02-20 22:22:33
+  content: (CNN)Donald Trump is probably dancing his svelte, 243-pound self around the White House about now. News that Sen. Sherrod Brown (D-Ohio) is not running for president is no doubt turning Trump's "Executive Time" into party time.
+
+    (I'll pause for a moment while you deal with the thought of our President doing the Dougie. Better? OK.)
+    Mr. Trump surely could use some good news. His former lawyer and fixer, Michael Cohen, has implicated Trump in alleged felonious conduct. His summit with his dear friend, the Dear Leader Kim Jong Un, exploded like a Musudan missile. The trade deficit Trump promised to reduce is instead at a record high. And he faces investigations by, among others, Congress, special counsel Robert Mueller, the Southern District of New York, the attorney general of New York, the Washington, DC attorney general, and Hawaii Five-0. (I made up one of those.)
+  type: text
+  tags:
+    - Trump
+    - Begala
+    - dancing
+  categories:
+    - news
+    - opinions
+  users:
+    - 103981
+    - 1393883
+  origin: unit-test-article
+  author: cnn
+  priority: 1
+  data: 
+    cover: https://cdn.cnn.com/cnnnext/dam/assets/181129104152-sherrod-brown-11062018-medium-plus-169.jpg
+    hello: hello
+  similar: 0

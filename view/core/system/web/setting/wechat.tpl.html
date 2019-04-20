@@ -1,0 +1,123 @@
+<div class="block-content">
+    <form id="CustTypeFormStep1Form" 
+          class="js-validation-CustTypeFormStep1 form-horizontal" 
+          action="<?=R('default','dotype_create_step1')?>" method="post" >
+
+   
+
+
+     <!--    <div class="form-group">
+            <div class="col-lg-12">
+                 <div class="form-material">
+                     <label for="name">微信服务号</label>
+                 </div>
+            </div>
+        </div> -->
+
+        
+        <div class="form-group ">
+            <div class="col-lg-12 ">
+
+                 <div class="form-material  push-30-l push-30-r">
+                     <input class="form-control" type="text" id="company" name="company" value="<?=$company?>" placeholder="请填写公司名称">
+                     <label for="name">接入方式</label>
+                 </div>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <div class="col-lg-6">
+                 <div class="form-material push-30-l push-30-r">
+                     <input class="form-control" type="text" id="company" name="company" value="<?=$company?>" placeholder="请填写AppID">
+                     <label for="name">AppID</label>
+                 </div>
+            </div>
+
+            <div class="col-lg-6">
+                 <div class="form-material push-30-l push-30-r">
+                     <input class="form-control" type="text" id="company" name="company" value="<?=$company?>" placeholder="请填写AppSecret">
+                     <label for="name">AppSecret</label>
+                 </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-lg-12">
+                 <div class="form-material push-30-l push-30-r">
+                     <input class="form-control" type="text" id="company" name="company" value="<?=$company?>" placeholder="请填写授权回调域">
+                     <label for="name">授权回调域</label>
+                 </div>
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <div class="col-lg-12">
+                <div class="form-material push-30-l push-30-r">
+                    <label class="css-input switch switch-sm switch-primary">
+                        <span class="push-10-r"></span><input type="checkbox" > <span></span> 接入微信 
+                    </label>
+                   
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-lg-12">
+                <div class="form-material push-30-l push-30-r">
+                    <label for="name">授权回调域</label>
+                </div>
+            </div>
+
+            <div class="col-lg-12">
+                <div class="col-lg-12">
+                    <label class="css-input css-radio css-radio-primary col-lg-2">
+                        <input type="radio" name="radio-group3" checked><span></span> 不同步 (推荐)
+                    </label>
+                    <label class="css-input css-radio css-radio-primary col-lg-2">
+                        <input type="radio" name="radio-group3"><span></span> 以钉钉为准 
+                    </label>
+                    <label class="css-input css-radio css-radio-primary col-lg-2">
+                        <input type="radio" name="radio-group3"><span></span> 以本地为准 (自动更新钉钉通讯录信息)
+                    </label>
+                </div>
+             </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-lg-12">
+                <div class="form-material push-30-l push-30-r">
+                    <label for="name">微信菜单 ( 服务号/小程序有效 ）</label>
+                </div>
+            </div>
+
+            <div class="col-lg-12">
+                <div class="col-lg-12">
+                    <label class="css-input css-radio css-radio-primary col-lg-2">
+                        <input type="radio" name="radio-group3" checked><span></span>开启
+                    </label>
+                    <label class="css-input css-radio css-radio-primary col-lg-2">
+                        <input type="radio" name="radio-group3"><span></span>不开启
+                    </label>
+                </div>
+             </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-lg-12">
+                <div class="form-material push-30-l push-30-r">
+                     <input class="form-control" type="text" id="company" name="company" value="<?=$company?>" placeholder="模板消息ID(服务号有效)">
+                     <label for="name">模板消息ID(服务号有效)</label>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="form-group"></div>
+
+    </form>
+</div>
+
+<script type="text/javascript">
+</script>

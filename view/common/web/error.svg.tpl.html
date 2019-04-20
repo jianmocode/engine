@@ -1,0 +1,15 @@
+<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400' style="background: rgb(210, 106, 92);">
+<foreignObject width='100%' height='100%'>
+<div xmlns='http://www.w3.org/1999/xhtml' 
+	style='font-size:24px;color:#FFFFFF;padding:20px;margin: 0;
+	font-family:"Helvetica Neue", "Hiragino Sans GB", "Microsoft YaHei",  Arial, sans-serif, "Apple Color Emoji" '
+>
+	<?=$message?>
+	<div style="font-size:18px;"> <?=$file?></div>
+	<div style="font-size:18px;"> 第<?=$line?>行 </div>
+	<div style="font-size:18px;margin-top:12px;">
+		<?=htmlspecialchars(print_r($error,true))?>
+	</div>
+</div>
+</foreignObject>
+</svg>

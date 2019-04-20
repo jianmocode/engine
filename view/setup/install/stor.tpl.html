@@ -1,0 +1,168 @@
+<?php include_once(tpl('setup/head')); ?>
+
+<!-- Install Content -->
+<div class="content overflow-hidden">
+
+    <div class="row">
+         <div class="col-lg-6 col-lg-offset-3  col-md-6 col-md-offset-3  col-sm-6 col-sm-offset-3 p push-15-t">
+             <!-- Step Form Content -->
+             <div class="block block-shadow block-radius">
+                <div class="block-header">
+
+                    <h3 class="block-title font-w300 pull-right text-muted push-10-t push-5-r "> 
+                       <?=$currIdx?>/<?=$total?>
+                    </h3>
+
+                    <h3 class="block-title font-w300  push-10-t push-5-l" style="text-transform:none"> 
+                        <i class="iconfont icon-xpmse push-5-l"></i> 
+                        安装向导
+                        <i class="fa fa-angle-right"></i> 
+                        Storage 配置
+                    </h3>
+
+                </div>
+
+
+				<div class="block-content block-content-full block-content-narrow text-center" style="padding-left: 10%;padding-right: 10%;">   
+                     <form 
+                        action=""
+                        id="storage-form"
+                        method="post" class="form-horizontal" >
+
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon font-w400" style="min-width:100px;"> 存储引擎 </span>
+                                <select class="js-select2 form-control" id="engine" name="engine" style="width: 100%;" data-placeholder="请选择...">
+                                    <option></option><!-- Required for data-placeholder attribute to work with Select2 plugin -->
+                                    <option value="local" selected> 本地存储</option>
+                                </select>
+                            </div>
+                        </div>
+
+                    <!--
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon font-w400" style="min-width:100px;"> 访问地址 </span>
+                                <input class="form-control" type="text" id="public_home" name="public_home" 
+                                    value="<?=setupController::V('stor','public_home',  $home.'/static-file')?>"
+                                    placeholder="公开目录网址  例如: <?=$home?>/static-file">
+                            </div>
+                        </div> -->
+
+
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon font-w400" style="min-width:100px;"> 公开目录 </span>
+                                <input class="form-control" type="text" id="public_root" name="public_root" 
+                                    value="<?=setupController::V('stor','public_root', '/data/stor/public')?>"
+                                    placeholder="公开目录根路径">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon font-w400" style="min-width:100px;"> 私密目录 </span>
+                                <input class="form-control" type="text" id="private_root" name="private_root" 
+                                    value="<?=setupController::V('stor','private_root', '/data/stor/private')?>"
+                                    placeholder="私密目录根路径">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="input-group">
+                                <span class="input-group-addon font-w400" style="min-width:100px;"> Composer </span>
+                                <input class="form-control" type="text" id="composer" name="composer" 
+                                    value="<?=setupController::V('stor','composer', '/composer')?>"
+                                    placeholder="Composer目录根路径">
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <button 
+                                class="btn btn-primary pull-left font-w300 push-15-r tryit se-action"
+                                data-action="/setup.php?a=tryit&se=stor"
+                                data-form="#storage-form"
+                                type="button" > 
+                                校验配置
+                            </button>
+    
+                            <span class="pull-left tryit-status hidden" > <i class="fa fa-refresh fa-spin"></i> 正在校验 Storage  </span>
+                            
+                            <?php if ( !empty($next)) :?>
+                            <button class="btn btn-primary pull-right font-w300 saveit se-action" 
+                                data-action="/setup.php?a=saveit&se=stor"
+                                data-form="#storage-form"
+                                type="button">  
+                                下一步  <i class="fa fa-angle-double-right"></i> 
+                            </button>
+                            <?php endif; ?>
+                            
+                            <?php if ( !empty($prev)) :?>
+                            <a class="btn btn-default pull-right font-w300 push-15-r se-action" href="/setup.php?s=<?=$prev?>"> 
+                                <i class="fa fa-angle-double-left"></i> 上一步   
+                            </a>
+                            <?php endif; ?>
+
+                        </div>
+
+                     </form>
+				</div>
+             </div> <!-- Step Form Content -->
+        </div>
+    </div>
+</div>
+
+<?php include_once(tpl('setup/foot')); ?>
+<script src="/static/assets/js/plugins/select2/select2.full.min.js"></script>
+<script src="/static/js/setup.js"></script>
+<script type="text/javascript">
+$(function(){
+    
+    App.initHelpers(['select2']);
+
+    // 连接测试按钮
+    seActionInit('.tryit', function( status, resp ) {
+
+        if ( status == 'success') {
+            App.notify('校验成功!');
+        } else {
+            message = resp['message'] || '校验失败';
+            App.notify(message, 'fa fa-times','danger');
+        }
+
+    }, {
+        'status':'.tryit-status',
+        'action':'.se-action',
+        'doing':'<i class="fa fa-refresh fa-spin"></i> 正在校验, 可能花费数秒钟... ',
+        'mute':false
+    });
+
+
+    // 下一步按钮
+    seActionInit('.saveit', function( status, resp ) {
+        var next = '<?=$next?>';
+        if ( status == 'success') {
+            if ( next !== '') {
+                window.location = '/setup.php?s=' + next;
+            } else {
+                window.location = '/';
+            }
+
+        } else {
+            message = resp['message'] || '保存失败';
+            App.notify( '保存失败 | ' + message, 'fa fa-times','danger');
+        }
+
+    }, {
+        'status':'.tryit-status',
+        'action':'.se-action',
+        'hidden':'.tryit',
+        'doing':'<i class="fa fa-refresh fa-spin"></i> 正在校验并保存, 可能花费数秒钟...',
+        'mute':false
+    });
+
+});
+</script>
+<?php include_once(tpl('setup/footer')); ?>

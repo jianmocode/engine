@@ -1,0 +1,15 @@
+
+
+<?php if (is_array($_js)) : foreach ($_js as $file) :?>
+<script src="<?=$file?>"></script>
+<?php endforeach; endif;?>
+
+<!-- Core JS: jQuery, Bootstrap, slimScroll, scrollLock, Appear, CountTo, Placeholder, Cookie and App.js -->
+<script src="/static/assets/js/xpmse.min.js"></script>
+<script src="/static/assets/js/plugins/zeroclipboard/ZeroClipboard.min.js"></script>
+<script src="/static/assets/js/plugins/bootstrap-notify/bootstrap-notify.min.js"></script>
+<script src="/static/assets/js/plugins/jquery-ui/jquery-ui.min.js"></script>
+
+<?php if (is_array($js)) : foreach ($js as $file) :?>
+<script src="<?=$file?>"></script>
+<?php endforeach; endif;?>

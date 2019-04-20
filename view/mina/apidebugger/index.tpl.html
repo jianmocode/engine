@@ -1,0 +1,105 @@
+        <?php include_once(tpl('common/web/head')); ?>
+        <link rel="stylesheet" href="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/codemirror/lib/codemirror.css">
+        <link rel="stylesheet" href="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/codemirror/addon/fold/foldgutter.css">
+        <link rel="stylesheet" href="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/codemirror/addon/dialog/dialog.css">
+        <link rel="stylesheet" href="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/codemirror/theme/monokai.css">
+        <link rel="stylesheet" href="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/handsontable/handsontable.full.min.css">
+
+
+        <!-- foot JS CODE-->
+        <?php include_once(tpl('common/web/foot')); ?>
+        <script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/jquery-validation/jquery.validate.min.js"></script>
+        <script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/select2/select2.full.min.js"></script>
+        <script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/masked-inputs/jquery.maskedinput.min.js"></script>
+        <script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/codemirror/lib/codemirror.js"></script>
+        <script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/codemirror/addon/search/searchcursor.js"></script>
+        <script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/codemirror/addon/search/search.js"></script>
+        <script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/codemirror/addon/dialog/dialog.js"></script>
+        <script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/codemirror/addon/edit/matchbrackets.js"></script>
+        <script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/codemirror/addon/edit/closebrackets.js"></script>
+        <script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/codemirror/addon/comment/comment.js"></script>
+        <script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/codemirror/addon/wrap/hardwrap.js"></script>
+        <script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/codemirror/addon/fold/foldcode.js"></script>
+        <script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/codemirror/addon/fold/brace-fold.js"></script>
+        <script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/codemirror/mode/javascript/javascript.js"></script>
+        <script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/codemirror/mode/sql/sql.js"></script>
+        <script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/codemirror/mode/php/php.js"></script>
+        <script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+        <script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/codemirror/mode/xml/xml.js"></script>
+        <script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/codemirror/mode/css/css.js"></script>
+        <script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/codemirror/mode/clike/clike.js"></script>
+        <script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/codemirror/keymap/sublime.js"></script>
+        <script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/handsontable/handsontable.full.min.js"></script>
+        <script src="<?=\Xpmse\Conf::G("general/static")?>/assets/js/plugins/handsontable/zeroclipboard/ZeroClipboard.js"></script>
+
+                      
+        <!-- foot end -->
+
+        <!-- Page Container -->
+        <!--
+            Available Classes:
+
+            'enable-cookies'             Remembers active color theme between pages (when set through color theme list)
+
+            'sidebar-l'                  Left Sidebar and right Side Overlay
+            'sidebar-r'                  Right Sidebar and left Side Overlay
+            'sidebar-mini'               Mini hoverable Sidebar (> 991px)
+            'sidebar-o'                  Visible Sidebar by default (> 991px)
+            'sidebar-o-xs'               Visible Sidebar by default (< 992px)
+
+            'side-overlay-hover'         Hoverable Side Overlay (> 991px)
+            'side-overlay-o'             Visible Side Overlay by default (> 991px)
+            'side-scroll'                Enables custom scrolling on Sidebar and Side Overlay instead of native scrolling (> 991px)
+            'header-navbar-fixed'        Enables fixed header
+        -->
+        <div id="page-container" class="sidebar-l sidebar-o side-scroll header-navbar-fixed sidebar-mini main-sidebar">
+           
+           <!-- 左侧菜单-->
+           <?php include_once(tpl('common/web/menu')); ?>
+           <!-- 左侧菜单 结束-->
+
+           <!-- Header Overlay-->
+           <?php include_once(tpl('common/web/header')); ?>
+           <!-- END Header  Overlay-->
+            
+            <!-- Main Container -->
+            <main id="main-container" class="width-sidebar">
+                <div class="content">
+                    <div class="block">
+                 
+                        <div class="block-content block-content-full row">
+                            开发中，请稍候 ...
+                            <!-- <div class="col-lg-3">
+                                <div class="block block-bordered">
+                                    <div class="block-header">
+                                        <h3 class="block-title">Block Title</h3>
+                                    </div>
+                                    <div class="block-content">
+                                        <p>Shadow hover effect..</p>
+                                    </div>
+                                </div>
+                            </div> -->
+                        </div>
+                    </div> <!--  END Block  -->
+                </div> <!-- END content -->
+
+                <script type="text/javascript">
+                    $(function(){
+                        App.initHelpers(['slick']);
+                    });
+                </script>
+            </main>
+
+            <!-- Footer Overlay-->
+           <?php include_once(tpl('common/web/footer')); ?>
+           <!-- END Footer Overlay-->
+        </div>
+        <!-- END Page Container -->
+
+        <!-- btn-ajax-post 操作确认对话框 Modal id="_btn-ajax-confirm" -->
+        <?php include_once(tpl('common/web/btn-ajax-post.confirm.mod')); ?>
+
+    </body>
+</html>
+
+

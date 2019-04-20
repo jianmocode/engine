@@ -1,0 +1,83 @@
+ <div class="block block-content remove-padding" style="height:auto;">
+    <div 
+    id="right-sencond"
+    class="block block-slider block-left " 
+    data-offset='80'
+    option-autoclose='0'
+    option-duration='800'
+    style="margin:0px;" 
+    ></div>
+    <!-- tab头部区域 -->
+    <ul class="nav nav-tabs nav-tabs-alt">
+        <li class="active"> 
+            <a id="tabs-all" href="#tabs-content-xiangqing"  class="font-w300 tabs-menu"  data-remote="<?=R('baas-admin','conf','read',['id'=>$id])?>" >
+            修改配置
+            </a>
+        </li> 
+        <li class="font-w300 tabs-menu pull-right" >
+            <a id="tabs-document" href="#" 
+                onclick="$('#window-left').close();" 
+                class="font-w300 tabs-menu">关闭
+            </a>
+        </li> 
+    </ul>
+    <!-- tab头部区域结束 -->
+    <!-- TAB内容开始 -->
+    <div class="tab-content">
+        <div class="tab-pane hide" id="tab-pane-error" >
+            <div class="alert alert-danger push-50-l push-50-r push-20-t ">
+                <h3 class="font-w300 push-15">载入失败</h3>
+                <p>{HTML}</p>
+            </div>
+            <div class="row"  style="min-height:300px;" ></div>
+        </div>
+        <!-- 右侧弹出 表单 -->
+        <div class="tab-pane active" id="tabs-content-xiangqing">
+    
+            <div class="<?php 
+                if($type=='read'){
+                    echo "show";
+                }?> 
+
+                <?php 
+                if($type=='update'){
+                    echo "hide";
+                }?> 
+                yuedutype">
+                <?=RUN('baas-admin','conf','read',['id'=>$id, 'table'=>$table['name']])?>
+            </div>
+            <div class="<?php 
+
+                if($type=='update'){
+
+                    echo "show";
+                   
+                }?> 
+
+                <?php 
+                if($type=='read'){
+
+                    echo "hide";
+                   
+                }?> 
+
+                xiugaitype">
+                <?=RUN('baas-admin','conf','modify',['id'=>$id, 'table'=>$table['name']])?>
+            </div>
+        </div>
+        <!-- 右侧弹出表单结束 -->
+    </div>
+</div>  
+
+<script>
+$(function(){
+    App.initHelper('nav-tabs', {'id':'.nav-tabs-alt'});
+})
+// 关闭弹出
+$(function(){
+    $('#close').click(function(){
+        $('#window-left').close();
+    });
+})
+</script>
+

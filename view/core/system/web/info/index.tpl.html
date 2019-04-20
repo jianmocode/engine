@@ -1,0 +1,228 @@
+<style type="text/css">
+	.table td {
+		font-weight: 500;
+		text-align: right;
+		border-right: 1px solid #f0f0f0;
+	}
+	.table td:last-child {
+		text-align: left;
+		font-weight: 300;
+		border-right: 0px;
+	}
+
+	h5 {
+		font-weight: 500;
+		margin-bottom: .6em;
+		text-align: center;
+		font-size: 22px;
+	}
+
+	table {
+		margin-bottom: 40px !important;
+		border: 1px solid #f0f0f0;
+	}
+
+	.block-content {
+		padding: 40px 60px 40px 60px;
+	}
+</style>
+<div class="content" >
+	<div class="block">
+		<div class="block-content">
+			<h5> 系统信息</h5>
+			<table class="table table-striped table-vcenter">
+				<tr>
+					<td width="30%">域名</td>
+					<td> <?=$sys['host']?> </td>
+				</tr>
+				<tr>
+					<td >简墨</td>
+					<td> <?=$sys['xpmse_version']?> ( <?=$sys['xpmse_revision']?> ) </td>
+				</tr>
+
+				<tr>
+					<td >简墨服务库</td>
+					<td> <?=$sys['service_version']?> ( <?=$sys['service_revision']?> ) </td>
+				</tr>
+
+				<tr>
+					<td >后台访问地址</td>
+					<td> <?=$sys['backend']?> </td>
+				</tr>
+
+				<tr>
+					<td >API访问地址</td>
+					<td> <?=$sys['api']?> </td>
+				</tr>
+
+				<tr>
+					<td >前台访问地址</td>
+					<td> <?=$sys['frontend']?> </td>
+				</tr>
+
+				<tr>
+					<td >CPU</td>
+					<td> <?=$sys['cpu']?> 核 ( 当前负载 <?=implode(' ', $sys['cpu_loads'])?> ) </td>
+				</tr>
+
+				<tr>
+					<td >内存</td>
+					<td> <?=intval($sys['memory']/1024)?> M ( 已使用 <?=intval($sys['memory_usage']/1024)?> M )   </td>
+				</tr>
+				
+				<tr>
+					<td> 系统目录 </td>
+					<td> <?=$conf['roots']['code']?> </td>
+				</tr>
+
+				<tr>
+					<td> 应用目录 </td>
+					<td> <?=$conf['roots']['app']?> </td>
+				</tr>
+
+				<tr>
+					<td> 服务库目录 </td>
+					<td> <?=$conf['roots']['service']?> </td>
+				</tr>
+
+
+				<tr>
+					<td> 程序日志 </td>
+					<td> <?=$conf['log']?> <a class="font-s13 push-10-l" href="javascript:log();">查看</a> </td>
+				</tr>
+
+				<tr>
+					<td> 服务器IP </td>
+					<td> <?=$sys['ip']?> </td>
+				</tr>
+				<tr>
+					<td> 运行时长 </td>
+					<td> <?=$sys['uptime_days']?>天<?=$sys['uptime_hours']?>时<?=$sys['uptime_mins']?>分<?=$sys['uptime_secs']?>秒 （ 安装于 <?=$sys['created_at']?> ) </td>
+				</tr>
+
+			</table>
+
+			<h5>存储</h5>
+			<table class="table table-striped table-vcenter">
+			
+				<tr>
+					<td  width="30%">公有空间数据目录</td>
+					<td> <?=$conf['storage']['public']['root']?> </td>
+				</tr>
+				<tr>
+					<td>公有空间访问地址</td>
+					<td> <?=$sys['home']?><?=$conf['storage']['public']['home']?> </td>
+				</tr>
+				<tr>
+					<td>私有空间数据目录</td>
+					<td> <?=$conf['storage']['private']['root']?> </td>
+				</tr>
+				<tr>
+					<td>私有空间访问地址</td>
+					<td> <?=$sys['home']?><?=$conf['storage']['private']['home']?> </td>
+				</tr>
+			</table>
+
+
+			<h5>数据库</h5>
+			<table class="table table-striped table-vcenter">
+				<tr>
+					<td width="30%">数据库引擎</td>
+					<td> <?=$conf['database']['engine']?> </td>
+				</tr>
+				
+
+				<tr>
+					<td> Database Name </td>
+					<td> <?=$conf['database']['option']['db_name']?> </td>
+				</tr>
+
+				<tr>
+					<td> Database 前缀 </td>
+					<td> <?=$conf['database']['prefix']?> </td>
+				</tr>
+
+				<?php foreach( $conf['database']['option']['master'] as $idx=>$db ) :  $idx++; ?>
+
+				<tr>
+					<td width="30%">Host (主库实例<?=$idx?>)</td>
+					<td> <?=$db['host']?> </td>
+				</tr>
+				
+				<tr>
+					<td>Port  (主库实例<?=$idx?>)</td>
+					<td> <?=$db['port']?> </td>
+				</tr>
+
+				<tr>
+					<td>User  (主库实例<?=$idx?>) </td>
+					<td> <?=$db['user']?> </td>
+				</tr>
+
+				<tr>
+					<td>Password   (主库实例<?=$idx?>)</td>
+					<td> <?=$db['pass']?> </td>
+				</tr>
+
+				<?php endforeach;?>
+
+
+				<?php foreach( $conf['database']['option']['slave'] as $idx=>$db ) :  $idx++; ?>
+
+				<tr>
+					<td width="30%">Host (从库实例<?=$idx?>)</td>
+					<td> <?=$db['host']?> </td>
+				</tr>
+				
+				<tr>
+					<td>Port  (从库实例<?=$idx?>)</td>
+					<td> <?=$db['port']?> </td>
+				</tr>
+
+				<tr>
+					<td>User  (从库实例<?=$idx?>) </td>
+					<td> <?=$db['user']?> </td>
+				</tr>
+
+				<tr>
+					<td>Password   (从库实例<?=$idx?>)</td>
+					<td> <?=$db['pass']?> </td>
+				</tr>
+
+				<?php endforeach;?>
+
+			</table>
+
+			<h5>缓存</h5>
+			<table class="table table-striped table-vcenter">
+
+				<tr>
+					<td width="30%">缓存引擎</td>
+					<td> Redis </td>
+				</tr>
+				<tr>
+					<td> 缓存DB </td>
+					<td> <?=$conf['cache']['db']?>  </td>
+				</tr>
+
+				<tr>
+					<td width="30%">Host</td>
+					<td> <?=$conf['cache']['host']?> </td>
+				</tr>
+				
+				<tr>
+					<td>Port</td>
+					<td> <?=$conf['cache']['port']?>  </td>
+				</tr>
+
+				<tr>
+					<td> Password </td>
+					<td> <?=$conf['cache']['passwod']?>  </td>
+				</tr>
+
+				
+			</table>
+
+		</div>
+	</div>
+</div>
