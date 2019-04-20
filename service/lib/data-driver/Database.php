@@ -792,9 +792,9 @@ class Database implements Data {
 	public function __fileFields( &$rs, $fields, $media=null ){
 
 		if ( $media == null ) {
-            $media = new \Xpmse\Meida(["host"=>Utils::getHome()]);
+            $media = new \Xpmse\Media(["host"=>Utils::getHome()]);
         }
-        
+
 		if ( empty($fields) ) return ;
         if ( !is_array($fields)) return;
         if ( empty($rs) ) return;
