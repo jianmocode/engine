@@ -1,3 +1,4 @@
 .DS_Store
 service/lib/fonts/hei.ttf
 service/lib/fonts/simsun.ttf
+route.lua
