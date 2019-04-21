@@ -406,13 +406,12 @@ class Openapi {
     			$from = intval($match[1]);
     			$to = intval($match[2]);
                 $total = intval($match[3]);
-                
     		}
     	}
         
     	// 文件名称
     	$mimes = Utils::mimes();
-        $unique_name =  hash('md4',  $origin_unique_name);
+        $unique_name =  hash('md4',  $origin_unique_name . time());
         $mimetype = Utils::mimetypeExt($mimetype); 
     	$ext = $mimes->getExtension($mimetype);
     	if ( empty($ext) ) {
@@ -453,7 +452,6 @@ class Openapi {
     			"message"=> "保存成功",
     			"progress"=>$to/$total * 100,
     			"completed" => false,
-    			
     			"data" => [
 		    		"total" => $total,
 		    		"from" => $from,
@@ -470,7 +468,12 @@ class Openapi {
             // "md5" => $md5,
             // "base64" => $base64,
     		"progress"=>100,
-    		"completed" => true,
+            "completed" => true,
+            // "from" => $from,
+            // "to" => $to,
+            // "range" => $content_range,
+            // "target_filename" => $target_filename,
+            // "content_disposition" => $content_disposition,
     		"data"=>$resp
     	];
     }

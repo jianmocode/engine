@@ -82,7 +82,12 @@ class Yao extends Openapi {
 
 
     protected function upload( $param, $payload  ){
-        return $_FILES;
+
+        $response = $this->__savefile(["host"=>Utils::getHome()]);
+        if ( $response["completed"] == true) {
+            return $response["data"];
+        }
+        
     }
 
 }
