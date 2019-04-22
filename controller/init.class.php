@@ -314,6 +314,7 @@ class initController {
             'option' => ['name'=>'option',  'cname'=>'配置表',  'get' => function() {  return  M('Option'); }],
             'service' => ['name'=>'service',  'cname'=>'服务表',  'get' => function() {  return  M('Service'); }],
             'search' => ['name'=>'search',  'cname'=>'全文检索表',  'get' => function() {  return new \Xpmse\Search();}],
+            'openapi' => ['name'=>'openapi',  'cname'=>'OpenAPI权限表',  'get' => function() {  return new \Xpmse\Openapi();}],
             'code' => ['name'=>'code',  'cname'=>'代码模板表',  'get' => function() {  return  M('Code'); }],
             'domain' => ['name'=>'domain',  'cname'=>'域名表',  'get' => function() {  return  M('Domain'); }]
 		];
