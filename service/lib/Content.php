@@ -484,16 +484,22 @@ class Content {
     private function parserImage( & $node, $type="html" ) {
 
         if ( $type == "html" ) {
-            $node->attr("data-src", $node->attr("src"));
+
+            $src =  !empty($node->attr("src")) ?  $node->attr("src") :  $node->attr("data-src");
+            $node->attr("src", $src);
+            $node->attr("data-src", $src);
             $node->attr("data-caption", $node->attr("caption"));
             $node->attr("data-width", $node->attr("width"));
             $node->attr("data-height", $node->attr("height"));
             $node->addClass("jm-content-image");
-            $node->removeAttr( "src", "caption", "width", "height");
+            $node->removeAttr("caption", "width", "height");
             
         // 微信 APP 增加 Max-width 属性
         }  else if ( $type == 'wxapp') {
             
+            $src = !empty($node->attr("src")) ?  $node->attr("src") :  $node->attr("data-src");
+            $node->attr("src", $src);
+            $node->attr("data-src", $src);
             $node->attr("style", "max-width:100%; height:auto;");
             $img = $node->toHTML();
             // echo "\n$img\n";
@@ -509,7 +515,10 @@ class Content {
                 $node->innerHTML("{$img}");
             }
         } else {
-            
+
+            $src =  !empty($node->attr("src")) ?  $node->attr("src") :  $node->attr("data-src");
+            $node->attr("src", $src);
+            $node->attr("data-src", $src);
             $img = $node->toHTML();
             $caption = trim(htmlspecialchars_decode($node->attr("caption")));
             $node->setTag("div")->setAttrs([]);
