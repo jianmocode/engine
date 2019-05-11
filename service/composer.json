@@ -2,7 +2,7 @@
     "require": {
         "endroid/qr-code": "2.5.0",
         "monolog/monolog":"1.17.2",
-        "chrisboulton/php-resque": "dev-master",
+        "resque/php-resque": "v1.3.3",
         "sentry/sentry":"1.6.1",
         "overtrue/pinyin":"3.0",
         "aura/cli":"2.1.2",
@@ -18,7 +18,7 @@
         "cboden/ratchet":"v0.3.5",
         "ssh-client/ssh-client":"0.1.6",
         "jimmiw/php-time-ago":"0.4.14",
-        "phpoffice/phpexcel":"1.8.0",
+        "phpoffice/phpspreadsheet":"1.6.0",
         "ralouphie/mimey":"1.0.8",
         "seld/jsonlint":"1.6.1",
         "nikic/fast-route":"1.2.0",
