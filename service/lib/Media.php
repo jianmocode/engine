@@ -1603,7 +1603,7 @@ class Media extends Model {
 
 
 
-	private function uploadFileBlob( $blob, $ext, $extra=[], $hidden=0 ) {
+	public function uploadFileBlob( $blob, $ext, $extra=[], $hidden=0 ) {
 		if ( $this->options['fingerprint'] ){
 			$size = strlen($blob);
 			if ( $size <= 256 ){
