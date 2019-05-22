@@ -6,8 +6,7 @@
   "dependencies": {
     "babel-core": "^6.24.1",
     "babel-loader": "^7.0.0",
-    "babel-preset-es2015": "^6.24.1",
-    "webpack": "^2.5.0"
+    "babel-preset-es2015": "^6.24.1"
   },
   "scripts": {
     "build": "webpack --config webpack.conf.js",
@@ -15,6 +14,7 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "babel-preset-es2015": "^6.24.1"
+    "babel-preset-es2015": "^6.24.1",
+    "webpack-cli": "^3.3.2"
   }
 }

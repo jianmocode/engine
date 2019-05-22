@@ -106,7 +106,7 @@ class Page {
                             }
 
                         } catch( e ){
-                            console.log("Event Error:", evt );
+                            console.log("Event Error:", evt, "\n ERROR:\n", e );
                         }
                     });
                     elm.setAttribute("__event-inited", "__event-inited");

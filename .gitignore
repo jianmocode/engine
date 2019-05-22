@@ -2,3 +2,4 @@
 service/lib/fonts/hei.ttf
 service/lib/fonts/simsun.ttf
 route.lua
+mina/jssdk/web/node_modules
