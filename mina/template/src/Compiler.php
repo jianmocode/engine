@@ -120,7 +120,8 @@ class Compiler  {
 		switch ($type) {
 			case 'html':
 				$this->hp->loadHTML( $this->page['page'] );
-				break;
+                break;
+                
 			case 'xml':
 				$this->hp = $this->xp;
 				$this->hp->loadXml( $this->page['page'] );

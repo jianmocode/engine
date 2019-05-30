@@ -179,11 +179,12 @@ class HtmlParser {
 		$html = str_replace('__HTML_AMP__', '&', $html );
 		$html = str_replace('="__BOOLEAN_ATTR__"', '', $html );
 		$html = str_replace('__VAR_TAG_BEGIN__', '{{', $html );
-		$html = str_replace('__VAR_TAG_END__', '}}', $html );
-		$html = str_replace('mp:status="compiled"', '', $html );
+        $html = str_replace('__VAR_TAG_END__', '}}', $html );
+        $html = str_replace('mp:status="compiled"', '', $html );
+        $html = str_replace('xmlns="http://www.w3.org/1999/xhtml"', '', $html);
 		$html = preg_replace("/\{\{(.+)(&gt;)(.+)\}\}/i", '{{$1>$3}}', $html);
-		$html = preg_replace("/\{\{(.+)(&lt;)(.+)\}\}/i", '{{$1<$3}}', $html);
- 
+        $html = preg_replace("/\{\{(.+)(&lt;)(.+)\}\}/i", '{{$1<$3}}', $html);
+        
 		return $html;
 	}
 
