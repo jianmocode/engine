@@ -247,7 +247,7 @@ class Validate {
         if( !is_array($value) )  {
             return false;
         }
-        return count( $value ) <= $count;
+        return count( $value ) >= $count;
     }
 
     /**
@@ -257,7 +257,7 @@ class Validate {
         if( !is_array($value) )  {
             return false;
         }
-        return count( $value ) >= $count;
+        return count( $value ) <= $count;
     }
 
     /**
