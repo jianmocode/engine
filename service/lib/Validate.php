@@ -90,9 +90,15 @@ class Validate {
         // 已检测清单
         self::$fieldMap[$field] = $value;
 
-        $methods = array_keys($rules);
+        // Get Methods 
+        $methods = [];
+        array_map(function( $v ) use( & $methods ) {
+            $key = current( array_keys( $v ) );
+            array_push( $methods, $key );
+        }, $rules);
 
         foreach( $rules as $rule ) {
+
             $key = str_replace("~", "", current( array_keys($rule) ));
             $method =  current( array_keys($rule));
             $message = is_array($messages) ? $messages["$key"] : $message;
@@ -118,6 +124,9 @@ class Validate {
                 ]);
             }
 
+            if ( $method == "required" ) {
+                continue;
+            }
 
             // 检查非空数值
             if ( !is_null($value) && !$this->test( $field, $value, $rule) ) {
