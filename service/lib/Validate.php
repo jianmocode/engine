@@ -252,6 +252,12 @@ class Validate {
      * 检查数组数值最少个数
      */
     public function mincount( $value, $count ){
+
+        // 字符串格式
+        if ( is_string($value) ){
+            $value = [$value];
+        }
+
         if( !is_array($value) )  {
             return false;
         }
@@ -262,6 +268,12 @@ class Validate {
      * 检查数组数值最大个数
      */
     public function maxcount( $value, $count ){
+        
+        // 字符串格式
+        if ( is_string($value) ){
+            $value = [$value];
+        }
+        
         if( !is_array($value) )  {
             return false;
         }
