@@ -92,9 +92,11 @@ class Validate {
 
         // Get Methods 
         $methods = [];
-        array_map(function( $v ) use( & $methods ) {
+        $map = [];
+        array_map(function( $v ) use( & $methods , &$map) {
             $key = current( array_keys( $v ) );
             array_push( $methods, $key );
+            $map[$key] = $v[$key];
         }, $rules);
 
         foreach( $rules as $rule ) {
@@ -116,7 +118,7 @@ class Validate {
             }
 
             // 检查空值
-            if ( is_null($value) && array_search("required", $methods, true) !== false ) {
+            if ( is_null($value) && array_search("required", $methods, true) !== false && $map["required"] ) {
                 throw new Excp($message, 400, [
                     "fields"=> [$field],
                     "values" => ["$field"=>$value],
@@ -207,6 +209,12 @@ class Validate {
      * 检查字符串范围(多个匹配)
      */
     public function rangestrings( $value, $array ){
+
+        // 字符串格式
+        if ( is_string($value) ){
+            $value = [$value];
+        }
+
         if( !is_array($value) )  {
             return false;
         }
