@@ -3,7 +3,8 @@
     "description": "YaoJS Backend PHP SDK",
     "require": {
         "masterminds/html5":"^2.2.2",
-        "nelexa/zip":"^3.0.1"
+        "nelexa/zip":"^3.0.1",
+        "monolog/monolog": "^1.24"
     },
     "homepage": "https://www.yaojs.org",
     "license": "MIT",
