@@ -78,7 +78,10 @@ class Excp extends Exception {
     }
 
     /**
-     * 添加错误字段, 示例:
+     * 添加错误字段
+     * 
+     * 示例:
+     * 
      * ```php
      *    $excp = new Excp("未找到该用户", 404);
      *    $excp->addField("user_id", "用户({$user_id})不存在")
