@@ -14,7 +14,7 @@ namespace Yao;
 use \Exception;
 
 /**
- * 异常对象
+ * 异常
  * 
  * 示例:
  * 

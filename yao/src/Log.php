@@ -14,7 +14,7 @@ use Monolog\Logger;
 
 
 /**
- * 日志对象
+ * 日志
  * 
  * 示例 
  * 
