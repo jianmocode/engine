@@ -43,9 +43,9 @@ Properties
 
 ### $extra
 
-    protected mixed $extra = array()
+    protected array $extra = array()
 
-错误扩展数据. 字段约定:
+错误扩展数据, 字段约定:
  :fields array 错误相关字段
  :messages[:field] 字段错误信息
 
@@ -95,7 +95,11 @@ Methods
 
 添加错误字段
 
-
+$excp = new Excp("未找到该用户", 404);
+ $excp->addField("user_id", "用户({$user_id})不存在")
+      ->addField("user_slug", "用户({$user_slug})不存在")
+ ;
+ echo $excp;
 
 * Visibility: **public**
 
