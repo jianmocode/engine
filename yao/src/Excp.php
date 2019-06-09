@@ -147,6 +147,18 @@ class Excp extends Exception {
      */
     function log() {
         $log = new Log("error");
+        $trace = $this->getTrace();
+
+        // Log Trace
+        $log->pushProcessor(function ($record) use($trace) {
+            foreach( $trace as $row ) {
+                $record['extra']['trace'][] = [
+                    "file" => $row["file"],
+                    "line" => $row["line"],
+                ];
+            }
+            return $record;
+        });
         $log->error("{$this->code} {$this->message}", $this->context);
     }
 
