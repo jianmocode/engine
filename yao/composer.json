@@ -1,0 +1,29 @@
+{
+    "name": "yao",
+    "description": "YaoJS Backend PHP SDK",
+    "require": {
+        "masterminds/html5":"^2.2.2",
+        "nelexa/zip":"^3.0.1"
+    },
+    "homepage": "https://www.yaojs.org",
+    "license": "MIT",
+    "type": "library",
+    "require-dev": {
+        "phpdocumentor/phpdocumentor": "dev-master",
+        "phpunit/phpunit": "8.1.3",
+        "mockery/mockery": "0.9.4",
+        "evert/phpdoc-md" : "dev-master"
+    },
+    "authors": [
+        {
+            "name": "max",
+            "email": "max@diancloud.com"
+        }
+    ],
+
+    "autoload": {
+        "psr-4": {
+          "Mina\\template\\": "src/"
+        }
+    }
+}

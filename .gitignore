@@ -3,3 +3,7 @@ service/lib/fonts/hei.ttf
 service/lib/fonts/simsun.ttf
 route.lua
 mina/jssdk/web/node_modules
+yao/vendor
+yao/composer.lock
+yao/test/.phpunit*
+yao/tmp
