@@ -3,6 +3,9 @@ if ( !defined("_XPMAPP_ROOT")){
     define("_XPMAPP_ROOT", "/apps");
 }
 
+// 载入YaoJS Backend 配置
+$GLOBALS["YAO"] = require_once(__DIR__ . "/../yao/config.inc.php");
+
 spl_autoload_register(function ($class_name ) {
 
 	$class_arr = explode( '\\', $class_name );
