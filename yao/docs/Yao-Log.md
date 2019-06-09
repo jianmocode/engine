@@ -12,8 +12,14 @@ use \Yao\Log;
 $log = new log('access');
 
 // add records to the log
-$log->warning('Foo');
-$log->error('Bar');
+$log->debug('message', ['foo', 'bar']);
+$log->info('message');
+$log->notice('message', ['foo', 'bar']);
+$log->warning('Foo', ['foo', 'bar']);
+$log->error('Bar', ['foo', 'bar']);
+$log->critical('message', ['foo', 'bar']);
+$log->alert('message', ['foo', 'bar']);
+$log->emergency('message', ['foo', 'bar']);
 
 ```
 
@@ -28,6 +34,9 @@ $log->error('Bar');
      ":channel" => ["handler"=>":CLASS", "args"=>[...:arg]]
 ],
 ```
+
+see https://github.com/Seldaek/monolog
+see https://github.com/php-fig/log/blob/master/Psr/Log/LoggerInterface.php
 
 
 * Class name: Log
