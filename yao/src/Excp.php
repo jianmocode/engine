@@ -143,6 +143,7 @@ class Excp extends Exception {
 
     /**
      * 记录日志
+     * @return void
      */
     function log() {
         $log = new Log("error");

@@ -151,7 +151,7 @@ Methods
 
 ### log
 
-    mixed Yao\Excp::log()
+    void Yao\Excp::log()
 
 记录日志
 
