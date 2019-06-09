@@ -1,5 +1,5 @@
 <?php
-require_once(__DIR__ . '/../env.inc.php');
+require_once('env.inc.php');
 use \PHPUnit\Framework\TestCase;
 use \Yao\Excp;
 

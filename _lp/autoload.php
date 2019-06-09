@@ -36,7 +36,7 @@ spl_autoload_register(function ($class_name ) {
         }
         $class = end($class_arr);
         $class_file = ucfirst(strtolower($class)) . '.php';
-        $class_path_file = $YAO_ROOT . DS . $class_file;
+        $class_path_file = $YAO_ROOT . DS . "src" . DS . $class_file;
         include_once($class_path_file);
         return;
     
