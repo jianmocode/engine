@@ -1,4 +1,7 @@
 <?php
+if ( !defined("_XPMAPP_ROOT")){
+    define("_XPMAPP_ROOT", "/apps");
+}
 
 spl_autoload_register(function ($class_name ) {
 

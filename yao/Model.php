@@ -2,7 +2,7 @@
 namespace Yao;
 
 /**
- * 模型构造器
+ * 数据模型构造器
  * 
  * @package Yao
  * @version $Revision$
