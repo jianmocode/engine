@@ -1,14 +1,18 @@
 <?php
-namespace Yao;
-
 /**
- * API构造器
+ * Class Api
  * 
  * @package Yao
  * @version $Revision$
  * @author Max<https://github.com/trheyi>
  * @copyright 2019 Vpin.biz
  * @link https://www.vpin.biz
+ */
+
+namespace Yao;
+
+/**
+ * API构造器
  */
 class Api {
 

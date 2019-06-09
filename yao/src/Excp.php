@@ -1,9 +1,6 @@
 <?php
-namespace Yao;
-use \Exception;
-
 /**
- * 异常对象
+ * Class Excp
  * 
  * @package Yao
  * @version $Revision$
@@ -11,6 +8,10 @@ use \Exception;
  * @copyright 2019 Vpin.biz
  * @link https://www.vpin.biz
  */
+
+
+namespace Yao;
+use \Exception;
 
 /**
  * 异常对象
@@ -96,7 +97,7 @@ class Excp extends Exception {
 
     /**
      * 转换为数组
-     * @param bool $withtrace 是否返回追踪信息, 默认为 false, 不反回追踪信息。
+     * @param bool $with_trace 是否返回追踪信息, 默认为 false, 不反回追踪信息。
      * @return array 错误结构体
      *                  :message string 错误描述
      *                  :code int 错误码

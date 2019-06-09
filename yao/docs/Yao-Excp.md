@@ -108,7 +108,7 @@ Methods
 
 ### toArray
 
-    array Yao\Excp::toArray($with_trace)
+    array Yao\Excp::toArray(boolean $with_trace)
 
 转换为数组
 
@@ -118,7 +118,7 @@ Methods
 
 
 #### Arguments
-* $with_trace **mixed**
+* $with_trace **boolean** - &lt;p&gt;是否返回追踪信息, 默认为 false, 不反回追踪信息。&lt;/p&gt;
 
 
 

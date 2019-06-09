@@ -1,14 +1,19 @@
 <?php
-namespace Yao;
-
 /**
- * 数据模型构造器
+ * Class Model
  * 
  * @package Yao
  * @version $Revision$
  * @author Max<https://github.com/trheyi>
  * @copyright 2019 Vpin.biz
  * @link https://www.vpin.biz
+ */
+
+namespace Yao;
+
+
+/**
+ * 数据模型
  */
 class Model {
 
