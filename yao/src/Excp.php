@@ -46,8 +46,8 @@ class Excp extends Exception {
 
     /**
      * 错误扩展数据, 字段约定:
-     *  :fields array 错误相关字段
-     *  :messages[:field] 字段错误信息
+     *  - :fields array 错误相关字段
+     *  - :messages[:field] 字段错误信息
      * 
      * @var array 错误扩展数据
      */
@@ -103,12 +103,19 @@ class Excp extends Exception {
 
     /**
      * 转换为数组
+     * 
+     * 错误结构体:
+     *    - :message string 错误描述
+     *    - :code int 错误码
+     *    - :extra array 错误扩展数据
+     *    - :trace array 追踪信息数组
+     * 
      * @param bool $with_trace 是否返回追踪信息, 默认为 false, 不反回追踪信息。
      * @return array 错误结构体
-     *                  :message string 错误描述
-     *                  :code int 错误码
-     *                  :extra array 错误扩展数据
-     *                  :trace array 追踪信息数组
+     *                  - :message string 错误描述
+     *                  - :code int 错误码
+     *                  - :extra array 错误扩展数据
+     *                  - :trace array 追踪信息数组
      */
     function toArray( $with_trace=false ) {
         return [
@@ -120,7 +127,7 @@ class Excp extends Exception {
     }
 
     /**
-     * 重载错误输出 
+     * 重载错误输出, 返回错误结构体JSON格式文本
      * @example echo new Excp("资源未找到", 404);
      * @return string 错误结构体JSON格式文本
      */
