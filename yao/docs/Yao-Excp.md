@@ -94,12 +94,15 @@ Methods
     \Yao\Excp Yao\Excp::addField(string $field, string $message)
 
 添加错误字段, 示例:
-
-$excp = new Excp("未找到该用户", 404);
+<code>
+   $excp = new Excp("未找到该用户", 404);
    $excp->addField("user_id", "用户({$user_id})不存在")
         ->addField("user_slug", "用户({$user_slug})不存在")
    ;
    echo $excp;
+</code>
+
+
 
 * Visibility: **public**
 
