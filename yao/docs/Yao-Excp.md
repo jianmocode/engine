@@ -51,9 +51,9 @@ Properties
 ----------
 
 
-### $extra
+### $context
 
-    protected array $extra = array()
+    protected array $context = array()
 
 错误扩展数据, 字段约定:
  - :fields array 错误相关字段
@@ -70,7 +70,7 @@ Methods
 
 ### __construct
 
-    \Yao\Excp Yao\Excp::__construct(string $message, integer $code, array $extra)
+    \Yao\Excp Yao\Excp::__construct(string $message, integer $code, array $context)
 
 构造函数
 
@@ -82,13 +82,13 @@ Methods
 #### Arguments
 * $message **string** - &lt;p&gt;错误描述&lt;/p&gt;
 * $code **integer** - &lt;p&gt;错误码&lt;/p&gt;
-* $extra **array** - &lt;p&gt;错误扩展数据&lt;/p&gt;
+* $context **array** - &lt;p&gt;错误扩展数据&lt;/p&gt;
 
 
 
-### getExtra
+### getContext
 
-    array Yao\Excp::getExtra()
+    array Yao\Excp::getContext()
 
 读取错误扩展信息
 
@@ -125,7 +125,7 @@ Methods
 返回值数据结构:
    - :message string 错误描述
    - :code int 错误码
-   - :extra array 错误扩展数据
+   - :context array 错误扩展数据
    - :trace array 追踪信息数组
 
 * Visibility: **public**

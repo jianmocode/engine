@@ -32,11 +32,11 @@ class testExcp extends TestCase {
                     ->addField("user_name", "用户名称错误")
                     ->addField("user_id", "用户ID错误")
                 ;
-        $extra = $excp->getExtra();
-        $this->assertEquals($extra["fields"][0], "user_name");
-        $this->assertEquals($extra["fields"][1], "user_id");
-        $this->assertEquals($extra["messages"]["user_name"], "用户名称错误");
-        $this->assertEquals($extra["messages"]["user_id"], "用户ID错误");
+        $context = $excp->getContext();
+        $this->assertEquals($context["fields"][0], "user_name");
+        $this->assertEquals($context["fields"][1], "user_id");
+        $this->assertEquals($context["messages"]["user_name"], "用户名称错误");
+        $this->assertEquals($context["messages"]["user_id"], "用户ID错误");
     }
     
 
@@ -58,7 +58,7 @@ class testExcp extends TestCase {
         $this->assertArrayHasKey('trace', $array);
         $this->assertArrayHasKey('message', $array);
         $this->assertArrayHasKey('code', $array);
-        $this->assertArrayHasKey('extra', $array);
+        $this->assertArrayHasKey('context', $array);
 
         $arrayWithTrace = $excp->toArray( true );
         $trace = current($arrayWithTrace["trace"]);

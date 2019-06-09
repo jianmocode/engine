@@ -61,30 +61,30 @@ class Excp extends Exception {
      * 
      * @var array 错误扩展数据
      */
-    protected $extra = [];
+    protected $context = [];
 
     /**
      * 构造函数
      * 
      * @param string $message 错误描述
      * @param int $code 错误码 
-     * @param array $extra 错误扩展数据
+     * @param array $context 错误扩展数据
      * @return Excp 异常对象实例
      */
-    function __construct( $message, int $code=0, $extra=[] ) {
+    function __construct( $message, int $code=0, $context=[] ) {
         $this->message = $message;
         $this->code = $code;
-        $this->extra = $extra;
+        $this->context = $context;
     }
 
 
     /**
      * 读取错误扩展信息
      * 
-     * @return array $extra 错误扩展数据
+     * @return array $context 错误扩展数据
      */
-    function getExtra(){
-        return $this->extra;
+    function getContext(){
+        return $this->context;
     }
 
     /**
@@ -96,9 +96,9 @@ class Excp extends Exception {
      * @return Excp $this
      */
     function addField( string $field, string $message ){
-        $this->extra["fields"][] = $field;
-        $this->extra["messages"][$field] = $message;
-        $this->extra["fields"] = array_unique( $this->extra["fields"] );
+        $this->context["fields"][] = $field;
+        $this->context["messages"][$field] = $message;
+        $this->context["fields"] = array_unique( $this->context["fields"] );
         return $this;
     }
 
@@ -108,21 +108,21 @@ class Excp extends Exception {
      * 返回值数据结构:
      *    - :message string 错误描述
      *    - :code int 错误码
-     *    - :extra array 错误扩展数据
+     *    - :context array 错误扩展数据
      *    - :trace array 追踪信息数组
      * 
      * @param bool $with_trace 是否返回追踪信息, 默认为 false, 不反回追踪信息。
      * @return array 错误结构体
      *                  - :message string 错误描述
      *                  - :code int 错误码
-     *                  - :extra array 错误扩展数据
+     *                  - :context array 错误扩展数据
      *                  - :trace array 追踪信息数组
      */
     function toArray( $with_trace=false ) {
         return [
             "message" => $this->message,
             "code" => $this->code,
-            "extra" => $this->extra,
+            "context" => $this->context,
             "trace" => ( $with_trace == true ) ?  $this->getTrace() : []
         ];
     }
@@ -136,7 +136,7 @@ class Excp extends Exception {
         return json_encode( [
             "message" => $this->message,
             "code" => $this->code,
-            "extra" => $this->extra,
+            "context" => $this->context,
         ], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES );
     }
 
