@@ -36,9 +36,10 @@ use Monolog\Logger;
  * 
  * ```
  * 
- * 配置文件
+ * 配置 `/yao/config.inc.php`
  * 
  * ```php
+ * ...
  * "logger" =>[
  *      "access" =>["handler"=>"Monolog\\Handler\\StreamHandler", "args"=>["/logs/yao-access.log", 'debug']],
  *      "error" => ["handler"=>"Monolog\\Handler\\StreamHandler", "args"=>["/logs/yao-error.log", 'debug']],
@@ -46,10 +47,11 @@ use Monolog\Logger;
  *      ...
  *      ":channel" => ["handler"=>":CLASS", "args"=>[...:arg]]
  * ],
+ * ...
  * ```
  * 
- * see https://github.com/Seldaek/monolog
- * see https://github.com/php-fig/log/blob/master/Psr/Log/LoggerInterface.php
+ * - see https://github.com/Seldaek/monolog
+ * - see https://github.com/php-fig/log/blob/master/Psr/Log/LoggerInterface.php
  * 
  */
 class Log extends Logger {
