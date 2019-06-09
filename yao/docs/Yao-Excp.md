@@ -60,7 +60,7 @@ Methods
 
 ### __construct
 
-    mixed Yao\Excp::__construct(string $message, integer $code, array $extra)
+    \Yao\Excp Yao\Excp::__construct(string $message, integer $code, array $extra)
 
 构造函数
 

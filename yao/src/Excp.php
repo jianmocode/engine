@@ -56,6 +56,7 @@ class Excp extends Exception {
      * @param string $message 错误描述
      * @param int $code 错误码 
      * @param array $extra 错误扩展数据
+     * @return Excp 异常对象实例
      */
     function __construct( $message, int $code=0, $extra=[] ) {
         $this->message = $message;
