@@ -116,6 +116,7 @@ class Excp extends Exception {
     /**
      * 重载错误输出 
      * @example echo new Excp("资源未找到", 404);
+     * @return string 错误结构体JSON格式文本
      */
     function __toString(){
         return json_encode( [

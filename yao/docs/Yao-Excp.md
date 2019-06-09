@@ -124,7 +124,7 @@ Methods
 
 ### __toString
 
-    mixed Yao\Excp::__toString()
+    string Yao\Excp::__toString()
 
 重载错误输出
 
