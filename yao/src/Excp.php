@@ -104,7 +104,7 @@ class Excp extends Exception {
     /**
      * 转换为数组
      * 
-     * 错误结构体:
+     * 返回值数据结构:
      *    - :message string 错误描述
      *    - :code int 错误码
      *    - :extra array 错误扩展数据
