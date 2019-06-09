@@ -140,4 +140,13 @@ class Excp extends Exception {
         ], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES );
     }
 
+
+    /**
+     * 记录日志
+     */
+    function log() {
+        $log = new Log("error");
+        $log->error("{$this->code} {$this->message}", $this->context);
+    }
+
 }

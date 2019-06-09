@@ -148,3 +148,16 @@ Methods
 
 
 
+
+### log
+
+    mixed Yao\Excp::log()
+
+记录日志
+
+
+
+* Visibility: **public**
+
+
+

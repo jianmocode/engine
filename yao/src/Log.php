@@ -10,7 +10,10 @@
  */
 
 namespace Yao;
-use Monolog\Logger;
+use \Monolog\Logger;
+use \Monolog\Processor\IntrospectionProcessor;
+use \Monolog\Processor\WebProcessor;
+use \Bramus\Monolog\Formatter\ColoredLineFormatter;
 
 
 /**
@@ -68,10 +71,17 @@ class Log extends Logger {
             $class = $logger[$name]["handler"];
             $args = $logger[$name]["args"];
             if (class_exists($class) && is_array($args) ) {
-                $handlers[] = new $class( ...$args );
+                $handler = new $class( ...$args );
+                $handler->setFormatter(new ColoredLineFormatter());
+                $handlers[] = $handler;
             }
         }
-        parent::__construct( $name, $handlers );
+        
+        parent::__construct( $name, $handlers, [ 
+            new IntrospectionProcessor(),
+            new WebProcessor()
+        ]);
+        
     }
 
 }

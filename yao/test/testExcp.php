@@ -71,6 +71,15 @@ class testExcp extends TestCase {
 
         $this->assertEquals( $trace["function"], __FUNCTION__ );
         $this->assertEquals( $trace["class"], __CLASS__ );
+    }
 
+
+    /**
+     * 测试 log();
+     */
+    function testLog(){
+        $excp = new Excp("测试记录日志错误", 500, ["foo"=>"bar"]);
+        $excp->log();
+        $this->assertEquals(true, true);
     }
 }
