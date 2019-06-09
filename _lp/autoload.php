@@ -7,7 +7,7 @@ spl_autoload_register(function ($class_name ) {
 	$namespace  = current($class_arr);
 
 	// MINA SDK 
-	if ( $namespace == 'Mina' && is_string($class_arr[1]) 
+	if ( strtolower($namespace) == 'mina' && is_string($class_arr[1]) 
 		        && in_array($class_arr[1], ['Storage', 'Template', 'Cache', 'Router', 'Delta', 'Gateway']) ) {
 
 		$MINA_ROOT = __DIR__ . DS . '..' . DS . 'mina';
@@ -22,9 +22,23 @@ spl_autoload_register(function ($class_name ) {
 			include_once($autoload);
 		}
 		include_once($class_path_file);
-		return;
-
-	} else if (  $namespace == 'Xpmse') {
+        return;
+        
+    // Yao SDK
+    } else if ( strtolower($namespace) == 'yao') {
+        $YAO_ROOT = __DIR__ . DS . '..' . DS . 'yao';
+        $autoload = $YAO_ROOT . DS . "vendor" . DS . 'autoload.php';
+        if ( file_exists($autoload) ) {
+			include_once($autoload);
+        }
+        $class = end($class_arr);
+        $class_file = ucfirst(strtolower($class)) . '.php';
+        $class_path_file = $YAO_ROOT . DS . $class_file;
+        include_once($class_path_file);
+        return;
+    
+    // Xpmse SDK
+	} else if (  strtolower($namespace) == 'xpmse') {
         $class = end($class_arr);
 
 		if ( isset( $class_arr[1]) &&  ucfirst(strtolower($class_arr[1])) == "Loader" ) {
@@ -47,6 +61,7 @@ spl_autoload_register(function ($class_name ) {
 		$class_path_file = $LIB_ROOT . DS . $class_file . '.php';
 		include_once( $class_path_file );
 
+    // 载入其他文件
 	} else  {
 
 		$APP_ROOT = _XPMAPP_ROOT;
