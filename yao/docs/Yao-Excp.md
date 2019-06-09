@@ -3,6 +3,16 @@ Yao\Excp
 
 异常对象
 
+示例:
+
+```php
+   $excp = new Excp("未找到该用户", 404);
+   $excp->addField("user_id", "用户({$user_id})不存在")
+        ->addField("user_slug", "用户({$user_slug})不存在")
+   ;
+   throw $excp;
+```
+
 错误码定义:
  - 0        未定义错误码
  - 400-500  因客户端输入错误，导致接口查询失败, 返回结果为异常描述数据.
@@ -95,15 +105,7 @@ Methods
 
 添加错误字段
 
-示例:
 
-```php
-   $excp = new Excp("未找到该用户", 404);
-   $excp->addField("user_id", "用户({$user_id})不存在")
-        ->addField("user_slug", "用户({$user_slug})不存在")
-   ;
-   echo $excp;
-```
 
 * Visibility: **public**
 
