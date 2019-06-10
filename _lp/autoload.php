@@ -32,14 +32,25 @@ spl_autoload_register(function ($class_name ) {
         
     // Yao SDK
     } else if ( strtolower($namespace) == 'yao') {
-        $YAO_ROOT = __DIR__ . DS . '..' . DS . 'yao';
+        
+        $YAO_ROOT = __DIR__ . DS . '..' . DS . strtolower($class_arr[0]);
+        
+        // Vendor autoload
         $autoload = $YAO_ROOT . DS . "vendor" . DS . 'autoload.php';
         if ( file_exists($autoload) ) {
 			include_once($autoload);
         }
-        $class = end($class_arr);
+        
+        // Class Name
+        $class = array_pop($class_arr);
+        array_shift( $class_arr);
+
+        // Source Path
+        $path = strtolower(implode(DS, $class_arr));
+        $src_path = !empty($path) ? "src" . DS . $path : "src";
         $class_file = ucfirst(strtolower($class)) . '.php';
-        $class_path_file = $YAO_ROOT . DS . "src" . DS . $class_file;
+        $class_path_file = $YAO_ROOT . DS . $src_path . DS . $class_file;
+        
         include_once($class_path_file);
         return;
     
