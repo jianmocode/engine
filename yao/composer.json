@@ -5,7 +5,8 @@
         "masterminds/html5":"^2.2.2",
         "nelexa/zip":"^3.0.1",
         "monolog/monolog": "^1.24",
-        "bramus/monolog-colored-line-formatter": "~3.0"
+        "bramus/monolog-colored-line-formatter": "~3.0",
+        "ramsey/uuid": "^2.9"
     },
     "homepage": "https://www.yaojs.org",
     "license": "MIT",

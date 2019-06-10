@@ -60,19 +60,15 @@ class Builder {
         'union'  => [],
     ];
 
+
     /**
-     * 有效操作符
+     * An aggregate function and column to be run.
      *
      * @var array
      */
-    protected $operators = [
-        '=', '<', '>', '<=', '>=', '<>', '!=',
-        'like', 'like binary', 'not like', 'between', 'ilike',
-        '&', '|', '^', '<<', '>>',
-        'rlike', 'regexp', 'not regexp',
-        '~', '~*', '!~', '!~*', 'similar to',
-        'not similar to', 'not ilike', '~~*', '!~~*',
-    ];
+    public $aggregate;
+
+    
 
     /**
      * 返回的字段清单
@@ -198,6 +194,26 @@ class Builder {
      */
     protected $bindingBackups = [];
 
+    /**
+     * 有效操作符
+     *
+     * @var array
+     */
+    protected $operators = [
+        '=', '<', '>', '<=', '>=', '<>', '!=',
+        'like', 'like binary', 'not like', 'between', 'ilike',
+        '&', '|', '^', '<<', '>>',
+        'rlike', 'regexp', 'not regexp',
+        '~', '~*', '!~', '!~*', 'similar to',
+        'not similar to', 'not ilike', '~~*', '!~~*',
+    ];
+
+    /**
+     * Whether use write pdo for select.
+     *
+     * @var bool
+     */
+    protected $useWritePdo = false;
 
     /**
      * 构造查询器

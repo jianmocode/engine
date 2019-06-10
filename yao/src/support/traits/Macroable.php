@@ -12,16 +12,18 @@
 namespace Yao\Support\Traits;
 use Closure;
 use \Yao\Excp;
+use ReflectionClass;
+use ReflectionMethod;
 
 /**
  * Macroable
  * 
  * (Copy From \Illuminate\Support\Traits\Macroable )
  * 
- * see https://github.com/laravel/framework/blob/5.3/src/Illuminate/Support/Traits/Macroable.php
+ * see https://github.com/laravel/framework/blob/5.8/src/Illuminate/Support/Traits/Macroable.php
  */
-trait Macroable {
-
+trait Macroable
+{
     /**
      * The registered string macros.
      *
@@ -31,24 +33,46 @@ trait Macroable {
     /**
      * Register a custom macro.
      *
-     * @param  string    $name
-     * @param  callable  $macro
+     * @param  string $name
+     * @param  object|callable  $macro
+     *
      * @return void
      */
-    public static function macro($name, callable $macro) {
+    public static function macro($name, $macro)
+    {
         static::$macros[$name] = $macro;
     }
-
+    /**
+     * Mix another object into the class.
+     *
+     * @param  object  $mixin
+     * @param  bool  $replace
+     * @return void
+     *
+     * @throws \ReflectionException
+     */
+    public static function mixin($mixin, $replace = true)
+    {
+        $methods = (new ReflectionClass($mixin))->getMethods(
+            ReflectionMethod::IS_PUBLIC | ReflectionMethod::IS_PROTECTED
+        );
+        foreach ($methods as $method) {
+            if ($replace || ! static::hasMacro($method->name)) {
+                $method->setAccessible(true);
+                static::macro($method->name, $method->invoke($mixin));
+            }
+        }
+    }
     /**
      * Checks if macro is registered.
      *
      * @param  string  $name
      * @return bool
      */
-    public static function hasMacro($name) {
+    public static function hasMacro($name)
+    {
         return isset(static::$macros[$name]);
     }
-
     /**
      * Dynamically handle calls to the class.
      *
@@ -56,19 +80,20 @@ trait Macroable {
      * @param  array   $parameters
      * @return mixed
      *
-     * @throws Excp
+     * @throws \Yao\Excp
      */
-    public static function __callStatic($method, $parameters) {
+    public static function __callStatic($method, $parameters)
+    {
         if (! static::hasMacro($method)) {
-            throw new Excp("Method {$method} does not exist.", 404);
+            throw new Excp(sprintf(
+                'Method %s::%s does not exist.', static::class, $method
+            ), 404);
         }
         if (static::$macros[$method] instanceof Closure) {
             return call_user_func_array(Closure::bind(static::$macros[$method], null, static::class), $parameters);
         }
         return call_user_func_array(static::$macros[$method], $parameters);
     }
-
-
     /**
      * Dynamically handle calls to the class.
      *
@@ -76,16 +101,19 @@ trait Macroable {
      * @param  array   $parameters
      * @return mixed
      *
-     * @throws \Excp
+     * @throws \Yao\Excp
      */
-    public function __call($method, $parameters) {
+    public function __call($method, $parameters)
+    {
         if (! static::hasMacro($method)) {
-            throw new Excp("Method {$method} does not exist.", 404);
+            throw new Excp(sprintf(
+                'Method %s::%s does not exist.', static::class, $method
+            ), 404);
         }
-        if (static::$macros[$method] instanceof Closure) {
-            return call_user_func_array(static::$macros[$method]->bindTo($this, static::class), $parameters);
+        $macro = static::$macros[$method];
+        if ($macro instanceof Closure) {
+            return call_user_func_array($macro->bindTo($this, static::class), $parameters);
         }
-        return call_user_func_array(static::$macros[$method], $parameters);
+        return call_user_func_array($macro, $parameters);
     }
-
 }

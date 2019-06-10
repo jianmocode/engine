@@ -1,6 +1,6 @@
 <?php
 /**
- * Class Driver
+ * Class Connection
  * 
  * @package Yao
  * @version $Revision$
@@ -14,7 +14,7 @@ namespace Yao\MySQL;
 /**
  * MySQL 数据驱动
  */
-class Driver {
+class Connection {
 
     /**
      * 构造函数
