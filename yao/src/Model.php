@@ -10,17 +10,13 @@
  */
 
 namespace Yao;
+use \Illuminate\Database\Eloquent\Model as EloquentModel;
 
+// 连接数据库
+DB::connect();
 
 /**
- * 数据模型
+ * 数据模型 
+ * see https://laravel.com/docs/5.8/eloquent
  */
-class Model {
-
-    /**
-     * 构造函数
-     */
-    function __construct() {
-    }
-
-}
+class Model extends EloquentModel {}
