@@ -12,7 +12,11 @@
 namespace Yao\MySQL\Query;
 
 /**
- * Builder 查询表达式
+ * Expression
+ * 
+ * (Copy From \Illuminate\Database\Query\Expression )
+ * 
+ * see https://github.com/laravel/framework/blob/5.3/src/Illuminate/Database/Query/Expression.php
  */
 class Expression {
 

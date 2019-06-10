@@ -11,6 +11,9 @@
 
 namespace Yao\MySQL\Query;
 use \Yao\Excp;
+use \Yao\MySQL\Query\Grammar;
+use \Yao\MySQL\Query\Processor;
+
 
 /**
  * MySQL 查询构造器
@@ -35,6 +38,13 @@ class Builder {
      * @var \Yao\MySQL\Query\Grammar
      */
     protected $grammar;
+
+    /**
+     * The database query post processor instance.
+     *
+     * @var \Yao\MySQL\Query\Processor
+     */
+    protected $processor;
 
     /**
      * 当前查询绑定数据.
@@ -192,8 +202,11 @@ class Builder {
     /**
      * 构造查询器
      */
-    public function __construct( $connection, Grammar $grammar = null) {
+    public function __construct( $connection, Grammar $grammar = null, Processor $processor = null) {
+
+        $this->connection = $connection;
         $this->grammar = $grammar ?: new Grammar;
+        $this->processor = $processor ?: new Processor;
     }
 
 
