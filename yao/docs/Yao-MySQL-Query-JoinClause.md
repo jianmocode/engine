@@ -1,15 +1,16 @@
-Yao\MySQL\Query\Builder
+Yao\MySQL\Query\JoinClause
 ===============
 
-MySQL 查询构造器
+JoinClause
 
-(在 Illuminate\Database\Query\Builder 基础上修改)
+(Copy From \Illuminate\Database\Query\JoinClause )
 
-see https://github.com/laravel/framework/blob/5.3/src/Illuminate/Database/Query/Builder.php
+see https://github.com/laravel/framework/blob/5.3/src/Illuminate/Database/Query/JoinClause.php
 
 
-* Class name: Builder
+* Class name: JoinClause
 * Namespace: Yao\MySQL\Query
+* Parent class: [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 
@@ -17,6 +18,39 @@ see https://github.com/laravel/framework/blob/5.3/src/Illuminate/Database/Query/
 
 Properties
 ----------
+
+
+### $type
+
+    public string $type
+
+The type of join being performed.
+
+
+
+* Visibility: **public**
+
+
+### $table
+
+    public string $table
+
+The table the join clause is joining to.
+
+
+
+* Visibility: **public**
+
+
+### $parentQuery
+
+    private \Yao\MySQL\Query\Builder $parentQuery
+
+The parent query builder instance.
+
+
+
+* Visibility: **private**
 
 
 ### $connection
@@ -263,11 +297,70 @@ Methods
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
 * $connection **mixed**
 * $grammar **[Yao\MySQL\Query\Grammar](Yao-MySQL-Query-Grammar.md)**
+
+
+
+### on
+
+    \Yao\MySQL\Query\JoinClause Yao\MySQL\Query\JoinClause::on(\Closure|string $first, string|null $operator, string|null $second, string $boolean)
+
+Add an "on" clause to the join.
+
+On clauses can be chained, e.g.
+
+ $join->on('contacts.user_id', '=', 'users.id')
+      ->on('contacts.info_id', '=', 'info.id')
+
+will produce the following SQL:
+
+on `contacts`.`user_id` = `users`.`id`  and `contacts`.`info_id` = `info`.`id`
+
+* Visibility: **public**
+
+
+#### Arguments
+* $first **Closure|string**
+* $operator **string|null**
+* $second **string|null**
+* $boolean **string**
+
+
+
+### orOn
+
+    \Illuminate\Database\Query\JoinClause Yao\MySQL\Query\JoinClause::orOn(\Closure|string $first, string|null $operator, string|null $second)
+
+Add an "or on" clause to the join.
+
+
+
+* Visibility: **public**
+
+
+#### Arguments
+* $first **Closure|string**
+* $operator **string|null**
+* $second **string|null**
+
+
+
+### newQuery
+
+    mixed Yao\MySQL\Query\Builder::newQuery()
+
+
+
+
+
+* Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
+
 
 
 
@@ -280,6 +373,7 @@ Methods
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -296,6 +390,7 @@ Methods
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -313,6 +408,7 @@ Methods
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -330,6 +426,7 @@ Methods
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -346,6 +443,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 
@@ -359,6 +457,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -375,6 +474,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -396,6 +496,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -416,6 +517,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -435,6 +537,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -454,6 +557,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -473,6 +577,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -492,6 +597,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -511,6 +617,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -529,6 +636,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -548,6 +656,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -566,6 +675,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -585,6 +695,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -603,6 +714,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -620,6 +732,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -637,6 +750,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -656,6 +770,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -673,6 +788,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -691,6 +807,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -708,6 +825,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -725,6 +843,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 
@@ -738,6 +857,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -755,6 +875,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -773,6 +894,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -790,6 +912,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -807,6 +930,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -823,6 +947,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -841,6 +966,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -860,6 +986,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -877,6 +1004,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -895,6 +1023,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -912,6 +1041,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -930,6 +1060,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -946,6 +1077,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -963,6 +1095,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -979,6 +1112,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -998,6 +1132,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -1016,6 +1151,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -1035,6 +1171,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -1053,6 +1190,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -1072,6 +1210,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -1091,6 +1230,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -1110,6 +1250,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -1127,6 +1268,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -1145,6 +1287,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -1162,6 +1305,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -1178,6 +1322,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -1197,6 +1342,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -1215,6 +1361,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -1233,6 +1380,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -1250,6 +1398,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -1267,6 +1416,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -1283,6 +1433,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -1299,6 +1450,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -1315,6 +1467,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -1332,6 +1485,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -1348,6 +1502,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -1364,6 +1519,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -1380,6 +1536,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -1396,6 +1553,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -1413,6 +1571,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -1431,6 +1590,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -1448,6 +1608,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -1464,6 +1625,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -1480,6 +1642,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 
@@ -1493,6 +1656,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 
@@ -1506,6 +1670,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 
@@ -1519,6 +1684,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -1536,6 +1702,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -1552,6 +1719,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -1568,6 +1736,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -1584,6 +1753,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -1603,6 +1773,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -1622,6 +1793,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -1638,6 +1810,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 
@@ -1651,6 +1824,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -1668,6 +1842,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -1687,6 +1862,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -1704,6 +1880,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -1721,6 +1898,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -1738,6 +1916,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 
@@ -1751,6 +1930,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -1767,6 +1947,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -1783,6 +1964,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -1799,6 +1981,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -1815,6 +1998,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -1831,6 +2015,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -1847,6 +2032,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -1864,6 +2050,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -1881,6 +2068,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -1897,6 +2085,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -1914,6 +2103,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -1930,6 +2120,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -1947,6 +2138,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -1965,6 +2157,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -1983,6 +2176,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -1999,19 +2193,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
-
-
-
-
-### newQuery
-
-    mixed Yao\MySQL\Query\Builder::newQuery()
-
-
-
-
-
-* Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 
@@ -2025,6 +2207,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -2042,6 +2225,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -2058,6 +2242,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 
@@ -2071,6 +2256,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 
@@ -2084,6 +2270,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -2101,6 +2288,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -2118,6 +2306,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 #### Arguments
@@ -2134,6 +2323,7 @@ Force the query to only return distinct results.
 
 
 * Visibility: **public**
+* This method is defined by [Yao\MySQL\Query\Builder](Yao-MySQL-Query-Builder.md)
 
 
 
