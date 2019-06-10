@@ -71,7 +71,7 @@ class Excp extends Exception {
      * @param array $context 错误扩展数据
      * @return Excp 异常对象实例
      */
-    function __construct( $message, int $code=0, $context=[] ) {
+    public function __construct( $message, int $code=0, $context=[] ) {
         $this->message = $message;
         $this->code = $code;
         $this->context = $context;
@@ -83,7 +83,7 @@ class Excp extends Exception {
      * 
      * @return array $context 错误扩展数据
      */
-    function getContext(){
+    public function getContext(){
         return $this->context;
     }
 
@@ -95,7 +95,7 @@ class Excp extends Exception {
      * @param string $message 错误描述
      * @return Excp $this
      */
-    function addField( string $field, string $message ){
+    public function addField( string $field, string $message ){
         $this->context["fields"][] = $field;
         $this->context["messages"][$field] = $message;
         $this->context["fields"] = array_unique( $this->context["fields"] );
@@ -118,7 +118,7 @@ class Excp extends Exception {
      *                  - :context array 错误扩展数据
      *                  - :trace array 追踪信息数组
      */
-    function toArray( $with_trace=false ) {
+    public function toArray( $with_trace=false ) {
         return [
             "message" => $this->message,
             "code" => $this->code,
@@ -132,7 +132,7 @@ class Excp extends Exception {
      * @example echo new Excp("资源未找到", 404);
      * @return string 错误结构体JSON格式文本
      */
-    function __toString(){
+    public function __toString(){
         return json_encode( [
             "message" => $this->message,
             "code" => $this->code,
@@ -145,7 +145,7 @@ class Excp extends Exception {
      * 记录日志
      * @return void
      */
-    function log() {
+    public function log() {
         $log = new Log("error");
         $trace = $this->getTrace();
 

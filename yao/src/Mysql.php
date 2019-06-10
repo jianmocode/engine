@@ -21,13 +21,13 @@ class MySQL {
     /**
      * 构造函数
      */
-    function __construct() {
+    public function __construct() {
     }
 
     /**
      * 构建查询器
      */
-    function Query() {
+    public function Query() {
         return new Builder();
     }
 

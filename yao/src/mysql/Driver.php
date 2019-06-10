@@ -19,7 +19,7 @@ class Driver {
     /**
      * 构造函数
      */
-    function __construct() {
+    public function __construct() {
     }
 
 }
