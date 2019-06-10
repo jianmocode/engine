@@ -17,10 +17,15 @@ class testMySQL extends TestCase {
     /**
      * 测试 accesslog
      */
-    function testQuery() {
+    function testSelect() {
 
+        // test select
         $my = new MySQL();
-        $my->query();
+        $qb = $my   ->query()
+                    ->select("name")
+                    ->selectRaw("COUNT(id) as cnt")
+              ;
+        ;
         $this->assertEquals(404, 404);
     }
 

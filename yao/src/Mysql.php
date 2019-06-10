@@ -28,7 +28,7 @@ class MySQL {
      * 构建查询器
      */
     public function Query() {
-        return new Builder();
+        return new Builder( $this );
     }
 
 }
