@@ -11,10 +11,37 @@
 
 
 return [
+
     /**
      * MySQL 数据库配置
      */
-    "mysql" => [],
+    "mysql" => [
+
+        "read" => [
+            [
+                'host'      => '172.17.0.1:3307',
+                'username'  => 'root',
+                'password'  => '123456',
+            ]
+        ],
+
+        "write" => [
+            [
+                'host'      => '172.17.0.1:3307',
+                'username'  => 'root',
+                'password'  => '123456',
+            ]
+        ],
+        
+        'sticky'    => true,
+        'driver'    => 'mysql',
+        'database'  => 'vpin',
+        'charset'   => 'utf8',
+        'collation' => 'utf8_unicode_ci',
+        'prefix'    => '',
+    ],
+
+
 
     /**
      * 日志配置
