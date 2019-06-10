@@ -12,6 +12,13 @@ class Category extends Model {
     protected $primaryKey = 'id_category';
     public $incrementing = false;
 
+    /**
+     * JSON 解析
+     */
+    public function getIconAttribute($value){
+        return json_decode( $value, true );
+    }
+
 }
 
 /**
@@ -32,6 +39,7 @@ class testModel extends TestCase {
     function testSelect() {
         $category = \App\Category::where('category_sn', 'unit-test-1234567')->first();
         $this->assertEquals( $category->category_sn, 'unit-test-1234567' );
+        $this->assertEquals( $category->icon["name"], '地址一' );
     }
 
 }
