@@ -1,4 +1,4 @@
-Yao\MySQL\Driver
+Yao\MySQL\Connection
 ===============
 
 MySQL 数据驱动
@@ -6,7 +6,7 @@ MySQL 数据驱动
 
 
 
-* Class name: Driver
+* Class name: Connection
 * Namespace: Yao\MySQL
 
 
@@ -21,7 +21,7 @@ Methods
 
 ### __construct
 
-    mixed Yao\MySQL\Driver::__construct()
+    mixed Yao\MySQL\Connection::__construct()
 
 构造函数
 
