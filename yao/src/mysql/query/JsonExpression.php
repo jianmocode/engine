@@ -11,7 +11,7 @@
 
 
 namespace Yao\MySQL\Query;
-use InvalidArgumentException;
+use \Yao\Excp;
 
 
 /**
@@ -19,16 +19,10 @@ use InvalidArgumentException;
  * 
  * (Copy From \Illuminate\Database\Query\JsonExpression )
  * 
- * see https://github.com/laravel/framework/blob/5.3/src/Illuminate/Database/Query/JsonExpression.php
+ * see https://github.com/laravel/framework/blob/5.8/src/Illuminate/Database/Query/JsonExpression.php
  */
-class JsonExpression extends Expression {
-
-    /**
-     * The value of the expression.
-     *
-     * @var mixed
-     */
-    protected $value;
+class JsonExpression extends Expression
+{
     /**
      * Create a new raw query expression.
      *
@@ -37,46 +31,35 @@ class JsonExpression extends Expression {
      */
     public function __construct($value)
     {
-        $this->value = $this->getJsonBindingParameter($value);
+        parent::__construct(
+            $this->getJsonBindingParameter($value)
+        );
     }
     /**
      * Translate the given value into the appropriate JSON binding parameter.
      *
      * @param  mixed  $value
      * @return string
+     *
+     * @throws \Yao\Excp
      */
     protected function getJsonBindingParameter($value)
     {
+        if ($value instanceof Expression) {
+            return $value->getValue();
+        }
         switch ($type = gettype($value)) {
             case 'boolean':
                 return $value ? 'true' : 'false';
+            case 'NULL':
             case 'integer':
             case 'double':
-                return $value;
             case 'string':
                 return '?';
             case 'object':
             case 'array':
                 return '?';
         }
-        throw new InvalidArgumentException('JSON value is of illegal type: '.$type);
-    }
-    /**
-     * Get the value of the expression.
-     *
-     * @return mixed
-     */
-    public function getValue()
-    {
-        return $this->value;
-    }
-    /**
-     * Get the value of the expression.
-     *
-     * @return string
-     */
-    public function __toString()
-    {
-        return (string) $this->getValue();
+        throw new Excp("JSON value is of illegal type: {$type}", 402);
     }
 }

@@ -16,43 +16,42 @@ namespace Yao\MySQL\Query;
  * 
  * (Copy From \Illuminate\Database\Query\Expression )
  * 
- * see https://github.com/laravel/framework/blob/5.3/src/Illuminate/Database/Query/Expression.php
+ * see https://github.com/laravel/framework/blob/5.8/src/Illuminate/Database/Query/Expression.php
  */
-class Expression {
-
+class Expression
+{
     /**
-     * 查询表达式
+     * The value of the expression.
      *
      * @var mixed
      */
     protected $value;
-
     /**
-     * 创建查询表达式
+     * Create a new raw query expression.
      *
      * @param  mixed  $value
      * @return void
      */
-    public function __construct($value) {
+    public function __construct($value)
+    {
         $this->value = $value;
     }
-
     /**
-     * 读取查询表达式
+     * Get the value of the expression.
      *
      * @return mixed
      */
-    public function getValue() {
+    public function getValue()
+    {
         return $this->value;
     }
-
-
     /**
-     * 读取表达式数值
+     * Get the value of the expression.
      *
      * @return string
      */
-    public function __toString() {
+    public function __toString()
+    {
         return (string) $this->getValue();
     }
 }
