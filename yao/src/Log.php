@@ -27,6 +27,8 @@ use \Bramus\Monolog\Formatter\ColoredLineFormatter;
  * 
  * $log = new log('access');
  * 
+ * // $log = Log::write('access');
+ * 
  * // add records to the log
  * $log->debug('message', ['foo', 'bar']);
  * $log->info('message');
@@ -65,6 +67,7 @@ class Log extends Logger {
      * @return Log 
      */
     public function __construct(string $name) {
+
         $logger = $GLOBALS["YAO"]["logger"];
         $handlers = [];
         if ( array_key_exists("{$name}", $logger) ) {
@@ -82,6 +85,16 @@ class Log extends Logger {
             new WebProcessor()
         ]);
         
+    }
+
+    /**
+     * 创建Log对象
+     * 
+     * @param string $name 日志通道 
+     * @return Log 
+     */
+    public static function write( string $name) {
+        return new Self($name);
     }
 
 }

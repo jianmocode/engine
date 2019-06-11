@@ -79,6 +79,19 @@ class Excp extends Exception {
 
 
     /**
+     * 创建异常对象
+     * 
+     * @param string $message 错误描述
+     * @param int $code 错误码 
+     * @param array $context 错误扩展数据
+     * @return Excp 异常对象实例
+     */
+    public static function create( $message, int $code=0, $context=[] ) {
+        return new Self( $message, $code, $context );
+    }
+
+
+    /**
      * 读取错误扩展信息
      * 
      * @return array $context 错误扩展数据

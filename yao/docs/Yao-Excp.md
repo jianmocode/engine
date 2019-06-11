@@ -86,6 +86,25 @@ Methods
 
 
 
+### create
+
+    \Yao\Excp Yao\Excp::create(string $message, integer $code, array $context)
+
+创建异常对象
+
+
+
+* Visibility: **public**
+* This method is **static**.
+
+
+#### Arguments
+* $message **string** - &lt;p&gt;错误描述&lt;/p&gt;
+* $code **integer** - &lt;p&gt;错误码&lt;/p&gt;
+* $context **array** - &lt;p&gt;错误扩展数据&lt;/p&gt;
+
+
+
 ### getContext
 
     array Yao\Excp::getContext()

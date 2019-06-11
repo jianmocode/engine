@@ -11,6 +11,8 @@ use \Yao\Log;
 
 $log = new log('access');
 
+// $log = Log::write('access');
+
 // add records to the log
 $log->debug('message', ['foo', 'bar']);
 $log->info('message');
@@ -64,6 +66,23 @@ Methods
 
 
 * Visibility: **public**
+
+
+#### Arguments
+* $name **string** - &lt;p&gt;日志通道&lt;/p&gt;
+
+
+
+### write
+
+    \Yao\Log Yao\Log::write(string $name)
+
+创建Log对象
+
+
+
+* Visibility: **public**
+* This method is **static**.
 
 
 #### Arguments

@@ -63,6 +63,69 @@ return [
     /**
      * 数据存储配置
      */
-    "storage" => [],
+    "storage" => [
+
+        "options" => [
+            "sync" => true, // 是否同步到 Remote, 默认为 true
+            "backup" => true, // 是否同时保存备份, 默认为 false
+        ],
+
+        "local" => [
+            "adapter" => "\\League\\Flysystem\\Adapter\\Local",
+            "setting" => [
+                "/data/stor/upload",
+                LOCK_EX,
+                0002, // \League\Flysystem\Adapter\Local::DISALLOW_LINKS,  \League\Flysystem\Adapter\Local:SKIP_LINKS 0001
+                [
+                    'file' => [
+                        'public' => 0744,
+                        'private' => 0700,
+                    ],
+                    'dir' => [
+                        'public' => 0755,
+                        'private' => 0700,
+                    ]
+                ]
+            ]
+        ],
+
+        "remote" => [
+            "adapter" => "\\League\\Flysystem\\Adapter\\Local",
+            "setting" => [
+                "/data/stor/remote",
+                LOCK_EX,
+                0002, // \League\Flysystem\Adapter\Local::DISALLOW_LINKS,  \League\Flysystem\Adapter\Local:SKIP_LINKS 0001
+                [
+                    'file' => [
+                        'public' => 0744,
+                        'private' => 0700,
+                    ],
+                    'dir' => [
+                        'public' => 0755,
+                        'private' => 0700,
+                    ]
+                ]
+            ]
+        ],
+
+        "backup" => [
+            "adapter" => "\\League\\Flysystem\\Adapter\\Local",
+            "setting" => [
+                "/data/stor/backup",
+                LOCK_EX,
+                0002, // \League\Flysystem\Adapter\Local::DISALLOW_LINKS,  \League\Flysystem\Adapter\Local:SKIP_LINKS 0001
+                [
+                    'file' => [
+                        'public' => 0700,
+                        'private' => 0700,
+                    ],
+                    'dir' => [
+                        'public' => 0700,
+                        'private' => 0700,
+                    ]
+                ]
+            ]
+        ],
+    ],
     
 ];
