@@ -30,6 +30,9 @@ if (is_resource($stream)) {
 ...
 "storage" => [
 
+     "public" => "https://cdn.vpin.biz", // 默认公共文件访问地址
+     "private" => "https://private-cdn.vpin.biz", // 默认私密文件访问地址
+
       // 数据同步选项 [必填]
       "options" => [
           "sync" => true, // 是否同步到 Remote, 默认为 true
@@ -209,7 +212,7 @@ Methods
 
 ### getPathName
 
-    string Yao\FS::getPathName(string $ext)
+    string Yao\FS::getPathName(string $ext, string $prefix)
 
 自动成文件名称
 
@@ -221,6 +224,7 @@ Methods
 
 #### Arguments
 * $ext **string** - &lt;p&gt;文件扩展名&lt;/p&gt;
+* $prefix **string** - &lt;p&gt;文件前缀&lt;/p&gt;
 
 
 

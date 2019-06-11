@@ -64,6 +64,9 @@ return [
      * 数据存储配置
      */
     "storage" => [
+        
+        "public" => "https://cdn.vpin.biz", // 公共文件访问地址
+        "private" => "https://private-cdn.vpin.biz", // 私密文件访问地址
 
         "options" => [
             "sync" => true, // 是否同步到 Remote, 默认为 true

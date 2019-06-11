@@ -42,7 +42,10 @@ use \League\Flysystem\MountManager as Manager;
  * ```php
  * ...
  * "storage" => [
- *
+ * 
+ *      "public" => "https://cdn.vpin.biz", // 默认公共文件访问地址
+ *      "private" => "https://private-cdn.vpin.biz", // 默认私密文件访问地址
+ * 
  *       // 数据同步选项 [必填]
  *       "options" => [
  *           "sync" => true, // 是否同步到 Remote, 默认为 true
@@ -243,16 +246,17 @@ class FS {
      * 自动成文件名称
      * 
      * @param string $ext 文件扩展名
+     * @param string $prefix 文件前缀
      * @return string 唯一文件名称
      */
-    public static function getPathName( $ext ) {
+    public static function getPathName( string $ext, string $prefix="" ) {
         
         // ramsey/uuid 2.9 (change name after 3.0 )
         $uuid = \Rhumsaa\Uuid\Uuid::uuid1();
         $name = md5( $uuid->toString() );
         $path = date("Y") . "/" .date("m") . "/" . date("d") . "/" . substr($name, 0, 2) . "/" . substr($name, 2, 2);
-
-        return "{$path}/{$name}.{$ext}";
+        
+        return "{$prefix}{$path}/{$name}.{$ext}";
     }
 
 

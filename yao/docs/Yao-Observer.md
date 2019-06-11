@@ -17,11 +17,55 @@ Properties
 ----------
 
 
-### $files
+### $publicURL
 
-    protected mixed $files = array()
+    protected mixed $publicURL = YAO_PUBLIC_URL
 
-文件字段
+公开文件访问路径
+
+
+
+* Visibility: **protected**
+
+
+### $privateURL
+
+    protected mixed $privateURL = YAO_PRIVATE_URL
+
+私密的访问路径
+
+
+
+* Visibility: **protected**
+
+
+### $publicFiles
+
+    protected mixed $publicFiles = array()
+
+公开文件字段
+
+
+
+* Visibility: **protected**
+
+
+### $privateFiles
+
+    protected mixed $privateFiles = array()
+
+私有文件字段
+
+
+
+* Visibility: **protected**
+
+
+### $filePrefix
+
+    protected mixed $filePrefix = ""
+
+文件前缀
 
 
 
@@ -48,9 +92,22 @@ Methods
 
 
 
+### getFiles
+
+    mixed Yao\Observer::getFiles()
+
+读取文件字段清单
+
+
+
+* Visibility: **private**
+
+
+
+
 ### writeFile
 
-    mixed Yao\Observer::writeFile($path)
+    string Yao\Observer::writeFile($path, $private)
 
 保存文件
 
@@ -61,6 +118,7 @@ Methods
 
 #### Arguments
 * $path **mixed** - &lt;p&gt;文件路径&lt;/p&gt;
+* $private **mixed** - &lt;p&gt;是否为私有文件&lt;/p&gt;
 
 
 
@@ -77,5 +135,21 @@ Methods
 
 #### Arguments
 * $model **mixed**
+
+
+
+### creating
+
+    void Yao\Observer::creating($store)
+
+Handle the User "created" event.
+
+
+
+* Visibility: **public**
+
+
+#### Arguments
+* $store **mixed**
 
 
