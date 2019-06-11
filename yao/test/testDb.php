@@ -2,7 +2,7 @@
 require_once('env.inc.php');
 use \PHPUnit\Framework\TestCase;
 use \Yao\DB;
-DB::connect();
+use \Yao\Schema;
 
 /**
  * 测试 DB
@@ -16,11 +16,12 @@ DB::connect();
 class testDB extends TestCase {
 
     function testSchema() {
-
+        Schema::dropIfExists('unit-test');
+        Schema::create('unit-test', function ($table) {
+            $table->bigIncrements('id');
+        });
         $this->assertEquals( true, true );
     }
-
-
 
     /**
      * 测试插入数据

@@ -8,3 +8,4 @@ define( 'DS' , DIRECTORY_SEPARATOR );
 define( 'IN' , true );
 include_once(LPROOT . '/autoload.php' );
 include_once ( "{$ROOT}/lib/app.function.php" );
+include_once ( "{$ROOT}/yao/vendor/autoload.php" );

@@ -16,16 +16,20 @@ use Illuminate\Database\Capsule\Manager as Capsule;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Database\Events\StatementPrepared;
 
+
 /**
  * 数据库
  * see https://laravel.com/docs/5.8/database
  */
 class DB extends Capsule {
 
+    /**
+     * 连接标记
+     */
     public static $isconnected = false;
 
     /**
-     * 创建数据库连接
+     * 数据库对象
      */
     public function __construct( Container $container = null ) {
         parent::__construct( $container );
@@ -33,7 +37,7 @@ class DB extends Capsule {
 
 
     /**
-     * Dynamically pass methods to the default connection.
+     * 连接数据库
      *
      * @param  string  $method
      * @param  array   $parameters
@@ -57,3 +61,6 @@ class DB extends Capsule {
     }
     
 }
+
+// 连接数据库
+DB::connect();

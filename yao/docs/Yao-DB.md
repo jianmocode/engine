@@ -23,7 +23,7 @@ Properties
 
     public mixed $isconnected = false
 
-
+连接标记
 
 
 
@@ -39,7 +39,7 @@ Methods
 
     mixed Yao\DB::__construct(\Illuminate\Container\Container $container)
 
-创建数据库连接
+数据库对象
 
 
 
@@ -55,7 +55,7 @@ Methods
 
     mixed Yao\DB::connect()
 
-Dynamically pass methods to the default connection.
+连接数据库
 
 
 

@@ -13,7 +13,9 @@
         "fzaninotto/faker": "^1.8",
         "illuminate/events": "^5.8",
         "illuminate/filesystem": "^5.8",
-        "illuminate/console": "^5.8"
+        "illuminate/console": "^5.8",
+        "predis/predis": "^1.1",
+        "illuminate/support": "^5.8"
     },
     "homepage": "https://www.yaojs.org", 
     "license": "MIT",
