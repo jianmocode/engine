@@ -207,6 +207,23 @@ Methods
 
 
 
+### getPathName
+
+    string Yao\FS::getPathName(string $ext)
+
+自动成文件名称
+
+
+
+* Visibility: **public**
+* This method is **static**.
+
+
+#### Arguments
+* $ext **string** - &lt;p&gt;文件扩展名&lt;/p&gt;
+
+
+
 ### __callStatic
 
     mixed Yao\FS::__callStatic(string $method, array $parameters)
