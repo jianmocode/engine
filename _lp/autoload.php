@@ -36,9 +36,9 @@ spl_autoload_register(function ($class_name ) {
         $YAO_ROOT = __DIR__ . DS . '..' . DS . strtolower($class_arr[0]);
         
         // Vendor autoload
-        $autoload = $YAO_ROOT . DS . "vendor" . DS . 'autoload.php';
+        $autoload = realpath($YAO_ROOT . DS . "vendor" . DS . 'autoload.php');
         if ( file_exists($autoload) ) {
-			include_once($autoload);
+            include_once($autoload);
         }
         
         // Class Name

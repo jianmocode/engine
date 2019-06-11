@@ -180,7 +180,6 @@ class FS {
         return self::$option["sync"] &&  self::$lived["remote"];
     }
 
-
     /**
      * 服务器配置
      */
@@ -237,6 +236,23 @@ class FS {
             // 创建 Manager
             self::$manager = new Manager($adapters);
         }
+    }
+
+
+    /**
+     * 自动成文件名称
+     * 
+     * @param string $ext 文件扩展名
+     * @return string 唯一文件名称
+     */
+    public static function getPathName( $ext ) {
+        
+        // ramsey/uuid 2.9 (change name after 3.0 )
+        $uuid = \Rhumsaa\Uuid\Uuid::uuid1();
+        $name = md5( $uuid->toString() );
+        $path = date("Y") . "/" .date("m") . "/" . date("d") . "/" . substr($name, 0, 2) . "/" . substr($name, 2, 2);
+
+        return "{$path}/{$name}.{$ext}";
     }
 
 
