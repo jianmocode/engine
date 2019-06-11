@@ -152,10 +152,12 @@ class Excp extends Exception {
         // Log Trace
         $log->pushProcessor(function ($record) use($trace) {
             foreach( $trace as $row ) {
-                $record['extra']['trace'][] = [
-                    "file" => $row["file"],
-                    "line" => $row["line"],
-                ];
+                if ( array_key_exists("file", $row) ) {
+                    $record['extra']['trace'][] = [
+                        "file" => $row["file"],
+                        "line" => $row["line"],
+                    ];
+                }
             }
             return $record;
         });
