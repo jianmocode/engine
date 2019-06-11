@@ -83,12 +83,17 @@ spl_autoload_register(function ($class_name ) {
 
 		$APP_ROOT = _XPMAPP_ROOT;
 		$class = end($class_arr);
-		array_pop($class_arr);
-		
+        array_pop($class_arr);
+        
+        // 添加 model 目录
+        if ( count($class_arr) == 2 ) {
+            array_push( $class_arr, "model");
+        }
+        
 		$class_file = ucfirst(strtolower($class));
 		$class_path = strtolower(implode(DS, $class_arr));
 		$class_path_file = $APP_ROOT . DS . $class_path . DS . $class_file . '.php';
-
+      
 		if ( file_exists($class_path_file) ) {
 			include_once($class_path_file);
 		}
