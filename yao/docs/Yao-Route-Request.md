@@ -19,9 +19,20 @@ Properties
 
 ### $hostName
 
-    public mixed $hostName = ""
+    public string $hostName = ""
+
+域名 xxx.com
 
 
+
+* Visibility: **public**
+
+
+### $hostSubname
+
+    public string $hostSubname = ""
+
+二级域名 xxxx
 
 
 
@@ -30,9 +41,9 @@ Properties
 
 ### $host
 
-    public mixed $host = ""
+    public string $host = ""
 
-
+完整域名 xxx.yyy.com
 
 
 
@@ -41,20 +52,20 @@ Properties
 
 ### $method
 
-    public mixed $method = ""
+    public string $method = ""
 
+HTTP Request 请求方法
 
-
-
+GET / POST / PUT /...
 
 * Visibility: **public**
 
 
 ### $requestURI
 
-    public mixed $requestURI = ""
+    public string $requestURI = ""
 
-
+请求路由
 
 
 
@@ -65,9 +76,9 @@ Properties
 
     public mixed $headers = array()
 
+HTTP Request Headers
 
-
-
+@var string
 
 * Visibility: **public**
 
@@ -76,9 +87,9 @@ Properties
 
     public mixed $contentType = ""
 
+HTTP Request Content-Type
 
-
-
+@var string
 
 * Visibility: **public**
 
@@ -87,9 +98,9 @@ Properties
 
     public mixed $payloads = array()
 
+HTTP Request 提交数据
 
-
-
+@var array
 
 * Visibility: **public**
 
@@ -98,9 +109,9 @@ Properties
 
     public mixed $params = array()
 
+HTTP Request Query Params
 
-
-
+@var array
 
 * Visibility: **public**
 
@@ -109,20 +120,20 @@ Properties
 
     public mixed $files = array()
 
+HTTP Request file upload string
 
-
-
+@var array
 
 * Visibility: **public**
 
 
 ### $uri
 
-    public mixed $uri = array()
+    public array $uri = array()
 
+HTTP Request 解析后的路由变量
 
-
-
+see https://github.com/nikic/FastRoute
 
 * Visibility: **public**
 
@@ -131,9 +142,9 @@ Properties
 
     public mixed $responseHeader = array()
 
+HTTP Response Headers
 
-
-
+@var array
 
 * Visibility: **public**
 
@@ -157,11 +168,11 @@ Methods
 
 ### setURI
 
-    mixed Yao\Route\Request::setURI($uri)
+    void Yao\Route\Request::setURI($uri)
 
+设定路由变量
 
-
-
+@param array $uri 路由变量
 
 * Visibility: **public**
 
@@ -175,16 +186,17 @@ Methods
 
     mixed Yao\Route\Request::addHeader($name, $value)
 
+添加 HTTP Response Header
 
-
-
+@param $name header name
 
 * Visibility: **public**
 
 
 #### Arguments
 * $name **mixed**
-* $value **mixed**
+* $value **mixed** - &lt;p&gt;header value
+@return void&lt;/p&gt;
 
 
 
@@ -192,7 +204,7 @@ Methods
 
     mixed Yao\Route\Request::getRequestData()
 
-
+读取 Request 数据
 
 
 
@@ -205,7 +217,7 @@ Methods
 
     mixed Yao\Route\Request::getMethod()
 
-
+读取请求方法
 
 
 
@@ -218,7 +230,7 @@ Methods
 
     mixed Yao\Route\Request::getHeaders()
 
-
+读取请求Header
 
 
 
@@ -231,7 +243,7 @@ Methods
 
     mixed Yao\Route\Request::getRequestURI()
 
-
+读取请求路由
 
 
 
@@ -244,7 +256,7 @@ Methods
 
     mixed Yao\Route\Request::getHost()
 
-
+读取域名信息
 
 
 

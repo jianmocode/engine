@@ -60,7 +60,7 @@ class Route {
             array_shift($uri);
         }
         
-        if (count($uri) < 2) {
+        if (count($uri) < 1) {
             throw Excp::create("非法API请求", 402 );
         }
 
