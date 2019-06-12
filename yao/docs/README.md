@@ -2,6 +2,8 @@ API Index
 =========
 
 * Yao
+    * [Route](Yao-Route.md)
+        * [Request](Yao-Route-Request.md)
     * [Model](Yao-Model.md)
     * [FS](Yao-FS.md)
     * [Observer](Yao-Observer.md)
