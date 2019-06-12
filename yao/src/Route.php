@@ -47,7 +47,7 @@ class Route {
     }
 
     /**
-     * 运行
+     * 运行路由
      */
     public static function run() {
         
@@ -129,10 +129,16 @@ class Route {
     }
 
     /**
+     * 
      * 设定 HTTP GET 路由表
+     * @param string $uri 路由信息
+     * @param callable $callback 回调函数 function( \Yao\Route\Request $r ){}
+     * @param int $tls 数据缓存时长
+     * 
+     * @return void
      */
-    public static function get( $uri, callable $callback ) {
-        array_push( self::$routingTable, ["GET", $uri, $callback] );
+    public static function get( $uri, callable $callback, $tls=0 ) {
+        array_push( self::$routingTable, ["GET", $uri, $callback, $tls] );
     }
 
 }

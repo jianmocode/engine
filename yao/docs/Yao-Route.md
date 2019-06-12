@@ -79,7 +79,7 @@ Methods
 
     mixed Yao\Route::run()
 
-运行
+运行路由
 
 
 
@@ -91,7 +91,7 @@ Methods
 
 ### get
 
-    mixed Yao\Route::get($uri, callable $callback)
+    void Yao\Route::get(string $uri, callable $callback, integer $tls)
 
 设定 HTTP GET 路由表
 
@@ -102,7 +102,8 @@ Methods
 
 
 #### Arguments
-* $uri **mixed**
-* $callback **callable**
+* $uri **string** - &lt;p&gt;路由信息&lt;/p&gt;
+* $callback **callable** - &lt;p&gt;回调函数 function( \Yao\Route\Request $r ){}&lt;/p&gt;
+* $tls **integer** - &lt;p&gt;数据缓存时长&lt;/p&gt;
 
 
