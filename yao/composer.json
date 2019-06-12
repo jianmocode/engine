@@ -36,7 +36,8 @@
 
     "autoload": {
         "psr-4": {
-          "Yao\\": "src/"
+          "Yao\\": "src/",
+          "Yao\\Route\\": "src/route"
         }
     }
 }
