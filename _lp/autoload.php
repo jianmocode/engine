@@ -83,8 +83,8 @@ spl_autoload_register(function ($class_name ) {
         $APP_ROOT = _XPMAPP_ROOT;
         $class_arr = array_map( "strtolower", $class_arr );
 
-        // 兼容旧版 Model
-        if ( in_array("model", $class_arr) ) {
+        // 兼容简墨引擎 Model & API
+        if (  $class_arr[2] == "api" || $class_arr[2] == "model"  ) {
 
             $class = array_pop( $class_arr );
             $class_file = ucfirst($class);
