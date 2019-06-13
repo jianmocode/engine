@@ -9,7 +9,6 @@ $GLOBALS["YAO"] = require_once(__DIR__ . "/../yao/config.inc.php");
 spl_autoload_register(function ($class_name ) {
 
 	$class_arr = explode( '\\', $class_name );
-		
 	$namespace  = current($class_arr);
 
 	// MINA SDK 
@@ -79,24 +78,34 @@ spl_autoload_register(function ($class_name ) {
 		include_once( $class_path_file );
 
     // 载入其他文件
-	} else  {
+	} else if ( count($class_arr) >= 2 ) {
 
-		$APP_ROOT = _XPMAPP_ROOT;
-		$class = end($class_arr);
-        array_pop($class_arr);
-        
-        // 添加 model 目录
-        if ( count($class_arr) == 2 ) {
-            array_push( $class_arr, "model");
+        $APP_ROOT = _XPMAPP_ROOT;
+        $class_arr = array_map( "strtolower", $class_arr );
+
+        // 兼容旧版 Model
+        if ( in_array("model", $class_arr) ) {
+
+            $class = array_pop( $class_arr );
+            $class_file = ucfirst($class);
+            $class_path = strtolower(implode("/", $class_arr));
+            $class_path_file = "{$APP_ROOT}/{$class_path}/{$class_file}.php";
+
+
+        // YAO Backend 模型 
+        } else {
+
+            $class = array_pop( $class_arr );
+            array_splice( $class_arr, 2, 0, ["model"] ); // 添加 model 目录
+            $class_file = ucfirst($class);
+            $class_path = strtolower(implode("/", $class_arr));
+            $class_path_file = "{$APP_ROOT}/{$class_path}/{$class_file}.php";
+        }
+
+        if ( file_exists($class_path_file) ) {
+            include_once($class_path_file);
         }
         
-		$class_file = ucfirst(strtolower($class));
-		$class_path = strtolower(implode(DS, $class_arr));
-		$class_path_file = $APP_ROOT . DS . $class_path . DS . $class_file . '.php';
-      
-		if ( file_exists($class_path_file) ) {
-			include_once($class_path_file);
-		}
 	}
 
 	return ;

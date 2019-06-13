@@ -46,7 +46,8 @@ function handler_autoload($class_name ) {
 
     
 	$class_arr = explode( '\\', $class_name );
-	$namespace  = current($class_arr);
+    $namespace  = current($class_arr);
+    
     if ( strtolower($namespace) == 'yao') { 
         $YAO_ROOT = __DIR__ . "/yao";
             
@@ -66,24 +67,33 @@ function handler_autoload($class_name ) {
         include_once($class_path_file);
 
     // 载入APP
-    } else {
+    } else if ( count($class_arr) >= 2 ) {
 
 		$APP_ROOT = YAO_APP_ROOT;
-		$class = end($class_arr);
-        array_pop($class_arr);
-        
-        // 添加 model 目录
-        if ( count($class_arr) == 2 ) {
-            array_push( $class_arr, "model");
+        $class_arr = array_map( "strtolower", $class_arr );
+
+        // 兼容旧版 Model (简墨引擎)
+        if ( in_array("model", $class_arr) ) {
+
+            $class = array_pop( $class_arr );
+            $class_file = ucfirst($class);
+            $class_path = strtolower(implode("/", $class_arr));
+            $class_path_file = "{$APP_ROOT}/{$class_path}/{$class_file}.php";
+
+
+        // YAO Backend 模型 
+        } else {
+
+            $class = array_pop( $class_arr );
+            array_splice( $class_arr, 2, 0, ["model"] ); // 添加 model 目录
+            $class_file = ucfirst($class);
+            $class_path = strtolower(implode("/", $class_arr));
+            $class_path_file = "{$APP_ROOT}/{$class_path}/{$class_file}.php";
         }
-        
-		$class_file = ucfirst(strtolower($class));
-		$class_path = strtolower(implode("/", $class_arr));
-		$class_path_file = "{$APP_ROOT}/{$class_path}/{$class_file}.php";
-      
-		if ( file_exists($class_path_file) ) {
-			include_once($class_path_file);
-		}
+
+        if ( file_exists($class_path_file) ) {
+            include_once($class_path_file);
+        }
     }
 };
 
