@@ -82,12 +82,67 @@ class Model extends EloquentModel {
                 // 批量处理文件
                 $values = $this->$attr;
                 foreach( $values as $key=>$path ) {
-                    $values[$key] = $this->writeFile( $path, $isPrivate,  $filePrefix );
+
+                    // 单文件
+                    if ( is_string($values[$key]) ) {
+                        $values[$key] = $this->writeFile( $path, $isPrivate,  $filePrefix );
+                    // 三维数组
+                    } else {
+                        foreach( $values[$key] as $k=>$path ) {
+                            $values[$key][$k] = $this->writeFile( $path, $isPrivate,  $filePrefix );
+                        }
+                    }
                 }
                 $this->$attr = $values;
             }
         }
     }
+
+    /**
+     * 处理输入文件类字段读取
+     * @param array $exclude 排除字段
+     * @return void
+     */
+    public function pathToURL( $exclude=[] ) {
+
+        $files = $this->getFiles();
+        foreach( $files as $attr=>$isPrivate ) {
+            
+            if ( in_array($attr, $exclude) || empty($this->$attr)  ) {
+                continue;
+            }
+
+            // 单一文件路径
+            if ( is_string($this->$attr) ) {
+                $this->$attr =  $isPrivate ? "{$this->privateURL}/{$this->$attr}" : "{$this->publicURL}/{$this->$attr}";
+            
+            // 二维数组
+            } else {
+
+                // 批量处理文件
+                $values = $this->$attr;
+                foreach( $values as $key=>$path ) {
+                    if ( empty($values[$key]) ) {
+                        continue;
+                    }
+
+                    // 单文件
+                    if ( is_string($values[$key]) ) {
+                        $values[$key] =  $isPrivate ? "{$this->privateURL}/{$values[$key]}" : "{$this->publicURL}/{$values[$key]}";
+
+                    // 三维数组
+                    } else {
+                        foreach( $values[$key] as $k=>$path ) {
+                            $values[$key][$k] =  $isPrivate ? "{$this->privateURL}/{$values[$key]}" : "{$this->publicURL}/{$values[$key][$k]}";
+                        }
+                    }
+                }
+                $this->$attr = $values;
+            }
+        }
+
+    }
+
 
     /**
      * 读取文件字段清单
@@ -145,41 +200,5 @@ class Model extends EloquentModel {
 
         return $name;
     }
-
-    /**
-     * 处理输入文件类字段读取
-     * @param array $exclude 排除字段
-     * @return void
-     */
-    public function pathToURL( $exclude=[] ) {
-
-        $files = $this->getFiles();
-        foreach( $files as $attr=>$isPrivate ) {
-            
-            if ( in_array($attr, $exclude) || empty($this->$attr)  ) {
-                continue;
-            }
-
-            // 单一文件路径
-            if ( is_string($this->$attr) ) {
-                $this->$attr =  $isPrivate ? "{$this->privateURL}/{$this->$attr}" : "{$this->publicURL}/{$this->$attr}";
-            
-            // 二维数组
-            } else {
-
-                // 批量处理文件
-                $values = $this->$attr;
-                foreach( $values as $key=>$path ) {
-                    if ( empty($values[$key]) ) {
-                        continue;
-                    }
-                    $values[$key] =  $isPrivate ? "{$this->privateURL}/{$values[$key]}" : "{$this->publicURL}/{$values[$key]}";
-                }
-                $this->$attr = $values;
-            }
-        }
-
-    }
-
 
 }
