@@ -141,4 +141,17 @@ class Route {
         array_push( self::$routingTable, ["GET", $uri, $callback, $tls] );
     }
 
+    /**
+     * 
+     * 设定 HTTP POST 路由表
+     * @param string $uri 路由信息
+     * @param callable $callback 回调函数 function( \Yao\Route\Request $r ){}
+     * @param int $tls 数据缓存时长
+     * 
+     * @return void
+     */
+    public static function post( $uri, callable $callback, $tls=0 ) {
+        array_push( self::$routingTable, ["POST", $uri, $callback, $tls] );
+    }
+
 }
