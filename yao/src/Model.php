@@ -87,7 +87,7 @@ class Model extends EloquentModel {
                     if ( is_string($values[$key]) ) {
                         $values[$key] = $this->writeFile( $path, $isPrivate,  $filePrefix );
                     // 三维数组
-                    } else {
+                    } else if ( is_array( $values[$key] ) ) {
                         foreach( $values[$key] as $k=>$path ) {
                             $values[$key][$k] = $this->writeFile( $path, $isPrivate,  $filePrefix );
                         }
@@ -131,7 +131,7 @@ class Model extends EloquentModel {
                         $values[$key] =  $isPrivate ? "{$this->privateURL}/{$values[$key]}" : "{$this->publicURL}/{$values[$key]}";
 
                     // 三维数组
-                    } else {
+                    } else if ( is_array( $values[$key] ) ) {
                         foreach( $values[$key] as $k=>$path ) {
                             $values[$key][$k] =  $isPrivate ? "{$this->privateURL}/{$values[$key]}" : "{$this->publicURL}/{$values[$key][$k]}";
                         }
