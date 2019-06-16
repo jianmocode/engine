@@ -1,6 +1,6 @@
 <?php
 /**
- * Class Route
+ * Class Str
  * 
  * @package Yao
  * @version $Revision$
@@ -15,7 +15,7 @@ use \FastRoute\simpleDispatcher;
 use \Yao\Route\Request;
 
 /**
- * 路由器(Base on FastRoute)
+ * 字符串处理迅捷函数
  */
 class Str {
 
