@@ -56,7 +56,7 @@ class Route {
         $uri = explode("/", $req->requestURI );
         array_shift($uri);
 
-        if ( 1 === $pos = strpos($req->requestURI, '__')) {
+        if ( 1 === strpos($req->requestURI, '__') || 1 === strpos($req->requestURI, 'json/')) {
             array_shift($uri);
         }
         
