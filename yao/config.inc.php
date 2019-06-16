@@ -13,6 +13,11 @@
 return [
 
     /**
+     * 调试标记
+     */
+    "debug" => true,
+
+    /**
      * MySQL 数据库配置
      */
     "mysql" => [
