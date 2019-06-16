@@ -20,6 +20,7 @@ $domain_groups = [
         "default" => "/apps/vpin/backend/api/public",
         "kol" => "/apps/vpin/backend/api/kol",
         "vpin" => "/apps/vpin/backend/api/vpin",
+        "agent" => "/apps/vpin/backend/api/agent",
     ]
 ];
 $domain_groups["vpin.ink"] = $domain_groups["vpin.biz"];

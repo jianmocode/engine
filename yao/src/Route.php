@@ -16,6 +16,9 @@ use \Yao\Route\Request;
 
 /**
  * 路由器(Base on FastRoute)
+ * 
+ * see https://github.com/nikic/FastRoute
+ * 
  */
 class Route {
 
@@ -56,6 +59,7 @@ class Route {
         $uri = explode("/", $req->requestURI );
         array_shift($uri);
 
+        // /json/<group>/:api , __get/<group>/:api
         if ( 1 === strpos($req->requestURI, '__') || 1 === strpos($req->requestURI, 'json/')) {
             array_shift($uri);
         }
@@ -100,6 +104,11 @@ class Route {
             }
         });
 
+        // 不是默认分组插入分组名称
+        if ($group != 'default') {
+            array_unshift( $uri, $group );
+        }
+
         // 解析参数
         $uri = "/" . implode("/", $uri );
         if (false !== $pos = strpos($uri, '?')) {
@@ -110,9 +119,12 @@ class Route {
 
         // 执行路由函数
         switch ($routeInfo[0]) {
-            case \FastRoute\Dispatcher::NOT_FOUND:
-                // ... 404 Not Found
-                throw Excp::create("API不存在", 404 );
+
+            case \FastRoute\Dispatcher::NOT_FOUND:                
+                if ( $GLOBALS["YAO"]["debug"] ) {
+                    Log::write("debug")->debug("API不存在",  ["api"=>$file, "uri"=>$uri, "group"=>$group, "table"=> array_column(self::$routingTable, 1)] );
+                }
+                throw Excp::create("API不存在", 404);
                 break;
             case \FastRoute\Dispatcher::METHOD_NOT_ALLOWED:
                 $allowedMethods = $routeInfo[1];
