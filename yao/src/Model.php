@@ -12,6 +12,7 @@
 namespace Yao;
 use \Illuminate\Database\Eloquent\Model as EloquentModel;
 use \League\Flysystem\AdapterInterface;
+use \Illuminate\Database\Eloquent\Builder;
 
 defined("YAO_PUBLIC_URL") ?: define("YAO_PUBLIC_URL", $GLOBALS["YAO"]["storage"]["public"]);
 defined("YAO_PRIVATE_URL") ?: define("YAO_PRIVATE_URL", $GLOBALS["YAO"]["storage"]["private"]);
@@ -141,6 +142,34 @@ class Model extends EloquentModel {
             }
         }
 
+    }
+
+
+    /**
+     * 分页查询结果集
+     * 
+     * @param \Illuminate\Database\Eloquent\Builder $qb 查询器实例
+     * @param int|string $page 当前页码, 默认为 1
+     * @param int|string $perpage 每页显示记录数量, 默认为 20
+     * @param array $params 查询参数
+     * @param array $pageName 分页参数名称
+     * @param array $columns 查询结果集
+     * 
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator 分页对象
+     * 
+     */
+    public static function paginator(  Builder & $qb, $page=1, $perpage=20, $params=[], $pageName="page", $columns=['*'] ) {
+
+        $params = empty($params) ? $_GET : $params;
+        $uri = explode("?", $_SERVER["REQUEST_URI"]);
+        $path = current($uri);
+        if ( array_key_exists($pageName, $params)) {
+            unset( $params[$pageName] );
+        }
+        $paginator = $qb->paginate( $perpage, ["*"], $pageName, $page);
+        $paginator->appends($params);
+        $paginator->setPath($path);
+        return $paginator;
     }
 
 
