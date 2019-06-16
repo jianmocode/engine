@@ -18,7 +18,6 @@ $GLOBALS["YAO"] = require_once(__DIR__ . "/yao/config.inc.php");
 $domain_groups = [
     "vpin.biz" => [
         "default" => "/apps/vpin/backend/api/public",
-        "user" => "/apps/vpin/backend/api/user",
         "kol" => "/apps/vpin/backend/api/kol",
         "vpin" => "/apps/vpin/backend/api/vpin",
     ]
