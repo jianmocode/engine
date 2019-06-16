@@ -67,7 +67,8 @@ class Weibo {
         Arr::defaults( $params, [
             "client_id" => $this->config["appkey"],
             "redirect_uri" => $this->config["authback"],
-            "display" => "moible"
+            "scope" => $this->config["follow"] ? 'follow_app_official_microblog' : null,
+            "display" => "moible",
         ]);
 
         $qs = http_build_query( $params );
