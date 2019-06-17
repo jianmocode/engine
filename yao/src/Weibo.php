@@ -38,6 +38,8 @@ class Weibo {
     /**
      * 微博省份编码
      * 
+     * see https://open.weibo.com/wiki/%E7%9C%81%E4%BB%BD%E5%9F%8E%E5%B8%82%E7%BC%96%E7%A0%81%E8%A1%A8
+     * 
      * @var array
      * 
      */
@@ -46,10 +48,10 @@ class Weibo {
         11 => [
             "code" => "110000",
             "city" => [
-                1 => "110101", 2 => "110102", 3 => "110102", 4 => "110101", 5 => "110105",
-                6 => "110100", 7 => "110107", 8 => "110108", 9 => "110109", 11 => "110100",
-                12 => "110100", 13 => "110100", 14 => "110114", 15 => "110100", 16 => "110100",
-                17 => "110117", 28 => "110118", 29 => "110119"
+                1 =>  ["110100","110101"], 2 =>  ["110100","110102"], 3 =>  ["110100","110102"], 4 =>  ["110100","110101"], 5 =>  ["110100","110105"],
+                6 =>  ["110100","110106"], 7 =>  ["110100","110107"], 8 =>  ["110100","110108"], 9 =>  ["110100","110109"], 11 => ["110100","110100"],
+                12 => ["110100","110112"], 13 => ["110100","110100"], 14 => ["110100","110114"], 15 => ["110100","110100"], 16 => ["110100","110100"],
+                17 => ["110100","110117"], 28 => ["110100","110118"], 29 => ["110100","110119"]
             ]
         ]
     ];
@@ -58,6 +60,8 @@ class Weibo {
      * 将微博地区编码转化为标准编码
      * @param int $province 微博省份编码
      * @param int $city 微博城市编码
+     * 
+     * @return array [:province_code, :city_code, :town_code]
      */
     public static function area( $province, $city=null ) {
 
@@ -71,17 +75,42 @@ class Weibo {
         if ( is_null($city) ) {
             return  [
                 Arr::get($province_data, "code" ),
-                null
+                null,
+                null,
             ];
         }
 
         // 读取城市数据
         $city = intval($city);
         $city_map =  Arr::get( $province_data, "city", [] );
+        $city_data = Arr::get($city_map, $city );
+        if ( is_null($city_data) ){
+            return  [
+                Arr::get($province_data, "code"),
+                null,
+                null
+            ];
+        } else if( is_array($city_data) ) {
+            return  [
+                Arr::get($province_data, "code"),
+                $city_data[0],
+                $city_data[1]
+            ];
+        } else if( is_string($city_data) ){
+            return  [
+                Arr::get($province_data, "code"),
+                $city_data,
+                null
+            ];
+        }
+
+        // 默认数据返回
         return  [
-            Arr::get($province_data, "code"),
-            Arr::get($city_map, $city )
+            Arr::get($province_data, "code" ),
+            null,
+            null,
         ];
+        
     }
 
     /**
