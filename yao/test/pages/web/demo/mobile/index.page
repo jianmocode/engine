@@ -4,6 +4,9 @@
 </head>
 <body>
     测试程序
+    <ul>
+       <li> <a href="/json/user/weibo/login?backurl=/json/user/info" target="_blank" >微博登录</a> </li>
+    </ul>
 </body>
 
 </html>
