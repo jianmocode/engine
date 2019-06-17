@@ -1,7 +1,7 @@
 {
     "cname": "简墨科技主题",
     "pages": [
-          "/page/demo/mobile/index"
+          "/demo/mobile/index"
     ],
     "common": [
         "/web/demo/assets"
