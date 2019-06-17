@@ -106,9 +106,9 @@ class Weibo {
         $code = $response->getStatusCode();
         
         if ( $code != 200 ) {
-            throw Excp::create("读取Access Token错误", 500, ["reason" => $response->getReasonPhrase(), "status_code"=>$code]);
+            throw Excp::create("读取微博 Access Token 错误", 500, ["reason" => $response->getReasonPhrase(), "status_code"=>$code]);
         }
-
+        
         return Http::json( $response );
     }
 
