@@ -83,6 +83,8 @@ class Weibo {
 
     /**
      * 读取 Access Token
+     * 
+     * see https://open.weibo.com/wiki/Oauth2/access_token
      *  
      * 请求参数 `$params` :
      * 
@@ -90,6 +92,18 @@ class Weibo {
      *  - :client_secret 申请应用时分配的AppSecret。 默认从 config 中读取。
      *  - :code 调用authorize获得的code值。
      *  - :redirect_uri 回调地址，需需与注册应用里的回调地址一致。  
+     * 
+     * 返回数据结构 :
+     * 
+     *  - :access_token 微博 Access Token 
+     *  - :expires_in  Token 过期时间
+     *  - :remind_in  ????
+     *  - :uid  微博用户唯一ID
+     *  - :isRealName 是否为真实姓名
+     * 
+     * @param array $params 调用参数
+     * 
+     * @return array 微博用户唯一ID、Access Token、Token有效器等
      * 
      */
     public function accessToken( array $params ) {
@@ -109,6 +123,34 @@ class Weibo {
             throw Excp::create("读取微博 Access Token 错误", 500, ["reason" => $response->getReasonPhrase(), "status_code"=>$code]);
         }
         
+        return Http::json( $response );
+    }
+
+
+    /**
+     * 读取微博用户资料
+     * 
+     * see https://open.weibo.com/wiki/2/users/show
+     * 
+     * @param string $wb_openid 微博开放平台用户唯一ID 
+     * @param string $access_token 微博 access_token
+     * 
+     * @return array 微博用户资料
+     */
+    public function getUser( $wb_openid, $access_token ) {
+
+        $url = "https://api.weibo.com/2/users/show.json";
+        $response = Http::get( $url, [
+            'query' => [
+                "uid" => $wb_openid,
+                "access_token" => $access_token
+            ]
+        ]);
+        $code = $response->getStatusCode();
+        if ( $code != 200 ) {
+            throw Excp::create("读取微博用户资料错误", 500, ["reason" => $response->getReasonPhrase(), "status_code"=>$code]);
+        }
+
         return Http::json( $response );
     }
 
