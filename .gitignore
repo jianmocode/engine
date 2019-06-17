@@ -7,3 +7,4 @@ yao/vendor
 yao/composer.lock
 yao/test/.phpunit*
 yao/tmp
+yao/test/pages/node_modules

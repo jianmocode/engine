@@ -1,0 +1,11 @@
+{	
+	"cname":"YaoJS测试页",
+	"data": {
+    },
+    "entries":[
+		{"method":"GET", "router":"/demo/index.html", "ttl":0}
+	],
+	"alias": {
+		"wxapp": "/demo/index"
+	}
+}

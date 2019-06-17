@@ -1,0 +1,5 @@
+Web({
+
+	load:function( web ) {
+    }
+})
