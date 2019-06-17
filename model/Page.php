@@ -371,7 +371,7 @@ class Page extends Model {
                 $json = Utils::json_decode($data['json']);
             } catch( Excp $e ) {
                 $extra = $e->getExtra();
-                throw new Excp($e->getMessage() . "(". Utils::get($extra["details"]) .")", 400 );
+                throw new Excp($e->getMessage() . "(". Utils::get($extra["details"]) . "JSON::\n" . $data['json'] . "::JSON\n)", 400 );
             }
 
             // 合并全局JSON数据

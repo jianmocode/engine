@@ -1,6 +1,7 @@
 {	
 	"cname":"YaoJS测试页",
 	"data": {
+        "title":"YAO Pages"
     },
     "entries":[
 		{"method":"GET", "router":"/demo/index.html", "ttl":0}
