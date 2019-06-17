@@ -28,8 +28,61 @@ class Weibo {
 
     /**
      * 微博接口配置
+     * 
+     * @var array
+     * 
      */
     private $config = [];
+
+
+    /**
+     * 微博省份编码
+     * 
+     * @var array
+     * 
+     */
+    public static $province = [
+        // 北京
+        11 => [
+            "code" => "110000",
+            "city" => [
+                1 => "110101", 2 => "110102", 3 => "110102", 4 => "110101", 5 => "110105",
+                6 => "110100", 7 => "110107", 8 => "110108", 9 => "110109", 11 => "110100",
+                12 => "110100", 13 => "110100", 14 => "110114", 15 => "110100", 16 => "110100",
+                17 => "110117", 28 => "110118", 29 => "110119"
+            ]
+        ]
+    ];
+
+    /**
+     * 将微博地区编码转化为标准编码
+     * @param int $province 微博省份编码
+     * @param int $city 微博城市编码
+     */
+    public static function area( $province, $city=null ) {
+
+        if ( is_null($province) ) {
+            return [null, null ];
+        }
+
+        // 读取省份数据
+        $province = intval($province);
+        $province_data = Arr::get( self::$province, $province, [] );
+        if ( is_null($city) ) {
+            return  [
+                Arr::get($province_data, "code" ),
+                null
+            ];
+        }
+
+        // 读取城市数据
+        $city = intval($city);
+        $city_map =  Arr::get( $province_data, "city", [] );
+        return  [
+            Arr::get($province_data, "code"),
+            Arr::get($city_map, $city )
+        ];
+    }
 
     /**
      * 微博接口配置
@@ -37,7 +90,7 @@ class Weibo {
     public function __construct( $config ) {
         $this->config = $config;
     }
-
+    
 
     /**
      * 读取Oauth2.0授权地址
@@ -179,5 +232,8 @@ class Weibo {
 
         return Http::json( $response );
     }
+
+
+
 
 }
