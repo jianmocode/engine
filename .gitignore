@@ -10,5 +10,3 @@ yao/tmp
 yao/test/pages/node_modules
 yao/test/pages/.tmp
 yao/test/pages/.cache
-yao/test/pages/.tmp
-yao/test/pages/.tmp/*
