@@ -28,8 +28,6 @@ $GLOBALS['_SYS'] =  [
 	"location" => Utils::getLocation(),
 ];
 
-
-
 class Data {
 
 	private $json_text = null;

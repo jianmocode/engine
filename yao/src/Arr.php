@@ -39,7 +39,7 @@ class Arr extends IlluminateArr {
             if ( !array_key_exists($name, $input) ) {
                 $input[$name] = $value;
             } else if ( is_array($value) ) {
-                self::default( $input[$name], $value );
+                self::defaults( $input[$name], $value );
             }
         }
     }
