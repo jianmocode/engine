@@ -119,7 +119,12 @@ class Data {
                         $query_options['query'], $query_options['data'], $query_options['files'] 
                     );
 
-                } else {
+                } else if($version == "YAO-1.0")  {
+                    
+                    return $query_options;
+
+                } else  {
+
                     try {
                         $data[$var] = $this->query( 
                             $query_options['api'], 

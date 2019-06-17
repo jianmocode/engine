@@ -1,7 +1,13 @@
 {	
 	"cname":"YaoJS测试页",
 	"data": {
-        "title":"YAO Pages"
+        "title":"YAO Pages",
+        "goods": {
+            "api":"/goods/get/SG-10001",
+            "query":{
+                "goods_sn":"SG-10001"
+            }
+        }
     },
     "entries":[
 		{"method":"GET", "router":"/demo/index.html", "ttl":0}
