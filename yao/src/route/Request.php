@@ -10,6 +10,8 @@
  */
 
 namespace Yao\Route;
+use \Yao\Arr;
+
 
 /**
  * 路由器(Base on FastRoute)
@@ -256,14 +258,14 @@ class Request {
      */
     private function getOrigin() {
 
-        $useragent = $_SERVER['HTTP_USER_AGENT'];
+        $useragent = Arr::get($_SERVER, 'HTTP_USER_AGENT', "unknown") ;
 
         // 微信
-        if ( strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') ) {
+        if ( strpos($useragent, 'MicroMessenger') ) {
             $this->agent = 'wechat';
 
         // 微信小程序
-        } else if ( strpos($_SERVER['HTTP_USER_AGENT'], 'miniProgram') ) {
+        } else if ( strpos($useragent, 'miniProgram') ) {
             $this->agent = 'wxapp';
         }
 

@@ -1,4 +1,4 @@
-var host = "dev.vpin.biz"
+var host = "coderstore.vpin.biz"
 
 config = {
       mina: {
@@ -7,8 +7,8 @@ config = {
             server: "https://" + host,
             domain: host,
             project: "demo",
-            appid: '156032579346487',
-            secret: 'cec9b4f713a48373d9d037d9fdeb2d68',
+            appid: '152389239297374',
+            secret: '500970dad3324330f8a1085939f20360',
             instance: "root",
       },
       wxapp: {

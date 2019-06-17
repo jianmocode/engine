@@ -103,7 +103,7 @@ spl_autoload_register(function ($class_name ) {
         }
 
         if ( file_exists($class_path_file) ) {
-            include_once($class_path_file);
+            include_once($class_path_file);            
         }
         
 	}
