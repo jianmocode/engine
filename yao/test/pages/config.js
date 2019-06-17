@@ -3,10 +3,10 @@ var host = "dev.vpin.biz"
 config = {
       mina: {
             target: false,
-            priority: 0,
+            priority: 99,
             server: "https://" + host,
             domain: host,
-            project: "default",
+            project: "demo",
             appid: '156032579346487',
             secret: 'cec9b4f713a48373d9d037d9fdeb2d68',
             instance: "root",

@@ -371,7 +371,6 @@ class Page extends Model {
                 $json = Utils::json_decode($data['json']);
             } catch( Excp $e ) {
                 $extra = $e->getExtra();
-                print_r( $data );
                 throw new Excp($e->getMessage() . "(". Utils::get($extra["details"]) . "JSON::\n" . $data['json'] . "::JSON\n)", 400 );
             }
 
