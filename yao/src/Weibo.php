@@ -132,6 +132,32 @@ class Weibo {
      * 
      * see https://open.weibo.com/wiki/2/users/show
      * 
+     * 返回数据关键字段
+     * 
+     *  - id 微博用户ID
+     *  - screen_name       微博用户昵称
+     *  - name              微博用户真名
+     *  - province          省份代码 2位
+     *  - city              城市代码 1-2位
+     *  - location          地址
+     *  - description       微博简介
+     *  - url               网站
+     *  - avatar_large      用户头像地址（大图），180×180像素
+     *  - avatar_hd         用户头像地址（高清），高清头像原图
+     *  - profile_image_url 个人头像地址（中图），50×50像素
+     *  - cover_image_phone 封面图片
+     *  - weihao            微号
+     *  - gender            性别 m：男、f：女、n：未知
+     *  - followers_count   粉丝数量
+     *  - friends_count     互粉数量
+     *  - statuses_count    发微博数量
+     *  - favourites_count  收藏数量
+     *  - created_at        微博注册时间
+     *  - verified          是否认证
+     *  - verified_type     认证类型
+     *  - verified_reason   认证信息
+     *  - follow_me         该用户是否关注当前登录用户，true：是，false：否
+     *
      * @param string $wb_openid 微博开放平台用户唯一ID 
      * @param string $access_token 微博 access_token
      * 

@@ -11,13 +11,15 @@
 
 namespace Yao;
 use \Yao\Excp;
-use \FastRoute\simpleDispatcher;
-use \Yao\Route\Request;
+use \Illuminate\Support\Str as IlluminateStr;
 
 /**
  * 字符串处理迅捷函数
+ * 
+ * see https://github.com/laravel/framework/blob/5.8/src/Illuminate/Support/Str.php
+ * 
  */
-class Str {
+class Str extends IlluminateStr {
 
 
     /**
@@ -45,5 +47,11 @@ class Str {
         return array_map("trim", explode($delimiter, $data));
     }
     
-
+    /**
+     * 生成一个由数字组成的唯一ID
+     * @return string Numberic unique string
+     */
+    public static function uniqid() {
+        return hexdec(uniqid());
+    }
 }

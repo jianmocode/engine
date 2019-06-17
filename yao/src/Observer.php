@@ -24,6 +24,13 @@ class Observer {
      * @return void
      */
     public function creating( $model ) {
+
+        // 自动生成数据
+        $key = $model->generateId;
+        if ( null !== $key && empty($model->{$key}) ) {
+            $model->{$key} = Str::uniqid();
+        }
+
         $model->filesInput();
     }
 

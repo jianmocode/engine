@@ -5,6 +5,7 @@
 
 use \Yao\Route;
 use \Yao\Excp;
+use \Yao\Arr;
 defined("YAO_APP_ROOT") ?: define("YAO_APP_ROOT", "/apps");
 error_reporting(E_ALL & ~E_DEPRECATED & ~E_STRICT & ~E_NOTICE );
 error_reporting(E_ALL);
@@ -103,6 +104,21 @@ function handler_autoload($class_name ) {
  */
 function handler_excp($e) {
 
+    $debug = Arr::get($GLOBALS, "YAO.debug", false);
+
+    if ( $debug ) {
+        header("Content-Type: application/json");
+        header("server: jianmo/server:1.9.3");
+        header("x-powered-by: jianmo.ink");
+        
+        echo json_encode([
+            "code" =>$e->getCode(),
+            "message"=>$e->getMessage(),
+            "trace"=>$e->getTrace()
+        ]);
+        exit;
+    }
+
     $type = get_class($e);
 
     if ( $e instanceof Excp ) {
@@ -150,6 +166,22 @@ function handler_excp($e) {
  * 错误通报
  */
 function handler_error($severity, $message, $file, $line) {
+    
+    $debug = Arr::get($GLOBALS, "YAO.debug", false);
+    if ( $debug ) {
+        header("Content-Type: application/json");
+        header("server: jianmo/server:1.9.3");
+        header("x-powered-by: jianmo.ink");
+        echo json_encode([
+            "message" => "程序运行错误({$message})",
+            "file"=>$file,
+            "line" => $line,
+            "severity" =>$severity,
+        ]);
+        exit;
+    }
+
+
     // if (!(error_reporting() & $severity)) {
     //     // This error code is not included in error_reporting
     //     return;
@@ -157,6 +189,8 @@ function handler_error($severity, $message, $file, $line) {
     header("Content-Type: application/json");
     header("server: jianmo/server:1.9.3");
     header("x-powered-by: jianmo.ink");
+  
+    
     echo '{"code":500, "message":"程序运行错误"}';
     $e = Excp::create("{$message}( 第{$line}行 {$file} )",500);
     $e->log();

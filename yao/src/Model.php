@@ -57,6 +57,12 @@ class Model extends EloquentModel {
     public $filePrefix = "";
 
     /**
+     * 创建时生成的数字类型ID
+     */
+    public $generateId = null;
+    
+
+    /**
      * 处理输入文件类字段
      * @return void
      */
@@ -212,7 +218,7 @@ class Model extends EloquentModel {
         }
 
         $path = substr($path, 1, strlen($path));
-        if ( !file_exists($path) ) {
+        if ( filter_var($path, FILTER_VALIDATE_URL) === FALSE &&  !file_exists($path) ) {
             throw Excp::create("文件不存在({$path})", 404);
         }
 
@@ -228,6 +234,16 @@ class Model extends EloquentModel {
         }
 
         return $name;
+    }
+
+
+    /**
+     * 打印调试信息
+     */
+    public static function debug( $message, $context=[] ) {
+        if ( Arr::get( $GLOBALS, "YAO.debug", false ) ) {
+            Log::write("debug")->debug( $message, $context );
+        }
     }
 
 }
