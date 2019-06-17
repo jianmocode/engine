@@ -22,7 +22,7 @@ use \Mina\Cache\Redis as Cache;
 use \Mina\Storage\Local as Storage;
 use \Xpmse\Openapi;
 
-@session_start();
+// @session_start();
 
 $GLOBALS['_SYS'] =  [
 	"location" => Utils::getLocation(),
