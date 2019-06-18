@@ -128,7 +128,7 @@ class Wechat {
     /**
      * 读取微信用户资料
      * 
-     * see https://open.weibo.com/wiki/2/users/show
+     * see https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140842
      * 
      * 返回数据关键字段
      * 
