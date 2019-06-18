@@ -213,18 +213,26 @@ class Model extends EloquentModel {
      */
     private function writeFile( $path, $private=false, $perfix="" ) {
 
+        self::debug("writeFile: {$path}");
         if ( strpos( $path, "@") !== 0 ) {
             return $path;
         }
-
+        
+        // 处理有 @ 抓取标志的文件 (抓取到本地)
         $path = substr($path, 1, strlen($path));
         if ( filter_var($path, FILTER_VALIDATE_URL) === FALSE &&  !file_exists($path) ) {
             throw Excp::create("文件不存在({$path})", 404);
         }
 
-        // 转存到指定的存储引擎
+        // 根据文件路径/网址设定文件名称
         $ext = pathinfo($path, PATHINFO_EXTENSION);         
-        $name = FS::getPathName( $ext, $perfix );
+        if ( filter_var($path, FILTER_VALIDATE_URL) === TRUE ){
+            $name = FS::getPathNameByURL( $path, $perfix );
+        } else {
+            $name = FS::getPathName( $ext, $perfix );
+        }
+        
+        // 存储文件
         $stream = fopen($path, 'r');
         FS::writeStream($name, $stream, [
             'visibility' => $private ? AdapterInterface::VISIBILITY_PRIVATE : AdapterInterface::VISIBILITY_PUBLIC

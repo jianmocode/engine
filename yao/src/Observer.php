@@ -18,9 +18,9 @@ class Observer {
 
 
     /**
-     * Handle the User "created" event.
+     * Handle the User "creating" event.
      *
-     * @param Model $user
+     * @param Model $model
      * @return void
      */
     public function creating( $model ) {
@@ -31,6 +31,16 @@ class Observer {
             $model->{$key} = Str::uniqid();
         }
 
+        $model->filesInput();
+    }
+
+    /**
+     * Handle the User "updating" event.
+     *
+     * @param Model $model
+     * @return void
+     */
+    public function updating( $model ) {
         $model->filesInput();
     }
 

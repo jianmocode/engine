@@ -251,9 +251,23 @@ class FS {
      */
     public static function getPathName( string $ext, string $prefix="" ) {
         
-        // ramsey/uuid 2.9 (change name after 3.0 )
-        $uuid = \Rhumsaa\Uuid\Uuid::uuid1();
-        $name = md5( $uuid->toString() );
+        $name = Str::uniqid();
+        $path = date("Y") . "/" .date("m") . "/" . date("d") . "/" . substr($name, 0, 2) . "/" . substr($name, 2, 2);
+        
+        return "{$prefix}{$path}/{$name}.{$ext}";
+    }
+
+    /**
+     * 自动成文件名称(网址)
+     * 
+     * @param string $url 网址
+     * @param string $prefix 文件前缀
+     * @return string 唯一文件名称
+     */
+    public static function getPathNameByURL( string $url, string $prefix="" ) {
+        
+        $ext = pathinfo($url, PATHINFO_EXTENSION);  
+        $name = hexdec(md5($url));
         $path = date("Y") . "/" .date("m") . "/" . date("d") . "/" . substr($name, 0, 2) . "/" . substr($name, 2, 2);
         
         return "{$prefix}{$path}/{$name}.{$ext}";
