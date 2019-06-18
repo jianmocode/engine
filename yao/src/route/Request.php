@@ -287,6 +287,7 @@ class Request {
     private function setGlobal() {
 
         $GLOBALS["YAO"]["REQUEST_ORIGIN"] = [
+            "HOST" => $_SERVER["HTTP_HOST"],
             "DOMAIN" => $this->hostName,
             "SUBDOMAIN" => $this->hostSubname,
             "AGENT" => $this->agent,
