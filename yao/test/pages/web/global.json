@@ -4,6 +4,7 @@
         "user_info": {
             "api":"/user/info",
             "query":{}
-        }
+        },
+        "vpin_id": "{{user_info.vpin_id}}"
     }
 }

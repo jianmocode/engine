@@ -3,14 +3,12 @@
 	"data": {
         "title":"YAO Pages",
         "goods": {
-            "api":"/goods/get/SG-10001",
-            "query":{
-                "goods_sn":"SG-10001"
-            }
+            "api":"/goods/get/{{__var.sn}}",
+            "query":{}
         }
     },
     "entries":[
-		{"method":"GET", "router":"/demo/index.html", "ttl":0}
+		{"method":"GET", "router":"/demo/index/{sn:[0-9a-zA-Z\\-]+}.html", "ttl":0}
 	],
 	"alias": {
 		"wxapp": "/demo/index"

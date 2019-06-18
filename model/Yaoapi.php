@@ -88,7 +88,7 @@ class YaoApi {
     function getData(){
 
         $this->json_data['data'] = is_array($this->json_data['data']) ? $this->json_data['data'] : [];
-        foreach ($this->json_data['data'] as $field => $params ) {
+        foreach ($this->json_data['data'] as $field => & $params ) {
             $data = [];
             if ( Arr::has($params, "api") ) {
 
@@ -124,9 +124,9 @@ class YaoApi {
             } else {
                 $this->json_data['data'][$field] = $data[$field] = $params;
             }
+            
             // 更新数据
             Arr::binds( $this->json_data['data'], $data);
-
         }
 
 		// 调试信息
@@ -135,7 +135,7 @@ class YaoApi {
 			debug("<!-- _VAR: \n", $GLOBALS['_VAR'] , "\n -->\n");
 			debug("<!-- _GET: \n", $_GET , "\n -->\n");
 			debug("<!-- _POST: \n", $_POST , "\n -->\n");
-            debug("<!-- _DATA:\n", $data , "\n -->\n");
+            debug("<!-- _DATA:\n", $this->json_data["data"] , "\n -->\n");
             debug("<!-- GLOBALS:\n", $GLOBALS , "\n -->\n");
 		}
         return $this->json_data;
