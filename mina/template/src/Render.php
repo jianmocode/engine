@@ -113,7 +113,7 @@ class Render  {
 	 * @return null | string  如果配置项中 'return' 为 TRUE ，则返回解析后的页面
 	 */
 	function exec( $name,  $phpcode, $exec_options=[] ) {
-
+        
         // 网页名称
         $____render_page_name = $name;
         
@@ -130,7 +130,6 @@ class Render  {
 		} else {
 			throw new Exception("无法获取 PHP Code (应该为 string / function )", 500 );
 		}
-
         ob_start();
         eval("?>$code");
         $content = ob_get_contents();

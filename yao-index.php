@@ -19,7 +19,9 @@ if ( !array_key_exists("_debug", $_GET) ) {
 }
 
 // 载入YaoJS Backend 配置
-$GLOBALS["YAO"] = require_once(__DIR__ . "/yao/config.inc.php");
+if ( !array_key_exists("YAO", $GLOBALS) ) {
+    $GLOBALS["YAO"] = include_once(__DIR__ . "/yao/config.inc.php");
+}
 
 error_reporting(E_ALL & ~E_NOTICE);
 
@@ -463,7 +465,7 @@ $dispatcher->setup(
     /**
      * 渲染页面
      */
-    function( $entry, $vars, $maps, $instance="root" ) use(  $render, $code,  $exec_options) {
+    function( $entry, $vars, $maps, $instance="root" ) use(  $render, $code, $exec_options) {
 
         // 页面渲染异常情况 （ $vars == 状态码  $maps == 状态信息 )
         if ( $entry === null && is_numeric($vars) && is_string($maps) ) {
@@ -538,16 +540,16 @@ $dispatcher->setup(
         $exec_options["ttl"] = $entry["ttl"];
         $code_text = str_replace([
             "\$source = new \\Xpmse\\Model\\Data", 
-            // 'require_once("/code/_lp/autoload.php");',
             'require_once("/code/model/Data.php");',
+            'require_once("/code/_lp/autoload.php");'
         ], [
             "\$source = new \\Xpmse\\Model\\YaoApi",
-            // '',
-            'require_once("/code/model/Yaoapi.php");'
+            'require_once("/code/model/Yaoapi.php");',
+            ''
         ], $code_text);
 
+        
         // echo $code_text; exit;
-
         $render->exec( $page, $code_text, $exec_options );
 
     },

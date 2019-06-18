@@ -53,8 +53,10 @@ class Route {
      * 运行路由并返回数值
      */
     public static function exec( $uri, $params=[] ) {
-        
+
         $req = new Request();
+
+
         $req->requestURI = $uri;
         $uri = explode("/", $uri );
         array_shift($uri);
@@ -116,6 +118,7 @@ class Route {
         if (false !== $pos = strpos($uri, '?')) {
             $uri = substr($uri, 0, $pos);
         }
+
         $uri = rawurldecode($uri);
         $routeInfo = $dispatcher->dispatch($req->method, $uri);
 

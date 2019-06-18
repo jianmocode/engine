@@ -23,7 +23,6 @@ use \Mina\Storage\Local as Storage;
 use \Xpmse\Openapi;
 
 // @session_start();
-
 $GLOBALS['_SYS'] =  [
 	"location" => Utils::getLocation(),
 ];

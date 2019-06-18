@@ -34,6 +34,7 @@ function debug() {
     }
 }
 
+
 class YaoApi {
 
     private $json_text = null;
@@ -41,9 +42,9 @@ class YaoApi {
     private $version  = "1.0";
 
     function __construct( $json_text, $render = null ) {
-
-         // + 多语言替换内容源支持
-         if ( $render != null && !empty($render->lang) && !empty($render->local) ) {
+        
+        // + 多语言替换内容源支持
+        if ( $render != null && !empty($render->lang) && !empty($render->local) ) {
             
             $json_data = json_decode( $json_text, true );
             if ( $json_data === false ) {
@@ -102,7 +103,7 @@ class YaoApi {
                 ];
                 $domain_groups["vpin.ink"] = $domain_groups["vpin.biz"];
                 Route::setGroups($domain_groups["vpin.ink"]);
-
+                
                 // 设定路由分组
                 $api = $params["api"];
                 $query = Arr::get($params, "query", []);
@@ -134,7 +135,8 @@ class YaoApi {
 			debug("<!-- _VAR: \n", $GLOBALS['_VAR'] , "\n -->\n");
 			debug("<!-- _GET: \n", $_GET , "\n -->\n");
 			debug("<!-- _POST: \n", $_POST , "\n -->\n");
-			debug("<!-- _DATA:\n", $data , "\n -->\n");
+            debug("<!-- _DATA:\n", $data , "\n -->\n");
+            debug("<!-- GLOBALS:\n", $GLOBALS , "\n -->\n");
 		}
         return $this->json_data;
     }
