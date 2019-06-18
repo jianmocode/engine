@@ -79,11 +79,109 @@ class Wxpay {
             "appid" => Arr::get($this->config, "appid"),
             "mch_id" => Arr::get($this->config, "mch_id"),
             "notify_url" => Arr::get($this->config, "notify_url"),
-            "scene_info" => Arr::get($this->config, "scene_info"),
+            "scene_info" => Arr::get($this->config, "scene_info.browser"),
         ]);
 
+        $params["nonce_str"] = Str::uniqid();
+        $params["sign_type"] = "MD5";
+        $params["spbill_create_ip"] = self::getRealIpAddr();
+        $params['sign'] = $this->signature($params);
+
+        // 发送请求
+        $response = Http::post( $url, [
+            "body" => self::paramsToXml( $params )
+        ]);
+
+        $code = $response->getStatusCode();
+        if ( $code != 200 ) {
+            throw Excp::create("统一下单接口调用失败", 500, ["reason" => $response->getReasonPhrase(), "status_code"=>$code]);
+        }
+
+        $body = $response->getBody();
+        return $body;
 
     }
+
+
+    /**
+     * 读取客户端IP地址
+     */
+    public static function getRealIpAddr() {
+
+        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {  //check ip from share internet
+            $ip=$_SERVER['HTTP_CLIENT_IP'];
+
+        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))  {
+            $ip=$_SERVER['HTTP_X_FORWARDED_FOR'];
+
+        } else {
+            $ip=$_SERVER['REMOTE_ADDR'];
+        }
+        return $ip;
+    }
+
+
+    /**
+	 * 校验请求签名
+     * 
+	 * @param  array $params 微信服务器发送的请求数据
+	 * @return bool
+	 */
+	public function checkReturnRequest( $params ) {
+		$data = [
+			"appId" => $this->conf['appid'],
+			"timeStamp"=>$params['timeStamp'],
+			"nonceStr" => $params['nonceStr'],
+			"package" => "prepay_id={$params['prepay_id']}",
+			"signType"=>"MD5"
+		];
+
+		return ($params['paySign'] = $this->signature($data));
+	}
+
+
+    /**
+     * 转换为Xml格式
+     * 
+     * @param array $params  请求数据
+     * @param array $cdata_fields  不需要解析的XML数据
+     * 
+     * @return string Xml格式Body字符串
+     */
+    public static function paramsToXml( $params, $cdata_fields=[] ) {
+		$xml = "<xml>\n";
+
+		foreach ($params as $key => $value) {
+			if ( in_array($key, $cdata_fields) ) {
+				$value  = '<![CDATA[' .$value. ']]>';
+			}
+			$xml = $xml  . "<$key>$value</$key>\n";
+		}
+
+		$xml = $xml . "</xml>\n";
+
+		return $xml;
+    }
+    
+    /**
+	 * 生成微信支付签名
+     * 
+	 * @param  array $params 请求参数表
+     * 
+	 * @return string 签名
+	 */
+	private function signature( $params ) {
+
+		ksort( $params );
+		$params_list = [];
+		foreach( $params as $k=>$v ) {
+			array_push( $params_list, "$k=$v");
+		}
+		$stringSign = implode( "&", $params_list);
+        $stringSignTemp="{$stringSign}&key=" . $this->conf['key'];
+        
+		return strtoupper(MD5($stringSignTemp));
+	}
 
 
 }
