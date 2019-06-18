@@ -4,6 +4,9 @@ API Index
 * Yao
     * [Route](Yao-Route.md)
         * [Request](Yao-Route-Request.md)
+    * [Str](Yao-Str.md)
+    * [Weibo](Yao-Weibo.md)
+    * [Http](Yao-Http.md)
     * [Model](Yao-Model.md)
     * [FS](Yao-FS.md)
     * [Observer](Yao-Observer.md)
@@ -13,4 +16,5 @@ API Index
     * [Excp](Yao-Excp.md)
     * [Schema](Yao-Schema.md)
     * [Api](Yao-Api.md)
+    * [Wechat](Yao-Wechat.md)
 

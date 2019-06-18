@@ -74,6 +74,17 @@ Properties
 * Visibility: **public**
 
 
+### $generateId
+
+    public mixed $generateId = null
+
+创建时生成的数字类型ID
+
+
+
+* Visibility: **public**
+
+
 Methods
 -------
 
@@ -88,6 +99,44 @@ Methods
 
 * Visibility: **public**
 
+
+
+
+### pathToURL
+
+    void Yao\Model::pathToURL(array $exclude)
+
+处理输入文件类字段读取
+
+
+
+* Visibility: **public**
+
+
+#### Arguments
+* $exclude **array** - &lt;p&gt;排除字段&lt;/p&gt;
+
+
+
+### paginator
+
+    \Illuminate\Contracts\Pagination\LengthAwarePaginator Yao\Model::paginator(\Illuminate\Database\Eloquent\Builder $qb, integer|string $page, integer|string $perpage, array $params, array $pageName, array $columns)
+
+分页查询结果集
+
+
+
+* Visibility: **public**
+* This method is **static**.
+
+
+#### Arguments
+* $qb **Illuminate\Database\Eloquent\Builder** - &lt;p&gt;查询器实例&lt;/p&gt;
+* $page **integer|string** - &lt;p&gt;当前页码, 默认为 1&lt;/p&gt;
+* $perpage **integer|string** - &lt;p&gt;每页显示记录数量, 默认为 20&lt;/p&gt;
+* $params **array** - &lt;p&gt;查询参数&lt;/p&gt;
+* $pageName **array** - &lt;p&gt;分页参数名称&lt;/p&gt;
+* $columns **array** - &lt;p&gt;查询结果集&lt;/p&gt;
 
 
 
@@ -122,18 +171,20 @@ Methods
 
 
 
-### pathToURL
+### debug
 
-    void Yao\Model::pathToURL(array $exclude)
+    mixed Yao\Model::debug($message, $context)
 
-处理输入文件类字段读取
+打印调试信息
 
 
 
 * Visibility: **public**
+* This method is **static**.
 
 
 #### Arguments
-* $exclude **array** - &lt;p&gt;排除字段&lt;/p&gt;
+* $message **mixed**
+* $context **mixed**
 
 

@@ -228,6 +228,24 @@ Methods
 
 
 
+### getPathNameByURL
+
+    string Yao\FS::getPathNameByURL(string $url, string $prefix)
+
+自动成文件名称(网址)
+
+
+
+* Visibility: **public**
+* This method is **static**.
+
+
+#### Arguments
+* $url **string** - &lt;p&gt;网址&lt;/p&gt;
+* $prefix **string** - &lt;p&gt;文件前缀&lt;/p&gt;
+
+
+
 ### __callStatic
 
     mixed Yao\FS::__callStatic(string $method, array $parameters)

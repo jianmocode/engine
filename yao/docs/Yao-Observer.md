@@ -21,9 +21,9 @@ Methods
 
 ### creating
 
-    void Yao\Observer::creating($model)
+    void Yao\Observer::creating(\Yao\Model $model)
 
-Handle the User "created" event.
+Handle the User "creating" event.
 
 
 
@@ -31,6 +31,22 @@ Handle the User "created" event.
 
 
 #### Arguments
-* $model **mixed**
+* $model **[Yao\Model](Yao-Model.md)**
+
+
+
+### updating
+
+    void Yao\Observer::updating(\Yao\Model $model)
+
+Handle the User "updating" event.
+
+
+
+* Visibility: **public**
+
+
+#### Arguments
+* $model **[Yao\Model](Yao-Model.md)**
 
 

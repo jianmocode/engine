@@ -17,6 +17,39 @@ Properties
 ----------
 
 
+### $agent
+
+    public string $agent = null
+
+请求代理 weibo/wechat/wxapp/null
+
+
+
+* Visibility: **public**
+
+
+### $platform
+
+    public mixed $platform = null
+
+请求平台 android / ios / desktop etc
+
+
+
+* Visibility: **public**
+
+
+### $isMobile
+
+    public mixed $isMobile = false
+
+是否为手机端
+
+
+
+* Visibility: **public**
+
+
 ### $hostName
 
     public string $hostName = ""
@@ -257,6 +290,32 @@ Methods
     mixed Yao\Route\Request::getHost()
 
 读取域名信息
+
+
+
+* Visibility: **private**
+
+
+
+
+### getOrigin
+
+    mixed Yao\Route\Request::getOrigin()
+
+读取请求来源
+
+
+
+* Visibility: **private**
+
+
+
+
+### setGlobal
+
+    mixed Yao\Route\Request::setGlobal()
+
+设定全局变量
 
 
 
