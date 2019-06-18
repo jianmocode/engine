@@ -58,8 +58,9 @@ class Wechat {
         // 处理数据转向
         $redirect_uri = Arr::get($this->config, "authback");
         $query = Arr::get($params, "query", []);
-        $qs = urlencode(http_build_query($query));
-        if ( false !== strpos($redirect_uri, "?")) {
+        array_map("urlencode", $query);
+        $qs = http_build_query($query);
+        if ( false === strpos($redirect_uri, "?")) {
             $redirect_uri = "{$redirect_uri}?{$qs}";
         } else {
             $redirect_uri = "{$redirect_uri}&{$qs}";
@@ -76,6 +77,92 @@ class Wechat {
         
         $qs = http_build_query( $params );
         return "{$url}?{$qs}#wechat_redirect";
+    }
+
+    
+    /**
+     * 读取 Oauth2.0  Access Token
+     * 
+     * see https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140842
+     *  
+     * 请求参数 `$params` :
+     * 
+     *  - :appid 申请应用时分配的AppKey。默认从 config 中读取。
+     *  - :secret 申请应用时分配的AppSecret。 默认从 config 中读取。
+     *  - :code 调用authorize获得的code值。
+     * 
+     * 返回数据结构 :
+     * 
+     *  - :access_token     微信 Access Token 
+     *  - :expires_in       Token 过期时间
+     *  - :refresh_token    用户刷新access_token
+     *  - :openid           用户唯一标识，请注意，在未关注公众号时，用户访问公众号的网页，也会产生一个用户和公众号唯一的OpenID
+     *  - :scope            用户授权的作用域，使用逗号（,）分隔
+     *  - :unionid          用户的唯一标识(微信全平台范围), 请注意只有在用户将公众号绑定到微信开放平台帐号后，才会出现该字段。
+     * 
+     * @param array $params 调用参数
+     * 
+     * @return array 微博用户唯一ID、Access Token、Token有效器等
+     * 
+     */
+    public function accessToken( array $params ) {
+
+        $url = "https://api.weixin.qq.com/sns/oauth2/access_token";
+
+        Arr::defaults( $params, [
+            "appid" => $this->config["appid"],
+            "secret" => $this->config["appsecret"],
+            "grant_type" => "authorization_code"
+        ]);
+
+        $response = Http::post($url, ["form_params"=> $params]);
+        $code = $response->getStatusCode();
+        
+        if ( $code != 200 ) {
+            throw Excp::create("读取微信 Access Token 错误", 500, ["reason" => $response->getReasonPhrase(), "status_code"=>$code]);
+        }
+        
+        return Http::json( $response );
+    }
+
+    /**
+     * 读取微信用户资料
+     * 
+     * see https://open.weibo.com/wiki/2/users/show
+     * 
+     * 返回数据关键字段
+     * 
+     *  - openid            用户的唯一标识(公众号范围)
+     *  - unionid           用户的唯一标识(微信全平台范围), 只有在用户将公众号绑定到微信开放平台帐号后，才会出现该字段。
+     *  - nickname          微信用户昵称
+     *  - sex               用户的性别，值为1时是男性，值为2时是女性，值为0时是未知
+     *  - province          用户个人资料填写的省份
+     *  - city              普通用户个人资料填写的城市
+     *  - country           国家，如中国为CN
+     *  - headimgurl        用户头像，最后一个数值代表正方形头像大小（有0、46、64、96、132数值可选，0代表640*640正方形头像），用户没有头像时该项为空。若用户更换头像，原有头像URL将失效。
+     *  - privilege         用户特权信息，json 数组，如微信沃卡用户为（chinaunicom）
+     *
+     * @param string $wx_openid 用户的唯一标识(公众号范围)
+     * @param string $access_token 微信OAuth2.0授权 access_token
+     * 
+     * @return array 微信用户资料
+     */
+    public function getUser( $wx_openid, $access_token ) {
+
+        $url = "https://api.weixin.qq.com/sns/userinfo";
+        $response = Http::get( $url, [
+            'query' => [
+                "openid" => $wx_openid,
+                "access_token" => $access_token,
+                "lang" => "zh_CN"
+            ]
+        ]);
+        $code = $response->getStatusCode();
+        if ( $code != 200 ) {
+            throw Excp::create("读取微信用户资料错误", 500, ["reason" => $response->getReasonPhrase(), "status_code"=>$code]);
+        }
+
+        return Http::json( $response );
     }
 
 }
