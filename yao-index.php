@@ -380,16 +380,6 @@ $dispatcher = new Dispatcher([
     ]
 ]);
 
-
-/**
- * 读取数据
- */
-function getData( $json ) {
-    return $json ;
-}
-
-
-
 try {
 $dispatcher->setup(
     /**

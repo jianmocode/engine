@@ -137,8 +137,10 @@ class YaoApi {
 			debug("<!-- _POST: \n", $_POST , "\n -->\n");
             debug("<!-- _DATA:\n", $this->json_data["data"] , "\n -->\n");
             debug("<!-- GLOBALS:\n", $GLOBALS , "\n -->\n");
-		}
-        return $this->json_data;
+        }
+        
+        return $this->json_data["data"];
+
     }
 
 }
