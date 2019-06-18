@@ -58,17 +58,17 @@ class Wechat {
         // 处理数据转向
         $redirect_uri = Arr::get($this->config, "authback");
         $query = Arr::get($params, "query", []);
-        // $qs = http_build_query($query);
-        // if ( false !== strpos($redirect_uri, "?")) {
-        //     $redirect_uri = "{$redirect_uri}?{$qs}";
-        // } else {
-        //     $redirect_uri = "{$redirect_uri}&{$qs}";
-        // }
+        $qs = urlencode(http_build_query($query));
+        if ( false !== strpos($redirect_uri, "?")) {
+            $redirect_uri = "{$redirect_uri}?{$qs}";
+        } else {
+            $redirect_uri = "{$redirect_uri}&{$qs}";
+        }
         
         Arr::forget($params, "query");
         Arr::defaults( $params, [
             "appid" => $this->config["appid"],
-            "redirect_uri" => urlencode($redirect_uri),
+            "redirect_uri" =>  $redirect_uri,  //urlencode($redirect_uri),
             "response_type" => "code",
             "state" => "VPIN",
             "scope" =>  Arr::get($this->config, "scope", "snsapi_userinfo")
