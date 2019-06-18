@@ -1,11 +1,13 @@
 <html>
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>YAO-Pages test</title>
 </head>
 <body>
     测试程序
     <ul>
        <li> <a href="/json/user/weibo/login?backurl=/json/user/info" target="_blank" >微博登录</a> </li>
+       <li> <a href="/json/user/wechat/login?backurl=/json/user/info" target="_blank" >微信登录</a> </li>
     </ul>
 </body>
 

@@ -12,8 +12,6 @@
 namespace Yao;
 use \Yao\Excp;
 use \Yao\Http;
-use \FastRoute\simpleDispatcher;
-use \Yao\Route\Request;
 
 /**
  * 微博接口
@@ -158,7 +156,7 @@ class Weibo {
         ]);
 
         $qs = http_build_query( $params );
-        return "{$url}?$qs";
+        return "{$url}?{$qs}";
     }
 
 
