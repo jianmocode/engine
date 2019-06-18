@@ -28,6 +28,30 @@ class Wechat {
 
 
     /**
+     * 将微信地区编码转化为标准编码
+     * @param int $province 微信省份名称
+     * @param int $city 微信城市编码
+     * 
+     * @return array [:province_code, :city_code, :town_code]
+     */
+    public static function area( $province, $city=null ) {
+        return [null, null, null];
+    }
+
+    /**
+     * 读取微信头像
+     * @param string $url 头像地址
+     * @param int $size 有效值 0、46、64、96、132数值可选，0代表640*640正方形头像
+     */
+    public static function headimg( $url, $size=0 ) {
+        $uri = explode("/", $url);
+        array_pop($uri);
+        array_push($uri, $size );
+        return implode("/", $uri );
+    }
+
+
+    /**
      * 微信接口配置
      */
     public function __construct( $config ) {
