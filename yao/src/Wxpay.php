@@ -20,6 +20,15 @@ use \Yao\Arr;
 class Wxpay {
 
     /**
+     * 微信支付配置选项
+     * 
+     * @var array
+     * 
+     */
+    private $config = [];
+
+
+    /**
      * 返回错误码定义
      * 
      * @var array
@@ -48,6 +57,7 @@ class Wxpay {
      * 微信支付配置
      */
     public function __construct( $config ) {
+        
         $this->config = $config;
     }
 
@@ -85,11 +95,15 @@ class Wxpay {
         $params["nonce_str"] = Str::uniqid();
         $params["sign_type"] = "MD5";
         $params["spbill_create_ip"] = self::getRealIpAddr();
+        ksort($params);
+
         $params['sign'] = $this->signature($params);
+        $body = trim(self::paramsToXml( $params, ["scene_info"] ));
 
         // 发送请求
         $response = Http::post( $url, [
-            "body" => self::paramsToXml( $params )
+            "headers" => ["Content-Type: text/xml"],
+            "body" => $body
         ]);
 
         $code = $response->getStatusCode();
@@ -98,9 +112,18 @@ class Wxpay {
         }
 
         $body = $response->getBody();
-        return $body;
+
+        return self::json( $body );
 
     }
+
+
+    public static function json(  $body  ) {
+
+        $xml = new \SimpleXMLElement($body, LIBXML_NOCDATA); 
+        return json_decode( json_encode($xml), true);
+    }
+
 
 
     /**
@@ -178,8 +201,7 @@ class Wxpay {
 			array_push( $params_list, "$k=$v");
 		}
 		$stringSign = implode( "&", $params_list);
-        $stringSignTemp="{$stringSign}&key=" . $this->conf['key'];
-        
+        $stringSignTemp="{$stringSign}&key=" . Arr::get($this->config, "key");        
 		return strtoupper(MD5($stringSignTemp));
 	}
 
