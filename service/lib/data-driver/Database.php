@@ -1088,8 +1088,8 @@ class Database implements Data {
 	 * @return array | boolean 成功返回符合条件的记录 map, 失败返回 false
 	 */
 	function getVar( $field_name, $query="", $data=[] ) {
-		$row = $this->getLine($query, $field_name, $data ) ;
-		return $row[$field_name];
+        $row = $this->getLine($query, $field_name, $data ) ;
+		return array_key_exists($field_name, $row ) ? $row[$field_name] : null;
 	}
 
 

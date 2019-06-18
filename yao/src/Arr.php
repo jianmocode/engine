@@ -46,7 +46,7 @@ class Arr extends IlluminateArr {
 
     /**
      * 替换 `{{key}}` 为 bindings 设定数值
-     * @param array $input 输入数组引用
+     * @param array &$input 输入数组引用
      * @param array $bindings 绑定数据
      */
     public static function binds( array & $input, array $bindings ){

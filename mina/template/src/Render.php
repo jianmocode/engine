@@ -119,7 +119,7 @@ class Render  {
         
         // 多语言支持/翻译器
         if ( !empty($this->cache) ) {
-            $this->local = $local = $exec_options["lang"];
+            $this->local = $local = array_key_exists("lang", $exec_options) ? $exec_options["lang"] : null;
             $this->lang = new Lang( ["cache" => $this->cache]);
         }
 

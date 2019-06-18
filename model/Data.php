@@ -85,7 +85,7 @@ class Data {
 		\Mina\Template\Helper::init([
 			"cache" => new Cache($cacheOptions),
 			"storage"=> new Storage($storageOptions),
-			"fonts" => Utils::fonts(),
+			"fonts" => [],  //Utils::fonts(),
 			"debug" =>  $_GET['debug']
 		]);
 
@@ -167,39 +167,41 @@ class Data {
      */
     function queryYAO( $path, $query=[], $data=[] ) {
 
-        $uri = $_SERVER["REQUEST_URI"];
-        $host = $_SERVER["HTTP_HOST"];
-        $schema = $_SERVER["HTTPS"] ? "https://" : "http://";
-        $query_str = http_build_query($query);
-        $url = "{$schema}{$host}/json{$path}?{$query_str}";
-        $content = \file_get_contents($url);
-        if ( $content === false ) {
-            return ["code"=>500, "message"=>"程序返回错误($path)"];
-        }
-        $data = json_decode($content, true);
-        if ( $data === false ) {
-            return ["code"=>500, "message"=>"程序返回错误($path)"];
-        }
-        return $data;
+        // $uri = $_SERVER["REQUEST_URI"];
+        // $host = $_SERVER["HTTP_HOST"];
+        // $schema = $_SERVER["HTTPS"] ? "https://" : "http://";
+        // $query_str = http_build_query($query);
+        // $url = "{$schema}{$host}/json{$path}?{$query_str}";
+        // $content = file_get_contents($url);
+        // if ( $content === false ) {
+        //     return ["code"=>500, "message"=>"程序返回错误($path)"];
+        // }
+        // $data = json_decode($content, true);
+        // if ( $data === false ) {
+        //     return ["code"=>500, "message"=>"程序返回错误($path)"];
+        // }
+        // return $data;
     
-        // // 临时设定
-        // $domain_groups = [
-        //     "vpin.biz" => [
-        //         "default" => "/apps/vpin/backend/api/public",
-        //         "kol" => "/apps/vpin/backend/api/kol",
-        //         "vpin" => "/apps/vpin/backend/api/vpin",
-        //         "agent" => "/apps/vpin/backend/api/agent",
-        //     ]
-        // ];
-        // $domain_groups["vpin.ink"] = $domain_groups["vpin.biz"];
+        include_once(__DIR . "/../yao/vendor/autoload.php");
 
+        // 临时设定
+        $domain_groups = [
+            "vpin.biz" => [
+                "default" => "/apps/vpin/backend/api/public",
+                "kol" => "/apps/vpin/backend/api/kol",
+                "vpin" => "/apps/vpin/backend/api/vpin",
+                "agent" => "/apps/vpin/backend/api/agent",
+            ]
+        ];
+        $domain_groups["vpin.ink"] = $domain_groups["vpin.biz"];
 
-        // // 设定路由分组
-        // Route::setGroups($domain_groups["vpin.ink"]);
-        // $response = Route::exec( $path, $query );
-
-        // echo $path;
-        // print_r( $query );
+        // 设定路由分组
+        Route::setGroups($domain_groups["vpin.ink"]);
+        $response = Route::exec( $path, $query );
+        return $response;
+        exit;
+        // $response = Route::run();
+        // return $response;
 
         // exit;
         return $this->query( $path, $query, $data );
