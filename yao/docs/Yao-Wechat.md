@@ -32,6 +32,42 @@ Methods
 -------
 
 
+### area
+
+    array Yao\Wechat::area(integer $province, integer $city)
+
+将微信地区编码转化为标准编码
+
+
+
+* Visibility: **public**
+* This method is **static**.
+
+
+#### Arguments
+* $province **integer** - &lt;p&gt;微信省份名称&lt;/p&gt;
+* $city **integer** - &lt;p&gt;微信城市编码&lt;/p&gt;
+
+
+
+### headimg
+
+    mixed Yao\Wechat::headimg(string $url, integer $size)
+
+读取微信头像
+
+
+
+* Visibility: **public**
+* This method is **static**.
+
+
+#### Arguments
+* $url **string** - &lt;p&gt;头像地址&lt;/p&gt;
+* $size **integer** - &lt;p&gt;有效值 0、46、64、96、132数值可选，0代表640*640正方形头像&lt;/p&gt;
+
+
+
 ### __construct
 
     mixed Yao\Wechat::__construct($config)
