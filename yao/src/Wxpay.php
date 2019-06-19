@@ -100,8 +100,25 @@ class Wxpay {
      *  :product_id         string(32)      trade_type=NATIVE，此参数必传。此id为二维码中包含的商品ID，商户自行定义。
      *  :openid             string(128)     trade_type=JSAPI，此参数必传，用户在商户appid下的唯一标识。
      * 
+     * 
+     * 成功返回数据结构: 
+     *  
+     *  :return_code       string          SUCCESS
+     *  :return_msg        string          OK
+     *  :appid             string          微信分配的公众账号ID
+     *  :mch_id            string          微信支付分配的商户号
+     *  :nonce_str         string          微信返回的随机字符串
+     *  :sign              string          请求签名
+     *  :result_code       string          业务结果 SUCCESS/FAIL
+     *  :prepay_id         string          微信生成的预支付回话标识，用于后续接口调用中使用，该值有效期为2小时,针对H5支付此参数无特殊用途
+     *  :trade_type        string          调用接口提交的交易类型，取值如下：JSAPI，NATIVE，APP，,H5支付固定传MWEB
+     *  :mweb_url          string          mweb_url为拉起微信支付收银台的中间页面，可通过访问该url来拉起微信客户端，完成支付, mweb_url的有效期为5分钟。
+     * 
+     * @return array 统一下单接口数据
+     * @throws Excp 抛出异常
+     * 
      */
-    public function unifiedorder( array $params = [] ) {
+    public function unifiedorder( array $params ) {
         
         $url = "https://api.mch.weixin.qq.com/pay/unifiedorder";
 
@@ -158,6 +175,34 @@ class Wxpay {
 
         return $data;
     }
+
+
+    /**
+     * 查询订单
+     */
+    public function orderquery( array $params ){
+
+        $url = "https://api.mch.weixin.qq.com/pay/orderquery";
+
+        Arr::defaults( $params, [
+            "appid" => Arr::get($this->config, "appid"),
+            "mch_id" => Arr::get($this->config, "mch_id"),
+            "notify_url" => Arr::get($this->config, "notify_url"),
+            "scene_info" => Arr::get($this->config, "scene_info.browser"),
+        ]);
+
+        $params["nonce_str"] = Str::uniqid();
+        $params["sign_type"] = "MD5";
+        $params["spbill_create_ip"] = self::getRealIP();
+        ksort($params);
+
+        $params['sign'] = $this->signature($params);
+        $body = trim(self::paramsToXml( $params, ["scene_info"] ));
+
+
+
+    }
+
 
 
     /**
