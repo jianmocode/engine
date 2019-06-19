@@ -103,16 +103,16 @@ class Wxpay {
      * 
      * 成功返回数据结构: 
      *  
-     *  :return_code       string          SUCCESS
-     *  :return_msg        string          OK
-     *  :appid             string          微信分配的公众账号ID
-     *  :mch_id            string          微信支付分配的商户号
-     *  :nonce_str         string          微信返回的随机字符串
-     *  :sign              string          请求签名
-     *  :result_code       string          业务结果 SUCCESS/FAIL
-     *  :prepay_id         string          微信生成的预支付回话标识，用于后续接口调用中使用，该值有效期为2小时,针对H5支付此参数无特殊用途
-     *  :trade_type        string          调用接口提交的交易类型，取值如下：JSAPI，NATIVE，APP，,H5支付固定传MWEB
-     *  :mweb_url          string          mweb_url为拉起微信支付收银台的中间页面，可通过访问该url来拉起微信客户端，完成支付, mweb_url的有效期为5分钟。
+     *  :return_code        string          SUCCESS
+     *  :return_msg         string          OK
+     *  :appid              string          微信分配的公众账号ID
+     *  :mch_id             string          微信支付分配的商户号
+     *  :nonce_str          string          微信返回的随机字符串
+     *  :sign               string          请求签名
+     *  :result_code        string          业务结果 SUCCESS/FAIL
+     *  :prepay_id          string          微信生成的预支付回话标识，用于后续接口调用中使用，该值有效期为2小时,针对H5支付此参数无特殊用途
+     *  :trade_type         string          调用接口提交的交易类型，取值如下：JSAPI，NATIVE，APP，,H5支付固定传MWEB
+     *  :mweb_url           string          mweb_url为拉起微信支付收银台的中间页面，可通过访问该url来拉起微信客户端，完成支付, mweb_url的有效期为5分钟。
      * 
      * @return array 统一下单接口数据
      * @throws Excp 抛出异常
