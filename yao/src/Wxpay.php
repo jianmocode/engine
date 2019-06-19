@@ -52,6 +52,26 @@ class Wxpay {
     ];
 
 
+    /**
+     * 记录错误日志
+     * 
+     * @param string $method 记录方法( 有效值 debug/info/notice/warning/error/critical )
+     * @param string $message 日志内容
+     * @param array  $context  上下文信息
+     * 
+     * @return void
+     */
+    public function log( string $method, $message, $context=[] ) {
+        $name = Arr::get($this->config, "log", null );
+        if ( empty($name) ){
+            return false;
+        }
+
+        $log = Log::write($name);
+        $log->$method( $message, $context);
+    }
+
+
 
     /**
      * 微信支付配置
@@ -124,7 +144,7 @@ class Wxpay {
         $data = self::json( $body );
 
         // 记录日志
-        Log::write("wxpay")->info("[MAKE] #{$params["out_trade_no"]} {$params["appid"]} {$params["mch_id"]} {$params["attach"]} ", [
+        $this->log("notice","[MAKE] #{$params["out_trade_no"]} {$params["appid"]} {$params["mch_id"]} {$params["attach"]} ", [
             "notify_url" => Arr::get( $params, "notify_url"),
             "trade_type" => Arr::get( $params, "trade_type"),
             "return_code" => Arr::get( $data, "return_code"),
@@ -152,7 +172,7 @@ class Wxpay {
         $appid = Arr::get( $params, "appid", "");
         $mch_id = Arr::get( $params, "mch_id", "");
 
-        Log::write("wxpay")->info("[GET] #{$out_trade_no} {$appid} {$mch_id} {$attach} ", [
+        $this->log("notice", "[RESP] #{$out_trade_no} {$appid} {$mch_id} {$attach} ", [
             "trade_type" => Arr::get( $params, "trade_type"),
             "return_code" => Arr::get( $params, "return_code"),
             "return_msg" => Arr::get( $params, "return_msg"),
@@ -179,7 +199,7 @@ class Wxpay {
         $return_code = Arr::get( $params, "return_code", "FAIL");
         $method = ( $return_code === "SUCCESS") ? "info" : "error";
 
-        Log::write("wxpay")->$method("[DONE] #{$out_trade_no} {$appid} {$mch_id} {$attach} ", [
+        $this->log($method, "[DONE] #{$out_trade_no} {$appid} {$mch_id} {$attach} ", [
             "trade_type" => Arr::get( $params, "trade_type"),
             "return_code" => Arr::get( $params, "return_code"),
             "return_msg" => Arr::get( $params, "return_msg"),
