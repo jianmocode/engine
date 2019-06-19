@@ -148,8 +148,8 @@ class Wxpay {
             throw Excp::create("统一下单接口调用失败", 500, ["reason" => $response->getReasonPhrase(), "status_code"=>$code]);
         }
 
-        $body = $response->getBody();
-        $data = self::json($body);
+        $response_body = $response->getBody();
+        $data = self::json($response_body);
         $this->checkSignature( $data );
         
 
@@ -179,6 +179,32 @@ class Wxpay {
 
     /**
      * 查询订单
+     * see https://pay.weixin.qq.com/wiki/doc/api/H5.php?chapter=9_2&index=2
+     * 
+     * 主要请求参数 `$params` :
+     *  
+     *  :appid              string(32)      微信分配的公众账号ID/默认从配置文件中读取
+     *  :mch_id             string(32)      微信支付分配的商户号(默认从配置文件中读取)
+     *  :transaction_id     string(32)      微信的订单号，建议优先使用 (微信订单号和商户订单号必填一项)
+     *  :out_trade_no       string(32)      商户系统内部订单号，要求32个字符内，只能是数字、大小写字母_-|*@ ，且在同一个商户号下唯一。(微信订单号和商户订单号必填一项)
+     * 
+     * 
+     * 成功返回数据结构: 
+     * 
+     *  :return_code        string          SUCCESS
+     *  :return_msg         string          OK
+     *  :appid              string          微信分配的公众账号ID
+     *  :mch_id             string          微信支付分配的商户号
+     *  :nonce_str          string          微信返回的随机字符串
+     *  :sign               string          请求签名
+     *  :result_code        string          业务结果 SUCCESS/FAIL
+     *  :err_code           string          当result_code为FAIL时返回错误代码，详细参见 $errorCodes
+     *  :err_code_des       string          当result_code为FAIL时返回错误描述，详细参见下文错误列表
+     * 
+     *  其他字段参见微信文档
+     * 
+     * @return array 订单信息
+     * 
      */
     public function orderquery( array $params ){
 
@@ -187,20 +213,32 @@ class Wxpay {
         Arr::defaults( $params, [
             "appid" => Arr::get($this->config, "appid"),
             "mch_id" => Arr::get($this->config, "mch_id"),
-            "notify_url" => Arr::get($this->config, "notify_url"),
-            "scene_info" => Arr::get($this->config, "scene_info.browser"),
         ]);
 
         $params["nonce_str"] = Str::uniqid();
         $params["sign_type"] = "MD5";
-        $params["spbill_create_ip"] = self::getRealIP();
         ksort($params);
 
         $params['sign'] = $this->signature($params);
-        $body = trim(self::paramsToXml( $params, ["scene_info"] ));
+        $body = trim(self::paramsToXml( $params) );
 
+        // 发送查询请求
+        $code = $response->getStatusCode();
+        if ( $code != 200 ) {
+            throw Excp::create("查询订单接口调用失败", 500, ["reason" => $response->getReasonPhrase(), "status_code"=>$code]);
+        }
 
+        $response_body = $response->getBody();
+        $data = self::json($response_body);
+        $this->checkSignature( $data );
 
+        // 返回数据异常
+        if ( Arr::get($data, "return_code")  !== "SUCCESS" ) {
+            $return_msg = Arr::get($data, "return_msg");
+            throw Excp::create("查询订单接口返回失败({$return_msg})", 500, ["return_data"=> $data, "error_codes"=>self::$errorCodes]);
+        }
+
+        return $data;
     }
 
 
