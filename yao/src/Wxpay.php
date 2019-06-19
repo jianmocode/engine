@@ -134,25 +134,29 @@ class Wxpay {
         $body = $response->getBody();
         $data = self::json($body);
         $this->checkSignature( $data );
+        
 
         // 返回数据异常
         if ( Arr::get($data, "return_code")  !== "SUCCESS" ) {
             $return_msg = Arr::get($data, "return_msg");
+            $this->log("error","[MAKE] 统一下单接口返回失败({$return_msg}) #{$params["out_trade_no"]} {$params["appid"]} {$params["mch_id"]} {$params["attach"]}", [
+                "notify_url" => Arr::get( $params, "notify_url"),
+                "trade_type" => Arr::get( $params, "trade_type"),
+            ]);
             throw Excp::create("统一下单接口返回失败({$return_msg})", 500, ["return_data"=> $data, "error_codes"=>self::$errorCodes]);
         }
 
         $data = self::json( $body );
 
         // 记录日志
-        $this->log("notice","[MAKE] #{$params["out_trade_no"]} {$params["appid"]} {$params["mch_id"]} {$params["attach"]} ", [
+        $return_code = Arr::get( $data, "return_code");
+        $this->log("notice","[MAKE] 统一下单接口调用成功($return_code) #{$params["out_trade_no"]} {$params["appid"]} {$params["mch_id"]} {$params["attach"]} ", [
             "notify_url" => Arr::get( $params, "notify_url"),
             "trade_type" => Arr::get( $params, "trade_type"),
-            "return_code" => Arr::get( $data, "return_code"),
             "return_msg" => Arr::get( $data, "return_msg"),
         ]);
 
         return $data;
-
     }
 
 
@@ -171,11 +175,10 @@ class Wxpay {
         $attach = Arr::get( $params, "attach", "");
         $appid = Arr::get( $params, "appid", "");
         $mch_id = Arr::get( $params, "mch_id", "");
+        $return_code = Arr::get( $params, "return_code");
 
-        $this->log("notice", "[RESP] #{$out_trade_no} {$appid} {$mch_id} {$attach} ", [
+        $this->log("notice", "[RESP] 接收微信支付通知请求($return_code) #{$out_trade_no} {$appid} {$mch_id} {$attach} ", [
             "trade_type" => Arr::get( $params, "trade_type"),
-            "return_code" => Arr::get( $params, "return_code"),
-            "return_msg" => Arr::get( $params, "return_msg"),
         ]);
 
         if ( !$this->checkSignature( $params, true ) ) {
@@ -198,11 +201,10 @@ class Wxpay {
         $mch_id = Arr::get( $params, "mch_id", "");
         $return_code = Arr::get( $params, "return_code", "FAIL");
         $method = ( $return_code === "SUCCESS") ? "info" : "error";
+        $return_code = Arr::get( $params, "return_code");
 
-        $this->log($method, "[DONE] #{$out_trade_no} {$appid} {$mch_id} {$attach} ", [
-            "trade_type" => Arr::get( $params, "trade_type"),
-            "return_code" => Arr::get( $params, "return_code"),
-            "return_msg" => Arr::get( $params, "return_msg"),
+        $this->log($method, "[DONE] 微信支付通知处理完毕({$return_code}). #{$out_trade_no} {$appid} {$mch_id} {$attach} ", [
+            "trade_type" => Arr::get( $params, "trade_type")
         ]);
 
         echo '<xml>
