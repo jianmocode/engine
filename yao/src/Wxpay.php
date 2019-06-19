@@ -121,6 +121,14 @@ class Wxpay {
             throw Excp::create("统一下单接口返回失败({$return_msg})", 500, ["return_data"=> $data, "error_codes"=>self::$errorCodes]);
         }
 
+        // 记录日志
+        Log::write("wxpay")->info("[MAKE] #{$params["out_trade_no"]} {$params["appid"]} {$params["mch_id"]} {$params["attach"]} ", [
+            "notify_url" => Arr::get( $params, "notify_url"),
+            "trade_type" => Arr::get( $params, "trade_type"),
+            "return_code" => Arr::get( $params, "return_code"),
+            "return_msg" => Arr::get( $params, "return_msg"),
+        ]);
+
         return self::json( $body );
 
     }
@@ -151,7 +159,7 @@ class Wxpay {
         if ( !$this->checkSignature( $params, true ) ) {
             $this->notifyResponse( $params );
         }
-        
+
         return $params;
     }
 
