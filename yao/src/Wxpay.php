@@ -205,10 +205,10 @@ class Wxpay {
             "return_msg" => Arr::get( $params, "return_msg"),
         ]);
 
-        echo `<xml>
+        echo '<xml>
                 <return_code><![CDATA[SUCCESS]]></return_code>
                 <return_msg><![CDATA[OK]]></return_msg>
-             </xml>`;
+             </xml>';
         exit;
     }
 
