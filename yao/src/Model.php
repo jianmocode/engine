@@ -254,4 +254,26 @@ class Model extends EloquentModel {
         }
     }
 
+    /**
+     * 根据选择字段和许可清单，过滤选择字段
+     * 
+     * @param array|string $select        字段列表 foo0,foo1.bar1,foo1.bar2 
+     * @param array|string $allow_fields 许可数值清单 foo0,foo1.bar1,foo1.bar2  
+     * 
+     * @return array 许可的字段清单
+     */
+    public static function fieldsFilter( $select, $allow_fields ) {
+        
+        $select = Str::explodeAndTrim(",", $select);
+        $allow_fields  = Str::explodeAndTrim(",", $select);
+
+        $select = Arr::dot( $select );
+        $allow_fields =Arr::dot( $allow_fields);
+        $select = array_intersect( $select, $allow_fields );
+        if ( empty($select) ) {
+            throw Excp::create("未设定选择字段", 402);
+        }
+        return Arr::explode( $select );
+    }
+
 }

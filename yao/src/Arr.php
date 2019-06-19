@@ -73,6 +73,22 @@ class Arr extends IlluminateArr {
 
 
     /**
+     * 还原数组 first.second.third  >  $arr["first"]["second"]["third"]
+     * 
+     * @param array $input 输入数组引用
+     */
+    public static function explode( $input  ) {
+        
+        $result = [];
+        foreach ( $input as $key => $value ) {
+            self::set( $result, $key, $value );
+        }
+        return $result;
+        
+    }
+
+
+    /**
      * 给数组 key 添加 {{}}
      * @param array $input 输入数组引用
      */
