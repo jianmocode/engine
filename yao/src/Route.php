@@ -11,6 +11,7 @@
 
 namespace Yao;
 use \Yao\Excp;
+use \Yao\Arr;
 use \FastRoute\simpleDispatcher;
 use \Yao\Route\Request;
 

@@ -13,6 +13,7 @@ namespace Yao;
 use \Yao\Excp;
 use \Yao\Http;
 use \Yao\Arr;
+use \Yao\Str;
 
 /**
  * 微信支付接口
@@ -89,30 +90,30 @@ class Wxpay {
      * 
      * 主要请求参数 `$params` :
      *  
-     *  :appid              string(32)      微信分配的公众账号ID/默认从配置文件中读取
-     *  :mch_id             string(32)      微信支付分配的商户号(默认从配置文件中读取)
-     *  :notify_url         string(256)     接收微信支付异步通知回调地址，通知url必须为直接可访问的url，不能携带参数。(默认从配置文件中读取)
-     *  :scene_info         string(256)     场景信息.(默认从配置文件中读取) 该字段用于上报支付的场景信息 ( 1，IOS移动应用 2，安卓移动应用 3，WAP网站应用 )  {"h5_info": {"type":"Wap","wap_url": "https://pay.qq.com","wap_name": "腾讯充值"}}
-     *  :body               string(128)     商品简单描述
-     *  :attach             string(127)     附加数据，在查询API和支付通知中原样返回
-     *  :out_trade_no       string(32)      商户系统内部的订单号,32个字符内、可包含字母
-     *  :total_fee          int             订单总金额，单位为分
-     *  :product_id         string(32)      trade_type=NATIVE，此参数必传。此id为二维码中包含的商品ID，商户自行定义。
-     *  :openid             string(128)     trade_type=JSAPI，此参数必传，用户在商户appid下的唯一标识。
+     *  - :appid              string(32)      微信分配的公众账号ID/默认从配置文件中读取
+     *  - :mch_id             string(32)      微信支付分配的商户号(默认从配置文件中读取)
+     *  - :notify_url         string(256)     接收微信支付异步通知回调地址，通知url必须为直接可访问的url，不能携带参数。(默认从配置文件中读取)
+     *  - :scene_info         string(256)     场景信息.(默认从配置文件中读取) 该字段用于上报支付的场景信息 ( 1，IOS移动应用 2，安卓移动应用 3，WAP网站应用 )  {"h5_info": {"type":"Wap","wap_url": "https://pay.qq.com","wap_name": "腾讯充值"}}
+     *  - :body               string(128)     商品简单描述
+     *  - :attach             string(127)     附加数据，在查询API和支付通知中原样返回
+     *  - :out_trade_no       string(32)      商户系统内部的订单号,32个字符内、可包含字母
+     *  - :total_fee          int             订单总金额，单位为分
+     *  - :product_id         string(32)      trade_type=NATIVE，此参数必传。此id为二维码中包含的商品ID，商户自行定义。
+     *  - :openid             string(128)     trade_type=JSAPI，此参数必传，用户在商户appid下的唯一标识。
      * 
      * 
      * 成功返回数据结构: 
      *  
-     *  :return_code        string          SUCCESS
-     *  :return_msg         string          OK
-     *  :appid              string          微信分配的公众账号ID
-     *  :mch_id             string          微信支付分配的商户号
-     *  :nonce_str          string          微信返回的随机字符串
-     *  :sign               string          请求签名
-     *  :result_code        string          业务结果 SUCCESS/FAIL
-     *  :prepay_id          string          微信生成的预支付回话标识，用于后续接口调用中使用，该值有效期为2小时,针对H5支付此参数无特殊用途
-     *  :trade_type         string          调用接口提交的交易类型，取值如下：JSAPI，NATIVE，APP，,H5支付固定传MWEB
-     *  :mweb_url           string          mweb_url为拉起微信支付收银台的中间页面，可通过访问该url来拉起微信客户端，完成支付, mweb_url的有效期为5分钟。
+     *  - :return_code        string          SUCCESS
+     *  - :return_msg         string          OK
+     *  - :appid              string          微信分配的公众账号ID
+     *  - :mch_id             string          微信支付分配的商户号
+     *  - :nonce_str          string          微信返回的随机字符串
+     *  - :sign               string          请求签名
+     *  - :result_code        string          业务结果 SUCCESS/FAIL
+     *  - :prepay_id          string          微信生成的预支付回话标识，用于后续接口调用中使用，该值有效期为2小时,针对H5支付此参数无特殊用途
+     *  - :trade_type         string          调用接口提交的交易类型，取值如下：JSAPI，NATIVE，APP，,H5支付固定传MWEB
+     *  - :mweb_url           string          mweb_url为拉起微信支付收银台的中间页面，可通过访问该url来拉起微信客户端，完成支付, mweb_url的有效期为5分钟。
      * 
      * @return array 统一下单接口数据
      * @throws Excp 抛出异常
@@ -152,7 +153,6 @@ class Wxpay {
         $data = self::json($response_body);
         $this->checkSignature( $data );
         
-
         // 返回数据异常
         if ( Arr::get($data, "return_code")  !== "SUCCESS" ) {
             $return_msg = Arr::get($data, "return_msg");
@@ -162,8 +162,6 @@ class Wxpay {
             ]);
             throw Excp::create("统一下单接口返回失败({$return_msg})", 500, ["return_data"=> $data, "error_codes"=>self::$errorCodes]);
         }
-
-        $data = self::json( $body );
 
         // 记录日志
         $return_code = Arr::get( $data, "return_code");
@@ -183,23 +181,23 @@ class Wxpay {
      * 
      * 主要请求参数 `$params` :
      *  
-     *  :appid              string(32)      微信分配的公众账号ID/默认从配置文件中读取
-     *  :mch_id             string(32)      微信支付分配的商户号(默认从配置文件中读取)
-     *  :transaction_id     string(32)      微信的订单号，建议优先使用 (微信订单号和商户订单号必填一项)
-     *  :out_trade_no       string(32)      商户系统内部订单号，要求32个字符内，只能是数字、大小写字母_-|*@ ，且在同一个商户号下唯一。(微信订单号和商户订单号必填一项)
+     *  - :appid              string(32)      微信分配的公众账号ID/默认从配置文件中读取
+     *  - :mch_id             string(32)      微信支付分配的商户号(默认从配置文件中读取)
+     *  - :transaction_id     string(32)      微信的订单号，建议优先使用 (微信订单号和商户订单号必填一项)
+     *  - :out_trade_no       string(32)      商户系统内部订单号，要求32个字符内，只能是数字、大小写字母_-|*@ ，且在同一个商户号下唯一。(微信订单号和商户订单号必填一项)
      * 
      * 
      * 成功返回数据结构: 
      * 
-     *  :return_code        string          SUCCESS
-     *  :return_msg         string          OK
-     *  :appid              string          微信分配的公众账号ID
-     *  :mch_id             string          微信支付分配的商户号
-     *  :nonce_str          string          微信返回的随机字符串
-     *  :sign               string          请求签名
-     *  :result_code        string          业务结果 SUCCESS/FAIL
-     *  :err_code           string          当result_code为FAIL时返回错误代码，详细参见 $errorCodes
-     *  :err_code_des       string          当result_code为FAIL时返回错误描述，详细参见下文错误列表
+     *  - :return_code        string          SUCCESS
+     *  - :return_msg         string          OK
+     *  - :appid              string          微信分配的公众账号ID
+     *  - :mch_id             string          微信支付分配的商户号
+     *  - :nonce_str          string          微信返回的随机字符串
+     *  - :sign               string          请求签名
+     *  - :result_code        string          业务结果 SUCCESS/FAIL
+     *  - :err_code           string          当result_code为FAIL时返回错误代码，详细参见 $errorCodes
+     *  - :err_code_des       string          当result_code为FAIL时返回错误描述，详细参见下文错误列表
      * 
      *  其他字段参见微信文档
      * 
@@ -223,6 +221,11 @@ class Wxpay {
         $body = trim(self::paramsToXml( $params) );
 
         // 发送查询请求
+        $response = Http::post( $url, [
+            "headers" => ["Content-Type: text/xml"],
+            "body" => $body
+        ]);
+        
         $code = $response->getStatusCode();
         if ( $code != 200 ) {
             throw Excp::create("查询订单接口调用失败", 500, ["reason" => $response->getReasonPhrase(), "status_code"=>$code]);
@@ -310,7 +313,6 @@ class Wxpay {
         } catch ( \Exception $e ) {
             return [];
         }
-        
         $response =  json_decode( json_encode($xml), true);
         if ( $response === false ) {
             return [];
@@ -351,6 +353,12 @@ class Wxpay {
 	 */
 	private function checkSignature( $return_data, $return = false  ) {
         
+        foreach( $return_data as $k => & $v ) {
+            if ( is_array($v) && empty($v) ) {
+                unset($return_data[$k]);
+            }
+        }
+
         $sign = Arr::get($return_data, "sign");
         $return_data = Arr::except($return_data, "sign");
 
