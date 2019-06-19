@@ -94,7 +94,7 @@ class Wxpay {
 
         $params["nonce_str"] = Str::uniqid();
         $params["sign_type"] = "MD5";
-        $params["spbill_create_ip"] = self::getRealIpAddr();
+        $params["spbill_create_ip"] = self::getRealIP();
         ksort($params);
 
         $params['sign'] = $this->signature($params);
@@ -112,24 +112,105 @@ class Wxpay {
         }
 
         $body = $response->getBody();
+        $data = self::json($body);
+        $this->checkSignature( $data );
+
+        // 返回数据异常
+        if ( Arr::get($data, "return_code")  !== "SUCCESS" ) {
+            $return_msg = Arr::get($data, "return_msg");
+            throw Excp::create("统一下单接口返回失败({$return_msg})", 500, ["return_data"=> $data, "error_codes"=>self::$errorCodes]);
+        }
 
         return self::json( $body );
 
     }
 
 
-    public static function json(  $body  ) {
+    /**
+     * 读取微信支付通知数据
+     * 
+     * @param string $body 微信通知响应结果
+     * 
+     * @return array 通知数据
+     * 
+     */
+    public function notifyGet( $body ) {
+        
+        $params = self::json( $body );
+        $out_trade_no = Arr::get( $params, "out_trade_no", "UNKNOWN");
+        $attach = Arr::get( $params, "attach", "");
+        $appid = Arr::get( $params, "appid", "");
+        $mch_id = Arr::get( $params, "mch_id", "");
 
-        $xml = new \SimpleXMLElement($body, LIBXML_NOCDATA); 
-        return json_decode( json_encode($xml), true);
+        Log::write("wxpay")->info("[GET] #{$out_trade_no} {$appid} {$mch_id} {$attach} ", [
+            "trade_type" => Arr::get( $params, "trade_type"),
+            "return_code" => Arr::get( $params, "return_code"),
+            "return_msg" => Arr::get( $params, "return_msg"),
+        ]);
+
+        if ( !$this->checkSignature( $params, true ) ) {
+            $this->notifyResponse( $params );
+        }
+        
+        return $params;
+    }
+
+    /**
+     * 回应微信支付通知
+     * 
+     * @return void;
+     */
+    public function notifyResponse( $params = [] ) {
+        
+        $out_trade_no = Arr::get( $params, "out_trade_no", "UNKNOWN");
+        $attach = Arr::get( $params, "attach", "");
+        $appid = Arr::get( $params, "appid", "");
+        $mch_id = Arr::get( $params, "mch_id", "");
+        $return_code = Arr::get( $params, "return_code", "FAIL");
+        $method = ( $return_code === "SUCCESS") ? "info" : "error";
+
+        Log::write("wxpay")->$method("[DONE] #{$out_trade_no} {$appid} {$mch_id} {$attach} ", [
+            "trade_type" => Arr::get( $params, "trade_type"),
+            "return_code" => Arr::get( $params, "return_code"),
+            "return_msg" => Arr::get( $params, "return_msg"),
+        ]);
+
+        echo `<xml>
+                <return_code><![CDATA[SUCCESS]]></return_code>
+                <return_msg><![CDATA[OK]]></return_msg>
+             </xml>`;
+        exit;
+    }
+
+
+    /**
+     * 将结果转换为数组
+     * 
+     * @return array 返回结果
+     */
+    public static function json( $body ) {
+
+        try {
+            $xml = new \SimpleXMLElement($body, LIBXML_NOCDATA); 
+        } catch ( \Exception $e ) {
+            return [];
+        }
+        
+        $response =  json_decode( json_encode($xml), true);
+        if ( $response === false ) {
+            return [];
+        }
+        return $response;
     }
 
 
 
     /**
      * 读取客户端IP地址
+     * 
+     * @return string Client IP address
      */
-    public static function getRealIpAddr() {
+    public static function getRealIP() {
 
         if (!empty($_SERVER['HTTP_CLIENT_IP'])) {  //check ip from share internet
             $ip=$_SERVER['HTTP_CLIENT_IP'];
@@ -145,21 +226,29 @@ class Wxpay {
 
 
     /**
-	 * 校验请求签名
+	 * 校验数据签名
      * 
-	 * @param  array $params 微信服务器发送的请求数据
-	 * @return bool
+	 * @param  array $return_data 微信服务器发送的请求数据
+     * @param  bool  $return 是否返回校验结果，默认为 false, 失败抛出异常
+     * 
+	 * @return bool 成功返回true 
+     * @throws Excp 
 	 */
-	public function checkReturnRequest( $params ) {
-		$data = [
-			"appId" => $this->conf['appid'],
-			"timeStamp"=>$params['timeStamp'],
-			"nonceStr" => $params['nonceStr'],
-			"package" => "prepay_id={$params['prepay_id']}",
-			"signType"=>"MD5"
-		];
+	private function checkSignature( $return_data, $return = false  ) {
+        
+        $sign = Arr::get($return_data, "sign");
+        $return_data = Arr::except($return_data, "sign");
 
-		return ($params['paySign'] = $this->signature($data));
+        if ( $sign != $this->signature($return_data) ) {
+            
+            if ( $return ) {
+                return false;
+            }
+
+            throw Excp::create("微信支付返回数据签名错误", 500);
+        }
+
+        return true;
 	}
 
 

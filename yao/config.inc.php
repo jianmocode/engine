@@ -54,6 +54,7 @@ return [
         "access" =>["handler"=>"Monolog\\Handler\\StreamHandler", "args"=>["/logs/yao-access.log", 'debug']],
         "error" => ["handler"=>"Monolog\\Handler\\StreamHandler", "args"=>["/logs/yao-error.log", 'debug']],
         "debug" => ["handler"=>"Monolog\\Handler\\StreamHandler", "args"=>["/logs/yao-debug.log", 'debug']],
+        "wxpay" => ["handler"=>"Monolog\\Handler\\StreamHandler", "args"=>["/logs/yao-wxpay.log", 'debug']],
     ],
 
     /**

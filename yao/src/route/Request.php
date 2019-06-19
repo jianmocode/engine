@@ -169,7 +169,7 @@ class Request {
             return;
         }
 
-        if ( $contentType == 'application/json' ) {
+        if ( $contentType == 'application/json' || $contentType == 'application/xml' ) {
             $payloads = file_get_contents("php://input");
             if ( !empty($payloads) ) {
                 $this->payloads = \json_decode($payloads, true);
