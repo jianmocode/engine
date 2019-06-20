@@ -84,7 +84,46 @@ class Arr extends IlluminateArr {
             self::set( $result, $key, $value );
         }
         return $result;
-        
+    }
+
+
+    /**
+     * 将二维数组转换为以唯一键值结构的映射
+     * 
+     * 示例 :
+     * 
+     * [
+     *   ["key1"=>"value1"],["key2"=>"value2"],
+     * ]
+     * 
+     * 转换为
+     * 
+     * [
+     *   "key1" => ["key1"=>"value1"],
+     *   ”key2“ => ["key2"=>"value2"],
+     * ]
+     * 
+     * @param array $input 二维数组
+     * @param string $field 唯一主键字段名称
+     * 
+     * @return array 键值数组
+     * 
+     */
+    public static function map( array $input, string $field ) {
+
+        $map = [];
+        array_walk($input, function($value, $index) use($field, & $map) {
+            if ( !is_array($value) ){
+                return $value;
+            }
+            $key = Arr::get( $value, $field );
+            if ( Arr::get($map, $key) !== null ) {
+                throw Excp::create("{$key}数据已存在", 402);
+            }
+            $map[$key] = $value;
+        });
+
+        return $map;
     }
 
 
