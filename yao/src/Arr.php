@@ -88,7 +88,7 @@ class Arr extends IlluminateArr {
 
 
     /**
-     * 将二维数组转换为以唯一键值结构的映射
+     * 将二维数组转换为以唯一字段为主键的键值结构
      * 
      * 示例 :
      * 
@@ -103,13 +103,13 @@ class Arr extends IlluminateArr {
      *   ”key2“ => ["key2"=>"value2"],
      * ]
      * 
-     * @param array $input 二维数组
      * @param string $field 唯一主键字段名称
+     * @param array  $input 二维数组
      * 
      * @return array 键值数组
      * 
      */
-    public static function map( array $input, string $field ) {
+    public static function map( string $field, array $input ) {
 
         $map = [];
         array_walk($input, function($value, $index) use($field, & $map) {
@@ -124,6 +124,30 @@ class Arr extends IlluminateArr {
         });
 
         return $map;
+    }
+
+
+    /**
+     * 合并并将二维数组转换为以唯一字段为主键的键值结构 (待优化)
+     * 
+     * @param string    $field 唯一主键字段名称
+     * @param array     $array 二维数组
+     * @param array     ...$arrayN 二维数组
+     */
+    public static function mapAndMerge(string $field, array $array, array ...$arrayN ) {
+        
+        $array = Arr::map( $field, $array );
+        foreach( $arrayN as & $arr ) {
+            $arr = Arr::map( $field, $arr );
+            $array = array_merge_recursive( $array, $arr );
+        }
+
+        $array = array_map(  function($v) use($field) {
+            $v[$field] = current($v[$field]);
+            return $v;
+        }, $array);
+
+        return $array;
     }
 
 
