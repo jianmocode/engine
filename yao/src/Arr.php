@@ -109,7 +109,7 @@ class Arr extends IlluminateArr {
      * @return array 键值数组
      * 
      */
-    public static function map( string $field, array $input ) {
+    public static function mapBy( string $field, array $input ) {
 
         $map = [];
         array_walk($input, function($value, $index) use($field, & $map) {
@@ -134,20 +134,38 @@ class Arr extends IlluminateArr {
      * @param array     $array 二维数组
      * @param array     ...$arrayN 二维数组
      */
-    public static function mapAndMerge(string $field, array $array, array ...$arrayN ) {
+    public static function mapAndMergeBy(string $field, array $array, array ...$arrayN ) {
         
-        $array = Arr::map( $field, $array );
+        $array = Arr::mapBy( $field, $array );
         foreach( $arrayN as & $arr ) {
-            $arr = Arr::map( $field, $arr );
+            $arr = Arr::mapBy( $field, $arr );
             $array = array_merge_recursive( $array, $arr );
         }
 
         $array = array_map(  function($v) use($field) {
-            $v[$field] = current($v[$field]);
+            $v[$field] = is_array($v[$field]) ? current($v[$field]) : $v[$field];
             return $v;
         }, $array);
 
         return $array;
+    }
+
+
+    /**
+     * 按分组查询数据
+     */
+    public static function groupBy( string $field, array $input ) {
+        
+        $map = [];
+        array_walk($input, function($value, $index) use($field, & $map) {
+            if ( !is_array($value) ){
+                return $value;
+            }
+            $key = Arr::get( $value, $field );
+            $map[$key][] = $value;
+        });
+
+        return $map;
     }
 
 
