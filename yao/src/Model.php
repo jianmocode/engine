@@ -88,6 +88,9 @@ class Model extends EloquentModel {
 
                 // 批量处理文件
                 $values = $this->$attr;
+                if ( !is_array($values) ) {
+                    continue;
+                }
                 foreach( $values as $key=>$path ) {
 
                     // 单文件
