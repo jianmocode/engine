@@ -63,7 +63,7 @@ class Wxpay {
      * @return void
      */
     public function log( string $method, $message, $context=[] ) {
-        $name = Arr::get($this->config, "log", null );
+        $name = Arr::get($this->config, "log", null );   
         if ( empty($name) ){
             return false;
         }
@@ -78,7 +78,6 @@ class Wxpay {
      * 微信支付配置
      */
     public function __construct( $config ) {
-        
         $this->config = $config;
     }
 
@@ -123,13 +122,14 @@ class Wxpay {
         
         $url = "https://api.mch.weixin.qq.com/pay/unifiedorder";
 
+
         Arr::defaults( $params, [
             "appid" => Arr::get($this->config, "appid"),
             "mch_id" => Arr::get($this->config, "mch_id"),
             "notify_url" => Arr::get($this->config, "notify_url"),
             "scene_info" => Arr::get($this->config, "scene_info.browser"),
         ]);
-
+        
         $params["nonce_str"] = Str::uniqid();
         $params["sign_type"] = "MD5";
         $params["spbill_create_ip"] = self::getRealIP();
@@ -151,15 +151,19 @@ class Wxpay {
 
         $response_body = $response->getBody();
         $data = self::json($response_body);
-        $this->checkSignature( $data );
+        if( Arr::get($data, "return_code")  === "SUCCESS" ) {
+            $this->checkSignature( $data );
+        }
         
         // 返回数据异常
         if ( Arr::get($data, "return_code")  !== "SUCCESS" ) {
+        
             $return_msg = Arr::get($data, "return_msg");
             $this->log("error","[MAKE] 统一下单接口返回失败({$return_msg}) #{$params["out_trade_no"]} {$params["appid"]} {$params["mch_id"]} {$params["attach"]}", [
                 "notify_url" => Arr::get( $params, "notify_url"),
                 "trade_type" => Arr::get( $params, "trade_type"),
             ]);
+
             throw Excp::create("统一下单接口返回失败({$return_msg})", 500, ["return_data"=> $data, "error_codes"=>self::$errorCodes]);
         }
 
