@@ -335,8 +335,10 @@ class Wxpay {
         } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))  {
             $ip=$_SERVER['HTTP_X_FORWARDED_FOR'];
 
+        } elseif ( !empty(Arr::get($_SERVER,'REMOTE_ADDR')) ) {
+            $ip=Arr::get($_SERVER,'REMOTE_ADDR');
         } else {
-            $ip=$_SERVER['REMOTE_ADDR'];
+            $ip = "127.0.0.1";
         }
         return $ip;
     }
