@@ -210,6 +210,7 @@ class Request {
             'Windows'        => 'Windows',
             'OpenBSD'          => 'OpenBSD',
             'SunOS'            => 'SunOS',
+            'Android'             => '(Android)|(android)',
             'Linux'             => '(Linux)|(X11)',
             // 'Safari'            => '(Safari)',
             'MacOS'            => '(Mac_PowerPC)|(Macintosh)',
