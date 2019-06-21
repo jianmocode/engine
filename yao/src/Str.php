@@ -54,4 +54,25 @@ class Str extends IlluminateStr {
     public static function uniqid() {
         return hexdec(uniqid());
     }
+
+    /**
+     * 替换 `{{key}}` 为 bindings 设定数值
+     * @param array &$input 输入数组引用
+     * @param array $bindings 绑定数据
+     */
+    public static function binds( string & $input, array $bindings ){
+        
+        $bindings = self::dot( $bindings );
+        $bindings = array_filter($bindings, function($v, $k) {
+            return is_string($v);
+        }, ARRAY_FILTER_USE_BOTH);
+        if ( empty($bindings) ) {
+            return;
+        }
+
+        Arr::varize( $bindings );
+        [$keys,$replaces] = self::divide( $bindings );
+        $input = str_replace( $keys, $replaces, $input );
+    }
+
 }
