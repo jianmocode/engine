@@ -130,12 +130,17 @@ class Request {
      */
     public static function url() {
         print_r($_SERVER);
+
+        $host = Arr::get( $_SERVER, "HTTP_HOST");
+
         return [];
     }
 
 
     /**
      * 检测当前访问是否通过HTTPS访问
+     * 
+     * @return bool 
      */
     public static function isHttps(){
 
@@ -149,19 +154,12 @@ class Request {
             return true;
         }
 
+        $https = Arr::get($_SERVER, "HTTP_FRONT_END_HTTPS");
+        if ( $https && strtolower($https) != "off" ) {
+            return true;
+        }
 
-
-        $proto ='http';
-		if ( ! empty($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off') {
-			$proto = 'https';
-		}
-		elseif (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
-			$proto = 'https';
-		}
-		elseif ( ! empty($_SERVER['HTTP_FRONT_END_HTTPS']) && strtolower($_SERVER['HTTP_FRONT_END_HTTPS']) !== 'off')  {
-			$proto = 'https';
-		}
-
+        return false;
     }
 
     /**
