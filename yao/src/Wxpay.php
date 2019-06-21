@@ -188,7 +188,7 @@ class Wxpay {
             "timeStamp" => time(),
             "nonceStr" => substr(MD5(Str::uniqid()), 0, 8),
             "package" => "prepay_id={$prepay_id}",
-            "signType" => "MD5"
+            // "signType" => "MD5"
         ];
 
         ksort( $params );
@@ -202,6 +202,7 @@ class Wxpay {
         
         // $sign = $this->signature($params);
         $params["paySign"] = $sign;
+        $params["signType"] = "MD5";
         $params["stringSignTemp"] = $stringSignTemp;
         return $params;
     }
