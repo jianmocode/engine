@@ -136,6 +136,7 @@ class Request {
      *      - "wxapp"  小程序
      *  - platform  string 系统平台  windows/android/ios/browser
      *  - mobile bool 是否为移动端请求 1=移动端 0 非移动端
+     *  - origin 用户来源原始字符串
      *  
      * @return array
      */
@@ -145,18 +146,18 @@ class Request {
         $platform = null;
         $mobile = false;
 
-        $useragent = Arr::get($_SERVER, 'HTTP_USER_AGENT', "unknown") ;
+        $userAgent = Arr::get($_SERVER, 'HTTP_USER_AGENT', "unknown") ;
 
         // 微信
-        if ( strpos($useragent, 'MicroMessenger') ) {
+        if ( strpos($userAgent, 'MicroMessenger') ) {
             $agent = 'wechat';
 
         // 微信小程序
-        } else if ( strpos($useragent, 'miniProgram') ) {
+        } else if ( strpos($userAgent, 'miniProgram') ) {
             $agent = 'wxapp';
 
         // 新浪微博
-        } else if ( strpos($useragent, 'weibo') ) {
+        } else if ( strpos($userAgent, 'weibo') ) {
             $agent = 'weibo';
         }
 
@@ -166,8 +167,11 @@ class Request {
             $platform = $matches[1];
             $mobile = 1;
         } else {
-            $platform= "browser";
             $mobile = 0;
+        }
+
+        if ( empty($platform) ) {
+            $platform = self::getOS($userAgent);
         }
 
         // 返回
@@ -175,7 +179,58 @@ class Request {
             "agent" => $agent,
             "platform" => $platform,
             "mobile" => $mobile,
+            "origin" => $userAgent,
         ];
+    }
+
+
+    /**
+     * Get the user's operating system
+     *
+     * @param   string  $userAgent  The user's user agent
+     *
+     * @return  string  Returns the user's operating system as human readable string,
+     *  if it cannot be determined 'n/a' is returned.
+     */
+    public static function getOS($userAgent) {
+        // Create list of operating systems with operating system name as array key 
+        $oses = array (
+            'iPhone'            => '(iPhone)',
+            'Windows3.11'      => 'Win16',
+            'Windows95'        => '(Windows 95)|(Win95)|(Windows_95)',
+            'Windows98'        => '(Windows 98)|(Win98)',
+            'Windows2000'      => '(Windows NT 5.0)|(Windows 2000)',
+            'WindowsXP'        => '(Windows NT 5.1)|(Windows XP)',
+            'Windows2003'      => '(Windows NT 5.2)',
+            'WindowsVista'     => '(Windows NT 6.0)|(Windows Vista)',
+            'Windows7'         => '(Windows NT 6.1)|(Windows 7)',
+            'Windows10'         => '(Windows 10)',
+            'WindowsNT 4.0'    => '(Windows NT 4.0)|(WinNT4.0)|(WinNT)|(Windows NT)',
+            'WindowsME'        => 'Windows ME',
+            'Windows'        => 'Windows',
+            'OpenBSD'          => 'OpenBSD',
+            'SunOS'            => 'SunOS',
+            'Linux'             => '(Linux)|(X11)',
+            // 'Safari'            => '(Safari)',
+            'MacOS'            => '(Mac_PowerPC)|(Macintosh)',
+            'QNX'               => 'QNX',
+            'BeOS'              => 'BeOS',
+            'OS/2'              => 'OS/2',
+            'Search Bot'        => '(nuhk)|(Googlebot)|(Yammybot)|(Openbot)|(Slurp/cat)|(msnbot)|(ia_archiver)'
+        );
+        
+        // Loop through $oses array
+        foreach($oses as $os => $preg_pattern) {
+            // Use regular expressions to check operating system type
+            if ( preg_match('@' . $preg_pattern . '@', $userAgent) ) {
+                // Operating system was matched so return $oses key
+                return $os;
+            }
+        }
+        
+        // Cannot find operating system so return Unknown
+        
+        return 'unknown';
     }
 
     /**

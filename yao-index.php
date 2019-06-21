@@ -470,6 +470,7 @@ $dispatcher->setup(
         $adapt = $entry['page']['adapt'];
         $alias = $entry['page']['alias'];
         $vars["__agent"] = $orgin["agent"];
+        $vars["__origin"] = $orgin["origin"];
         $vars["__platform"] = $orgin["platform"];
         $vars["__moible"] = $orgin["mobile"];
         $vars['__browser'] = $type;
