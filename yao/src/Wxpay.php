@@ -187,11 +187,22 @@ class Wxpay {
             "appid" => Arr::get($response, "appid"),
             "timeStamp" => time(),
             "nonceStr" => substr(MD5(Str::uniqid()), 0, 8),
-            "package" => "prepay_id={$prepay_id}"
+            "package" => "prepay_id={$prepay_id}",
+            "signType" => "MD5"
         ];
-        $sign = $this->signature($params);
+
+        ksort( $params );
+		$params_list = [];
+		foreach( $params as $k=>$v ) {
+			array_push( $params_list, "$k=$v");
+		}
+		$stringSign = implode( "&", $params_list);
+        $stringSignTemp="{$stringSign}&key=" . Arr::get($this->config, "key");        
+        $sign =  strtoupper(MD5($stringSignTemp));
+        
+        // $sign = $this->signature($params);
         $params["paySign"] = $sign;
-        $params["signType"] = "MD5";
+        $params["stringSignTemp"] = $stringSignTemp;
         return $params;
     }
 
