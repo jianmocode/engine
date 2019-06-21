@@ -66,14 +66,14 @@ class Wechat {
      * Redis 缓存: wechat:access_token:[:appid]
      * 
      * see https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140183
-	 *  
+     * 
+     * @param  bool   $refresh 是否强制刷新, true=强制刷新, false=优先从缓存读取。默认值为 false
 	 * @param  string $appid  微信应用 appid 默认为NULL, 从配置文件中读取
 	 * @param  string $appsecret 微信应用 appsecret  默认为NULL, 从配置文件中读取
-     * @param  bool   $refresh 是否强制刷新, true=强制刷新, false=优先从缓存读取。默认值为 false
 	 * @return string 成功返回 Access Token 
      * @throws Excp 
 	 */
-	public function accessToken( $appid=null, $appsecret=null, $refresh = false ) {
+	public function accessToken( $refresh = false,  $appid=null, $appsecret=null ) {
 
         $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential";
         $cache = "wechat:access_token:{$appid}";
@@ -89,6 +89,7 @@ class Wechat {
             }
         }
 
+        echo "GET FROM REMOTE\n";
         $response = Http::get($url, [
             'query' => [
                 "grant_type" => "client_credential",

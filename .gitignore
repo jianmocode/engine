@@ -12,3 +12,4 @@ yao/test/pages/.tmp
 yao/test/pages/.cache
 yao/test/pages/package-lock.json
 yao/test/pages/config-*
+yao/test/config-*

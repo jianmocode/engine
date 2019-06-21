@@ -45,6 +45,9 @@ class Redis {
             } catch( Exception $e ) {
                 Log::write("error")->error("创建 Predis 实例失败", $config );
                 return false;
+            } catch( \Predis\Connection\ConnectionException $e ){
+                Log::write("error")->error("创建 Predis 实例失败", $config );
+                return false;
             }
         }
     }
@@ -61,14 +64,27 @@ class Redis {
             return false;
         }
 
-        $response = self::$predis->set("{$key}", $value);
+        try {
+            $response = self::$predis->set("{$key}", $value);
+        } catch( Exception $e ) {
+            $config = Arr::get($GLOBALS, "YAO.redis");
+            Log::write("error")->error("调用 Predis Set 命令失败", $config );
+            return false;
+        }
+
         if ( $response === false ) {
             return $response;
         }
 
         $response = true;
         if ( $ttl  > 0 ) {
-            $response = self::$predis->expire("{$key}", $ttl);
+            try {
+                $response = self::$predis->expire("{$key}", $ttl);
+            } catch( Exception $e ) {
+                $config = Arr::get($GLOBALS, "YAO.redis");
+                Log::write("error")->error("调用 Predis Set 命令失败", $config );
+                return false;
+            }
         }
 
         return $response;
@@ -88,7 +104,14 @@ class Redis {
         if ( !Redis::$predis instanceof Client ) {
             return false;
         }
-        return self::$predis->{$method}(...$parameters);
+        try {
+            return self::$predis->{$method}(...$parameters);
+        } catch( Exception $e ) {
+            $config = Arr::get($GLOBALS, "YAO.redis");
+            Log::write("error")->error("调用 Predis 命令失败", $config );
+            return false;
+        }
+        
     }
 }
 
