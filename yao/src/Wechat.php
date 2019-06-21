@@ -13,6 +13,8 @@ namespace Yao;
 use \Yao\Excp;
 use \Yao\Http;
 use \Yao\Redis;
+use \Yao\Str;
+use \Yao\Route\Request;
 
 /**
  * 微信接口
@@ -71,15 +73,25 @@ class Wechat {
      * @throws Excp 
      */
     function jssdkConfig( $url=null, $appid=null, $appsecret=null ) {
-        if ( empty($url) ) {
-            $url = \Yao\Route\Request::url();
-        } 
-        $jsapi_ticket = $this->jsapiTicket( false, $appid, $appsecret );
         
-
-
-
-
+        $appid = ( $appid == null ) ? Arr::get($this->config, "appid") : $appid;
+        if ( empty($url) ) {
+            $url = Request::url();
+        }
+        $jsapi_ticket = $this->jsapiTicket( false, $appid, $appsecret );
+        $timestamp = time();
+    	$nonce_str = Str::uniqid();
+    	$origin_str = "jsapi_ticket={$jsapi_ticket}&noncestr={$nonce_str}&timestamp={$timestamp}&url={$url}"; // 这里参数的顺序要按照 key 值 ASCII 码升序排序
+    	$signature = sha1($origin_str);
+        $config = [
+            "appid"     => $appid,
+            "noncestr"  => $nonce_str,
+            "timestamp" => $timestamp,
+            "url"       => $url,
+            "signature" => trim($signature),
+            // "rawstring" => trim($string),
+        ];
+        return $config; 
     }
 
 

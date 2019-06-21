@@ -124,16 +124,15 @@ class Request {
     public static $responseHeaders = [];
 
     /**
-     * 读取当前访问者完整路径
+     * 读取当前访问者完整地址
      * 
      * @return string 
      */
     public static function url() {
-        print_r($_SERVER);
 
         $host = Arr::get( $_SERVER, "HTTP_HOST");
-
-        return [];
+        $uri  = Arr::get( $_SERVER, "REQUEST_URI");
+        return self::isHttps() ?  "https://" : "http://" . "{$host}{$uri}";
     }
 
 
