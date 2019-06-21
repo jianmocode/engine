@@ -178,6 +178,23 @@ class Wxpay {
         return $data;
     }
 
+    /**
+     * 生成JS参数签名
+     */
+    public function jssdkParams( array $response ) {
+        $prepay_id = Arr::get($response, "prepay_id");
+        $params  = [
+            "appid" => Arr::get($response, "appid"),
+            "timeStamp" => time(),
+            "nonceStr" => Str::uniqid(),
+            "package" => "prepay_id={$prepay_id}",
+            "signType" => "MD5"
+        ];
+        $sign = $this->signature($params);
+        $params["paySign"] = $sign;
+        return $params;
+    }
+
 
     /**
      * 查询订单
