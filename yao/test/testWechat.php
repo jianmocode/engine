@@ -52,13 +52,14 @@ class testWechat extends TestCase {
         $this->assertEquals( $jsapi_ticket3 == $jsapi_ticket, true );
     }
 
+    
     function testJssdkConfig() {
-        
         global $config;
         $wechat = new Wechat($config);
         $jssdk = $wechat->jssdkConfig();
-        $this->assertEquals( true, true );
-
+        $this->assertEquals( Arr::has($jssdk, [
+            "appid", "noncestr", "timestamp", "url", "signature"
+        ]), true);
     }
 
 }
