@@ -11,7 +11,9 @@
 
 namespace Yao;
 use \Yao\Excp;
+use \Yao\Arr;
 use \Illuminate\Support\Str as IlluminateStr;
+
 
 /**
  * 字符串处理迅捷函数
@@ -62,7 +64,7 @@ class Str extends IlluminateStr {
      */
     public static function binds( string & $input, array $bindings ){
         
-        $bindings = self::dot( $bindings );
+        $bindings = Arr::dot( $bindings );
         $bindings = array_filter($bindings, function($v, $k) {
             return is_string($v);
         }, ARRAY_FILTER_USE_BOTH);
@@ -71,7 +73,7 @@ class Str extends IlluminateStr {
         }
 
         Arr::varize( $bindings );
-        [$keys,$replaces] = self::divide( $bindings );
+        [$keys,$replaces] = Arr::divide( $bindings );
         $input = str_replace( $keys, $replaces, $input );
     }
 
