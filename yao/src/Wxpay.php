@@ -182,30 +182,17 @@ class Wxpay {
      * 生成JS参数签名
      */
     public function jssdkParams( array $response ) {
+        
         $prepay_id = Arr::get($response, "prepay_id");
         $params  = [
-            // "appId" => Arr::get($response, "appid"),
             "timeStamp" => time(),
             "nonceStr" => substr(MD5(Str::uniqid()), 0, 8),
             "package" => "prepay_id={$prepay_id}",
             "signType" => "MD5"
         ];
-        $params["appId"] = Arr::get($response, "appid");
-        
-        ksort( $params );
-		$params_list = [];
-		foreach( $params as $k=>$v ) {
-			array_push( $params_list, "$k=$v");
-		}
-		$stringSign = implode( "&", $params_list);
-        $stringSignTemp="{$stringSign}&key=" . Arr::get($this->config, "key");        
-        $sign =  strtoupper(MD5($stringSignTemp));
-        $params["stringSignTemp"] = $stringSignTemp;
-        
-        // $sign = $this->signature($params);
-        // $params["signType"] = "MD5";
+        $sign = $this->signature($params);
         $params["paySign"] = $sign;
-        
+        $params["appId"] = Arr::get($response, "appid");
         
         return $params;
     }
