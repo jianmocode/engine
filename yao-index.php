@@ -469,7 +469,7 @@ $dispatcher->setup(
         $slug = $entry['page']['slug'];
         $adapt = $entry['page']['adapt'];
         $alias = $entry['page']['alias'];
-        $vars["__agent"] = $orgin["agnet"];
+        $vars["__agent"] = $orgin["agent"];
         $vars["__platform"] = $orgin["platform"];
         $vars["__moible"] = $orgin["mobile"];
         $vars['__browser'] = $type;

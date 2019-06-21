@@ -10,6 +10,14 @@
        <li> <a href="/json/user/wechat/login?backurl=/json/user/info" target="_blank" >微信登录</a> </li>
        <li> <a href="/json/user/pay" target="_blank" >微信支付</a> </li>
     </ul>
+
+    <div>
+        <pre>
+            <code mp:for="{{__var}}" mp:for-index="{{key}}" mp:for-item="{{v}}">
+                {{key}} = {{v}}
+            </code>
+        </pre>
+    </div>
 </body>
 
 </html>
