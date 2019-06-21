@@ -135,7 +135,7 @@ class YaoApi {
         }
 
 		// 调试信息
-		if ( $_GET['__datatrace'] ) {
+		if ( $_GET['debug'] ) {
             debug("<!-- _SYS: \n", $GLOBALS['_SYS'] , "\n -->\n");
 			debug("<!-- _VAR: \n", $GLOBALS['_VAR'] , "\n -->\n");
 			debug("<!-- _GET: \n", $_GET , "\n -->\n");
