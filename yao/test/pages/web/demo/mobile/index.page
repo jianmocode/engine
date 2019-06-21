@@ -9,7 +9,7 @@
        <li> <a href="/json/user/weibo/login?backurl=/json/user/info" target="_blank" >微博登录</a> </li>
        <li> <a href="/json/user/wechat/login?backurl=/json/user/info" target="_blank" >微信登录</a> </li>
        <li mp:if="{{__var.__agent == 'wechat'}}"> <a href="/json/user/payjssdk" target="_blank" >微信支付(JSSDK)</a> </li>
-       <li mp:else> <a href="/json/user/payh5" target="_blank" >微信支付(HTML)</a> </li>
+       <li mp:else> <a href="/json/user/payh5" target="_blank" >微信支付(H5)</a> </li>
     </ul>
 
     <div>

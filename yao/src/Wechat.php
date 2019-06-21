@@ -12,6 +12,7 @@
 namespace Yao;
 use \Yao\Excp;
 use \Yao\Http;
+use \Yao\Redis;
 
 /**
  * 微信接口
@@ -57,6 +58,59 @@ class Wechat {
     public function __construct( $config ) {
         $this->config = $config;
     }
+
+
+    /**
+	 * 读取 Access Token
+     * 
+     * Redis 缓存: wechat:access_token:[:appid]
+     * 
+     * see https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140183
+	 *  
+	 * @param  string $appid  微信应用 appid 默认为NULL, 从配置文件中读取
+	 * @param  string $appsecret 微信应用 appsecret  默认为NULL, 从配置文件中读取
+     * @param  bool   $refresh 是否强制刷新, true=强制刷新, false=优先从缓存读取。默认值为 false
+	 * @return string 成功返回 Access Token 
+     * @throws Excp 
+	 */
+	public function accessToken( $appid=null, $appsecret=null, $refresh = false ) {
+
+        $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential";
+        $cache = "wechat:access_token:{$appid}";
+
+		$appid = ( $appid == null ) ? Arr::get($this->config, "appid") : $appid;
+        $appsecret = ( $appsecret == null ) ?  Arr::get($this->config, "appsecret") : $appsecret;
+        
+        //从缓存中读取
+        if ( $refresh === false ){
+            $access_token = Redis::get($cache);
+            if ( $access_token !== false ) {
+                return $access_token;
+            }
+        }
+
+        $response = Http::get($url, [
+            'query' => [
+                "grant_type" => "client_credential",
+                "appid" => $appid,
+                "secret" => $appsecret
+            ]
+        ]);
+
+        $code = $response->getStatusCode();
+        if ( $code != 200 ) {
+            throw Excp::create("读取微信 Access Token 错误", 500, ["reason" => $response->getReasonPhrase(), "status_code"=>$code]);
+        }
+        
+        $data = Http::json( $response );
+		$access_token = Arr::get($data, 'access_token');
+		$ttl = intval(Arr::get($resp,'expires_in', 0)) - 1000;
+		Redis::set($cache, $token, $expires );// 写入缓存
+
+		return $access_token;
+	}
+    
+
 
     /**
      * 读取Oauth2.0授权地址
@@ -105,7 +159,7 @@ class Wechat {
 
     
     /**
-     * 读取 Oauth2.0  Access Token
+     * 读取 Oauth2.0 Access Token
      * 
      * see https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140842
      *  
@@ -129,7 +183,7 @@ class Wechat {
      * @return array 微博用户唯一ID、Access Token、Token有效器等
      * 
      */
-    public function accessToken( array $params ) {
+    public function oauthAccessToken( array $params ) {
 
         $url = "https://api.weixin.qq.com/sns/oauth2/access_token";
 
@@ -143,7 +197,7 @@ class Wechat {
         $code = $response->getStatusCode();
         
         if ( $code != 200 ) {
-            throw Excp::create("读取微信 Access Token 错误", 500, ["reason" => $response->getReasonPhrase(), "status_code"=>$code]);
+            throw Excp::create("读取微信 OAuth Access Token 错误", 500, ["reason" => $response->getReasonPhrase(), "status_code"=>$code]);
         }
         
         return Http::json( $response );

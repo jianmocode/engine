@@ -18,6 +18,18 @@ class testRedis extends TestCase {
         Redis::set("foo", "bar");
         $value = Redis::get("foo");
         $this->assertEquals( $value, "bar" );
+
+        // With TTL
+        Redis::set("foo_with_ttl", "bar_with_ttl", 1);
+        $value = Redis::get("foo_with_ttl");
+        $this->assertEquals( $value, "bar_with_ttl" );
+        sleep(2);
+        $value = Redis::get("foo_with_ttl");
+        $this->assertEquals( $value, null );
+
+        // Not exists
+        $value = Redis::get("foo_not_exists");
+        $this->assertEquals( $value, false );
     }
 
 }
