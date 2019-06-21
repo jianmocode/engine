@@ -4,7 +4,7 @@ use \PHPUnit\Framework\TestCase;
 use \Yao\Wechat;
 use \Yao\Arr;
 
-$GLOBALS["config"] =  loadConfig(  __DIR__ . "/config-wxsev.php" );
+$GLOBALS["config"] =  loadConfig(  __DIR__ . "/config/wxsev.php" );
 
 /**
  * 测试微信API
@@ -18,7 +18,7 @@ $GLOBALS["config"] =  loadConfig(  __DIR__ . "/config-wxsev.php" );
 class testWechat extends TestCase {
 
     function testAccessToken() {
-        
+
         global $config;
         $wechat = new Wechat($config);
         $access_token = $wechat->accessToken();
