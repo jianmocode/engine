@@ -85,7 +85,7 @@ class Wechat {
     	$signature = sha1($origin_str);
         $config = [
             "appid"     => $appid,
-            "noncestr"  => $nonce_str,
+            "nonceStr"  => $nonce_str,
             "timestamp" => $timestamp,
             "url"       => $url,
             "signature" => trim($signature),
