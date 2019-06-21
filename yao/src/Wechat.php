@@ -59,23 +59,76 @@ class Wechat {
         $this->config = $config;
     }
 
+    /**
+	 * 读取 JSAPI Ticket 
+     * 
+     * Redis cache key: wechat:jsapi_ticket:[:appid]
+     * 
+     * see https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421141115
+	 *
+	 * @param  bool   $refresh 是否强制刷新, true=强制刷新, false=优先从缓存读取。默认值为 false
+	 * @param  string $appid  微信应用 appid 默认为NULL, 从配置文件中读取
+	 * @param  string $appsecret 微信应用 appsecret  默认为NULL, 从配置文件中读取
+     * 
+	 * @return string 成功返回 Access Token 
+     * @throws Excp 
+	 */
+	function jsapiTicket( $refresh = false,  $appid=null, $appsecret=null ) {
+
+		$url = "https://api.weixin.qq.com/cgi-bin/ticket/getticket";
+		$appid = ( $appid == null ) ? Arr::get($this->config, "appid") : $appid;
+        $appsecret = ( $appsecret == null ) ?  Arr::get($this->config, "appsecret") : $appsecret;
+        
+        $cache = "wechat:jsapi_ticket:{$appid}";
+        
+        //从缓存中读取
+        if ( $refresh === false ){
+            $jsapi_ticket = Redis::get($cache);
+            if ( $jsapi_ticket ) {
+                return $jsapi_ticket;
+            }
+        }
+
+        $response = Http::get($url, [
+            'query' => [
+                "access_token" => $this->accessToken( false, $appid, $appsecret),
+                "type" => "jsapi",
+                "appid" => $appid,
+                "secret" => $appsecret
+            ]
+        ]);
+
+        $code = $response->getStatusCode();
+        if ( $code != 200 ) {
+            throw Excp::create("读取微信 JSAPI Token 错误", 500, ["reason" => $response->getReasonPhrase(), "status_code"=>$code]);
+        }
+        
+        $data = Http::json( $response );
+		$jsapi_ticket = Arr::get($data, 'ticket');
+		$ttl = intval(Arr::get($data,'expires_in', 0)) - 1000;
+		Redis::set($cache, $jsapi_ticket, $ttl );// 写入缓存
+		return $jsapi_ticket;
+	}
+
+
 
     /**
 	 * 读取 Access Token
      * 
-     * Redis 缓存: wechat:access_token:[:appid]
+     * Redis cache key: wechat:access_token:[:appid]
      * 
      * see https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140183
      * 
      * @param  bool   $refresh 是否强制刷新, true=强制刷新, false=优先从缓存读取。默认值为 false
 	 * @param  string $appid  微信应用 appid 默认为NULL, 从配置文件中读取
 	 * @param  string $appsecret 微信应用 appsecret  默认为NULL, 从配置文件中读取
+     * 
 	 * @return string 成功返回 Access Token 
      * @throws Excp 
 	 */
 	public function accessToken( $refresh = false,  $appid=null, $appsecret=null ) {
 
-        $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential";
+        $url = "https://api.weixin.qq.com/cgi-bin/token";
 		$appid = ( $appid == null ) ? Arr::get($this->config, "appid") : $appid;
         $appsecret = ( $appsecret == null ) ?  Arr::get($this->config, "appsecret") : $appsecret;
         

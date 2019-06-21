@@ -17,6 +17,7 @@ $GLOBALS["config"] =  loadConfig(  __DIR__ . "/config/wxsev.php" );
  */
 class testWechat extends TestCase {
 
+
     function testAccessToken() {
 
         global $config;
@@ -32,6 +33,23 @@ class testWechat extends TestCase {
         $this->assertEquals( is_string($access_token3) && !empty($access_token3), true );
         $this->assertEquals( $access_token3 != $access_token, true );
 
+    }
+
+    
+    function testJsapiTicket(){
+        
+        global $config;
+        $wechat = new Wechat($config);
+        $jsapi_ticket = $wechat->jsapiTicket();
+        $this->assertEquals( is_string($jsapi_ticket) && !empty($jsapi_ticket), true );
+
+        $jsapi_ticket2 = $wechat->jsapiTicket();
+        $this->assertEquals( $jsapi_ticket2, $jsapi_ticket );
+
+        // 刷新 Ticket(不变)
+        $jsapi_ticket3 = $wechat->jsapiTicket( true );
+        $this->assertEquals( is_string($jsapi_ticket3) && !empty($jsapi_ticket3), true );
+        $this->assertEquals( $jsapi_ticket3 == $jsapi_ticket, true );
     }
 
 }
