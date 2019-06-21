@@ -190,7 +190,7 @@ class Wxpay {
             "package" => "prepay_id={$prepay_id}",
             "signType" => "MD5"
         ];
-
+        $params["appId"] = Arr::get($response, "appid");
         ksort( $params );
 		$params_list = [];
 		foreach( $params as $k=>$v ) {
@@ -204,7 +204,7 @@ class Wxpay {
         // $sign = $this->signature($params);
         // $params["signType"] = "MD5";
         $params["paySign"] = $sign;
-        $params["appId"] = Arr::get($response, "appid");
+        
         
         return $params;
     }
