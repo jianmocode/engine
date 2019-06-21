@@ -187,11 +187,11 @@ class Wxpay {
             "appid" => Arr::get($response, "appid"),
             "timeStamp" => time(),
             "nonceStr" => substr(MD5(Str::uniqid()), 0, 8),
-            "package" => "prepay_id={$prepay_id}",
-            "signType" => "MD5"
+            "package" => "prepay_id={$prepay_id}"
         ];
         $sign = $this->signature($params);
         $params["paySign"] = $sign;
+        $params["signType"] = "MD5";
         return $params;
     }
 
