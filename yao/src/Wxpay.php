@@ -184,13 +184,14 @@ class Wxpay {
     public function jssdkParams( array $response ) {
         $prepay_id = Arr::get($response, "prepay_id");
         $params  = [
-            "appid" => Arr::get($response, "appid"),
+            // "appId" => Arr::get($response, "appid"),
             "timeStamp" => time(),
             "nonceStr" => substr(MD5(Str::uniqid()), 0, 8),
             "package" => "prepay_id={$prepay_id}",
-            // "signType" => "MD5"
+            "signType" => "MD5"
         ];
-
+        $params["appId"] = Arr::get($response, "appid");
+        
         ksort( $params );
 		$params_list = [];
 		foreach( $params as $k=>$v ) {
@@ -199,11 +200,13 @@ class Wxpay {
 		$stringSign = implode( "&", $params_list);
         $stringSignTemp="{$stringSign}&key=" . Arr::get($this->config, "key");        
         $sign =  strtoupper(MD5($stringSignTemp));
+        $params["stringSignTemp"] = $stringSignTemp;
         
         // $sign = $this->signature($params);
+        // $params["signType"] = "MD5";
         $params["paySign"] = $sign;
-        $params["signType"] = "MD5";
-        $params["stringSignTemp"] = $stringSignTemp;
+        
+        
         return $params;
     }
 
