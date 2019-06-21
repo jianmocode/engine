@@ -59,6 +59,30 @@ class Wechat {
         $this->config = $config;
     }
 
+
+    /**
+     * 读取 JS-SDK Config
+     * 
+     * @param  string $url 引用JS-SDK的页面地址. 默认读取 Request URL
+     * @param  string $appid  微信应用 appid 默认为NULL, 从配置文件中读取
+	 * @param  string $appsecret 微信应用 appsecret  默认为NULL, 从配置文件中读取
+     * 
+	 * @return array  微信JS-SDK Config接口注入权限验证配置
+     * @throws Excp 
+     */
+    function jssdkConfig( $url=null, $appid=null, $appsecret=null ) {
+        if ( empty($url) ) {
+            $url = \Yao\Route\Request::url();
+        } 
+        $jsapi_ticket = $this->jsapiTicket( false, $appid, $appsecret );
+        
+
+
+
+
+    }
+
+
     /**
 	 * 读取 JSAPI Ticket 
      * 
@@ -100,12 +124,17 @@ class Wechat {
 
         $code = $response->getStatusCode();
         if ( $code != 200 ) {
-            throw Excp::create("读取微信 JSAPI Token 错误", 500, ["reason" => $response->getReasonPhrase(), "status_code"=>$code]);
+            throw Excp::create("读取微信 JSAPI Ticket 错误", 500, ["reason" => $response->getReasonPhrase(), "status_code"=>$code]);
         }
         
         $data = Http::json( $response );
 		$jsapi_ticket = Arr::get($data, 'ticket');
-		$ttl = intval(Arr::get($data,'expires_in', 0)) - 1000;
+        $ttl = intval(Arr::get($data,'expires_in', 0)) - 1000;
+        
+        if ( empty($jsapi_ticket) ) {
+            throw Excp::create("读取微信 JSAPI Ticket, 微信服务器返回错误", 500, $data);
+        }
+
 		Redis::set($cache, $jsapi_ticket, $ttl );// 写入缓存
 		return $jsapi_ticket;
 	}
@@ -155,11 +184,15 @@ class Wechat {
             throw Excp::create("读取微信 Access Token 错误", 500, ["reason" => $response->getReasonPhrase(), "status_code"=>$code]);
         }
         
-        $data = Http::json( $response );
-		$access_token = Arr::get($data, 'access_token');
-		$ttl = intval(Arr::get($data,'expires_in', 0)) - 1000;
-		Redis::set($cache, $access_token, $ttl );// 写入缓存
 
+        $data = Http::json( $response );
+        $access_token = Arr::get($data, 'access_token');
+        $ttl = intval(Arr::get($data,'expires_in', 0)) - 1000;
+        if ( empty($access_token) ) {
+            throw Excp::create("读取微信 Access Token, 微信服务器返回错误", 500, $data);
+        }
+
+		Redis::set($cache, $access_token, $ttl );// 写入缓存
 		return $access_token;
 	}
     

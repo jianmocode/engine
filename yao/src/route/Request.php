@@ -123,6 +123,46 @@ class Request {
      */
     public static $responseHeaders = [];
 
+    /**
+     * 读取当前访问者完整路径
+     * 
+     * @return string 
+     */
+    public static function url() {
+        print_r($_SERVER);
+        return [];
+    }
+
+
+    /**
+     * 检测当前访问是否通过HTTPS访问
+     */
+    public static function isHttps(){
+
+        $https = Arr::get($_SERVER, "HTTPS");
+        if ( $https && strtolower($https) != "off" ) {
+            return true;
+        }
+
+        $https = Arr::get($_SERVER, "HTTP_X_FORWARDED_PROTO");
+        if ( $https && strtolower($https) == "https" ) {
+            return true;
+        }
+
+
+
+        $proto ='http';
+		if ( ! empty($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off') {
+			$proto = 'https';
+		}
+		elseif (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
+			$proto = 'https';
+		}
+		elseif ( ! empty($_SERVER['HTTP_FRONT_END_HTTPS']) && strtolower($_SERVER['HTTP_FRONT_END_HTTPS']) !== 'off')  {
+			$proto = 'https';
+		}
+
+    }
 
     /**
      * 读取平台请求来源

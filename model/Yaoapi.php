@@ -126,7 +126,7 @@ class YaoApi {
             }
             
             // 更新数据
-            Arr::binds( $this->json_data['data'], $data);
+            Arr::binds( $this->json_data['data'], Arr::dot($data));
         }
 
 		// 调试信息
