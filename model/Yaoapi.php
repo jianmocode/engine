@@ -126,9 +126,11 @@ class YaoApi {
             }
             
             // 更新数据
-            echo "<!-- DEBUG  DATA\n";
-            print_r( Arr::dot($data) );
-            echo "-->";
+            if ( $_GET['debug'] ) {
+                echo "<!-- DEBUG  DATA\n";
+                print_r( Arr::dot($data) );
+                echo "-->";
+            }
             Arr::binds( $this->json_data['data'], $data);
         }
 
