@@ -131,7 +131,7 @@ class Request {
     public static function url() {
         $host = Arr::get( $_SERVER, "HTTP_HOST");
         $uri  = Arr::get( $_SERVER, "REQUEST_URI");
-        return self::isHttps() ?  "https://" : "http://" . "{$host}{$uri}";
+        return (self::isHttps() ?  "https://" : "http://" ). "{$host}{$uri}";
     }
 
     /**
@@ -142,7 +142,7 @@ class Request {
     public static function home() {
         $host = Arr::get( $_SERVER, "HTTP_HOST");
         $uri  = Arr::get( $_SERVER, "REQUEST_URI");
-        return self::isHttps() ?  "https://" : "http://" . "{$host}";
+        return (self::isHttps() ?  "https://" : "http://") . "{$host}";
     }
 
 

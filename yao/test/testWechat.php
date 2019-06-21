@@ -35,7 +35,7 @@ class testWechat extends TestCase {
 
     }
 
-    
+
     function testJsapiTicket(){
         
         global $config;
@@ -50,6 +50,15 @@ class testWechat extends TestCase {
         $jsapi_ticket3 = $wechat->jsapiTicket( true );
         $this->assertEquals( is_string($jsapi_ticket3) && !empty($jsapi_ticket3), true );
         $this->assertEquals( $jsapi_ticket3 == $jsapi_ticket, true );
+    }
+
+    function testJssdkConfig() {
+        
+        global $config;
+        $wechat = new Wechat($config);
+        $jssdk = $wechat->jssdkConfig();
+        $this->assertEquals( true, true );
+
     }
 
 }
