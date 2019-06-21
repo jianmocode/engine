@@ -188,3 +188,21 @@ Methods
 * $context **mixed**
 
 
+
+### fieldsFilter
+
+    array Yao\Model::fieldsFilter(array|string $select, array|string $allow_fields)
+
+根据选择字段和许可清单，过滤选择字段
+
+
+
+* Visibility: **public**
+* This method is **static**.
+
+
+#### Arguments
+* $select **array|string** - &lt;p&gt;字段列表 foo0,foo1.bar1,foo1.bar2&lt;/p&gt;
+* $allow_fields **array|string** - &lt;p&gt;许可数值清单 foo0,foo1.bar1,foo1.bar2&lt;/p&gt;
+
+

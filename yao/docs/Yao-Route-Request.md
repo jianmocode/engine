@@ -1,7 +1,7 @@
 Yao\Route\Request
 ===============
 
-路由器(Base on FastRoute)
+HTTP Reqeust 数据控制器
 
 
 
@@ -171,19 +171,75 @@ see https://github.com/nikic/FastRoute
 * Visibility: **public**
 
 
-### $responseHeader
+### $responseHeaders
 
-    public mixed $responseHeader = array()
+    public mixed $responseHeaders = array()
 
 HTTP Response Headers
 
 @var array
 
 * Visibility: **public**
+* This property is **static**.
 
 
 Methods
 -------
+
+
+### origin
+
+    array Yao\Route\Request::origin()
+
+读取平台请求来源
+
+返回值结构
+
+ - agent string 请求代理
+     - "browser" 浏览器
+     - "wechat" 微信
+     - "weibo"  微博
+     - "wxapp"  小程序
+ - platform  string 系统平台  windows/android/ios/browser
+ - mobile bool 是否为移动端请求 1=移动端 0 非移动端
+
+* Visibility: **public**
+* This method is **static**.
+
+
+
+
+### addHeader
+
+    mixed Yao\Route\Request::addHeader($name, $value)
+
+添加 HTTP Response Header
+
+@param $name header name
+
+* Visibility: **public**
+* This method is **static**.
+
+
+#### Arguments
+* $name **mixed**
+* $value **mixed** - &lt;p&gt;header value
+@return void&lt;/p&gt;
+
+
+
+### sendHeader
+
+    void Yao\Route\Request::sendHeader()
+
+发送 Response Header
+
+
+
+* Visibility: **public**
+* This method is **static**.
+
+
 
 
 ### __construct
@@ -215,27 +271,9 @@ Methods
 
 
 
-### addHeader
+### setRequestData
 
-    mixed Yao\Route\Request::addHeader($name, $value)
-
-添加 HTTP Response Header
-
-@param $name header name
-
-* Visibility: **public**
-
-
-#### Arguments
-* $name **mixed**
-* $value **mixed** - &lt;p&gt;header value
-@return void&lt;/p&gt;
-
-
-
-### getRequestData
-
-    mixed Yao\Route\Request::getRequestData()
+    mixed Yao\Route\Request::setRequestData()
 
 读取 Request 数据
 
@@ -246,9 +284,9 @@ Methods
 
 
 
-### getMethod
+### setMethod
 
-    mixed Yao\Route\Request::getMethod()
+    mixed Yao\Route\Request::setMethod()
 
 读取请求方法
 
@@ -259,9 +297,9 @@ Methods
 
 
 
-### getHeaders
+### setHeaders
 
-    mixed Yao\Route\Request::getHeaders()
+    mixed Yao\Route\Request::setHeaders()
 
 读取请求Header
 
@@ -272,9 +310,9 @@ Methods
 
 
 
-### getRequestURI
+### setRequestURI
 
-    mixed Yao\Route\Request::getRequestURI()
+    void Yao\Route\Request::setRequestURI()
 
 读取请求路由
 
@@ -285,9 +323,9 @@ Methods
 
 
 
-### getHost
+### setHost
 
-    mixed Yao\Route\Request::getHost()
+    void Yao\Route\Request::setHost()
 
 读取域名信息
 
@@ -298,9 +336,9 @@ Methods
 
 
 
-### getOrigin
+### setOrigin
 
-    mixed Yao\Route\Request::getOrigin()
+    void Yao\Route\Request::setOrigin()
 
 读取请求来源
 
@@ -313,7 +351,7 @@ Methods
 
 ### setGlobal
 
-    mixed Yao\Route\Request::setGlobal()
+    void Yao\Route\Request::setGlobal()
 
 设定全局变量
 
