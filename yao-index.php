@@ -464,10 +464,14 @@ $dispatcher->setup(
         }
         
         $browser = browser();
+        $orgin = \Yao\Route\Request::origin();
         $type = $browser['type'];
         $slug = $entry['page']['slug'];
         $adapt = $entry['page']['adapt'];
         $alias = $entry['page']['alias'];
+        $vars["__agent"] = $orgin["agnet"];
+        $vars["__platform"] = $orgin["platform"];
+        $vars["__moible"] = $orgin["mobile"];
         $vars['__browser'] = $type;
         $vars['__home'] = getHome();
         $vars['__location'] =getLocation();
