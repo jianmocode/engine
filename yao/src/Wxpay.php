@@ -186,7 +186,7 @@ class Wxpay {
         $params  = [
             "appid" => Arr::get($response, "appid"),
             "timeStamp" => time(),
-            "nonceStr" => Str::uniqid(),
+            "nonceStr" => substr(MD5(Str::uniqid()), 0, 8),
             "package" => "prepay_id={$prepay_id}",
             "signType" => "MD5"
         ];
