@@ -15,6 +15,8 @@ use \Yao\Redis;
 class testRedis extends TestCase {
 
     function testGet() {
+
+        // Test Set
         Redis::set("foo", "bar");
         $value = Redis::get("foo");
         $this->assertEquals( $value, "bar" );
@@ -29,7 +31,9 @@ class testRedis extends TestCase {
 
         // Not exists
         $value = Redis::get("foo_not_exists");
-        $this->assertEquals( $value, false );
+        $this->assertEquals( $value, null );
+
+
     }
 
 }

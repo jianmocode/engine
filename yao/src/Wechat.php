@@ -76,20 +76,19 @@ class Wechat {
 	public function accessToken( $refresh = false,  $appid=null, $appsecret=null ) {
 
         $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential";
-        $cache = "wechat:access_token:{$appid}";
-
 		$appid = ( $appid == null ) ? Arr::get($this->config, "appid") : $appid;
         $appsecret = ( $appsecret == null ) ?  Arr::get($this->config, "appsecret") : $appsecret;
+        
+        $cache = "wechat:access_token:{$appid}";
         
         //从缓存中读取
         if ( $refresh === false ){
             $access_token = Redis::get($cache);
-            if ( $access_token !== false ) {
+            if ( $access_token ) {
                 return $access_token;
             }
         }
 
-        echo "GET FROM REMOTE\n";
         $response = Http::get($url, [
             'query' => [
                 "grant_type" => "client_credential",
@@ -105,8 +104,8 @@ class Wechat {
         
         $data = Http::json( $response );
 		$access_token = Arr::get($data, 'access_token');
-		$ttl = intval(Arr::get($resp,'expires_in', 0)) - 1000;
-		Redis::set($cache, $token, $expires );// 写入缓存
+		$ttl = intval(Arr::get($data,'expires_in', 0)) - 1000;
+		Redis::set($cache, $access_token, $ttl );// 写入缓存
 
 		return $access_token;
 	}
