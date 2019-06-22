@@ -104,10 +104,6 @@ class Str extends IlluminateStr {
         }
 
         if ( !self::isURL($input) ) {
-
-            echo "NO URL {$input}\n";
-            
-
             return preg_replace("/^(?:\/\/)/", "https://", $input);
         }
 
