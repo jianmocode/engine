@@ -84,6 +84,64 @@ Methods
 
 
 
+### jssdkConfig
+
+    array Yao\Wechat::jssdkConfig(string $url, string $appid, string $appsecret)
+
+读取 JS-SDK Config
+
+
+
+* Visibility: **public**
+
+
+#### Arguments
+* $url **string** - &lt;p&gt;引用JS-SDK的页面地址. 默认读取 Request URL&lt;/p&gt;
+* $appid **string** - &lt;p&gt;微信应用 appid 默认为NULL, 从配置文件中读取&lt;/p&gt;
+* $appsecret **string** - &lt;p&gt;微信应用 appsecret  默认为NULL, 从配置文件中读取&lt;/p&gt;
+
+
+
+### jsapiTicket
+
+    string Yao\Wechat::jsapiTicket(boolean $refresh, string $appid, string $appsecret)
+
+读取 JSAPI Ticket
+
+Redis cache key: wechat:jsapi_ticket:[:appid]
+
+see https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421141115
+
+* Visibility: **public**
+
+
+#### Arguments
+* $refresh **boolean** - &lt;p&gt;是否强制刷新, true=强制刷新, false=优先从缓存读取。默认值为 false&lt;/p&gt;
+* $appid **string** - &lt;p&gt;微信应用 appid 默认为NULL, 从配置文件中读取&lt;/p&gt;
+* $appsecret **string** - &lt;p&gt;微信应用 appsecret  默认为NULL, 从配置文件中读取&lt;/p&gt;
+
+
+
+### accessToken
+
+    string Yao\Wechat::accessToken(boolean $refresh, string $appid, string $appsecret)
+
+读取 Access Token
+
+Redis cache key: wechat:access_token:[:appid]
+
+see https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140183
+
+* Visibility: **public**
+
+
+#### Arguments
+* $refresh **boolean** - &lt;p&gt;是否强制刷新, true=强制刷新, false=优先从缓存读取。默认值为 false&lt;/p&gt;
+* $appid **string** - &lt;p&gt;微信应用 appid 默认为NULL, 从配置文件中读取&lt;/p&gt;
+* $appsecret **string** - &lt;p&gt;微信应用 appsecret  默认为NULL, 从配置文件中读取&lt;/p&gt;
+
+
+
 ### authUrl
 
     string Yao\Wechat::authUrl(array $params)
@@ -107,11 +165,11 @@ see https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140842
 
 
 
-### accessToken
+### oauthAccessToken
 
-    array Yao\Wechat::accessToken(array $params)
+    array Yao\Wechat::oauthAccessToken(array $params)
 
-读取 Oauth2.0  Access Token
+读取 Oauth2.0 Access Token
 
 see https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1421140842
 

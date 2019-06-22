@@ -187,6 +187,48 @@ Methods
 -------
 
 
+### url
+
+    string Yao\Route\Request::url()
+
+读取当前访问者完整地址
+
+
+
+* Visibility: **public**
+* This method is **static**.
+
+
+
+
+### home
+
+    string Yao\Route\Request::home()
+
+读取当前访问者根地址
+
+
+
+* Visibility: **public**
+* This method is **static**.
+
+
+
+
+### isHttps
+
+    boolean Yao\Route\Request::isHttps()
+
+检测当前访问是否通过HTTPS访问
+
+
+
+* Visibility: **public**
+* This method is **static**.
+
+
+
+
 ### origin
 
     array Yao\Route\Request::origin()
@@ -202,10 +244,28 @@ Methods
      - "wxapp"  小程序
  - platform  string 系统平台  windows/android/ios/browser
  - mobile bool 是否为移动端请求 1=移动端 0 非移动端
+ - origin 用户来源原始字符串
 
 * Visibility: **public**
 * This method is **static**.
 
+
+
+
+### getOS
+
+    string Yao\Route\Request::getOS(string $userAgent)
+
+Get the user's operating system
+
+
+
+* Visibility: **public**
+* This method is **static**.
+
+
+#### Arguments
+* $userAgent **string** - &lt;p&gt;The user&#039;s user agent&lt;/p&gt;
 
 
 

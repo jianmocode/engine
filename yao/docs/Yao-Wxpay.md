@@ -121,6 +121,22 @@ see https://pay.weixin.qq.com/wiki/doc/api/H5.php?chapter=9_20&index=1
 
 
 
+### jssdkParams
+
+    mixed Yao\Wxpay::jssdkParams(array $response)
+
+生成JS参数签名
+
+
+
+* Visibility: **public**
+
+
+#### Arguments
+* $response **array**
+
+
+
 ### orderquery
 
     array Yao\Wxpay::orderquery(array $params)
@@ -136,12 +152,17 @@ see https://pay.weixin.qq.com/wiki/doc/api/H5.php?chapter=9_2&index=2
  - :out_trade_no       string(32)      商户系统内部订单号，要求32个字符内，只能是数字、大小写字母_-|*@ ，且在同一个商户号下唯一。(微信订单号和商户订单号必填一项)
 
 
-成功返回数据结构:
+返回值主要字段:
 
  - :return_code        string          SUCCESS
  - :return_msg         string          OK
  - :appid              string          微信分配的公众账号ID
  - :mch_id             string          微信支付分配的商户号
+ - :openid             string          用户在商户appid下的唯一标识
+ - :out_trade_no       string          商户系统内部订单号(pay_id)
+ - :is_subscribe       string          用户是否关注公众账号，Y-关注，N-未关注
+ - :trade_type         string          调用接口提交的交易类型 JSAPI，NATIVE，APP，MICROPAY
+ - :trade_state        string          交易状态	SUCCESS—支付成功 REFUND—转入退款 NOTPAY—未支付 CLOSED—已关闭 REVOKED—已撤销（付款码支付) USERPAYING--用户支付中 PAYERROR--支付失败
  - :nonce_str          string          微信返回的随机字符串
  - :sign               string          请求签名
  - :result_code        string          业务结果 SUCCESS/FAIL
@@ -164,7 +185,24 @@ see https://pay.weixin.qq.com/wiki/doc/api/H5.php?chapter=9_2&index=2
 
 读取微信支付通知数据
 
+see https://pay.weixin.qq.com/wiki/doc/api/H5.php?chapter=9_7&index=8
 
+返回值主要字段:
+
+ - :return_code      string(16)      SUCCESS
+ - :return_msg       string(128)     OK
+ - :result_code      string(16)      业务结果 SUCCESS/FAIL
+ - :err_code         string(32)      错误代码. 错误返回的信息描述
+ - :err_code_des     string(128)     错误代码描述. 错误返回的信息描述
+ - :appid            string(32)      微信分配的公众账号ID（企业号corpid即为此appId）
+ - :mch_id           string(32)      微信支付分配的商户号
+ - :openid           string(128)     用户在商户appid下的唯一标识
+ - :out_trade_no     string(32)      商户系统内部订单号(pay_id)
+ - :is_subscribe     string(1)       用户是否关注公众账号，Y-关注，N-未关注
+ - :trade_type       string(16)      JSAPI、NATIVE、APP
+ - :total_fee        int             订单总金额，单位为分
+ - :attach           string(128)     商家数据包，原样返回
+ - :time_end         string(14)      支付完成时间，格式为yyyyMMddHHmmss，如2009年12月25日9点10分10秒表示为20091225091010。
 
 * Visibility: **public**
 

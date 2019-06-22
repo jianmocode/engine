@@ -4,7 +4,6 @@ API Index
 * Yao
     * [Route](Yao-Route.md)
         * [Request](Yao-Route-Request.md)
-    * [Str](Yao-Str.md)
     * [Wxpay](Yao-Wxpay.md)
     * [Weibo](Yao-Weibo.md)
     * [Http](Yao-Http.md)

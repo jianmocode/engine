@@ -64,6 +64,25 @@ Methods
 
 
 
+### set
+
+    boolean Yao\Redis::set($key, $value, $ttl)
+
+设定缓存数据
+
+
+
+* Visibility: **public**
+* This method is **static**.
+
+
+#### Arguments
+* $key **mixed**
+* $value **mixed**
+* $ttl **mixed**
+
+
+
 ### __callStatic
 
     mixed Yao\Redis::__callStatic(string $method, array $parameters)
