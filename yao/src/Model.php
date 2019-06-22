@@ -13,9 +13,11 @@ namespace Yao;
 use \Illuminate\Database\Eloquent\Model as EloquentModel;
 use \League\Flysystem\AdapterInterface;
 use \Illuminate\Database\Eloquent\Builder;
+use \Yao\Arr;
+use \Yao\Str;
 
-defined("YAO_PUBLIC_URL") ?: define("YAO_PUBLIC_URL", $GLOBALS["YAO"]["storage"]["public"]);
-defined("YAO_PRIVATE_URL") ?: define("YAO_PRIVATE_URL", $GLOBALS["YAO"]["storage"]["private"]);
+defined("YAO_PUBLIC_URL") ?: define("YAO_PUBLIC_URL", Arr::get($GLOBALS, "YAO.storage.public"));
+defined("YAO_PRIVATE_URL") ?: define("YAO_PRIVATE_URL",Arr::get($GLOBALS, "YAO.storage.private"));
 
 
 // 连接数据库
@@ -123,7 +125,8 @@ class Model extends EloquentModel {
             }
 
             // 单一文件路径
-            if ( is_string($this->$attr) ) {
+            if ( is_string($this->$attr) && !Str::isURL($this->$attr)) {
+
                 $this->$attr =  $isPrivate ? "{$this->privateURL}/{$this->$attr}" : "{$this->publicURL}/{$this->$attr}";
             
             // 二维数组
@@ -137,13 +140,16 @@ class Model extends EloquentModel {
                     }
 
                     // 单文件
-                    if ( is_string($values[$key]) ) {
+                    if ( is_string($values[$key]) && !Str::isURL($values[$key]) ) {
+                     
                         $values[$key] =  $isPrivate ? "{$this->privateURL}/{$values[$key]}" : "{$this->publicURL}/{$values[$key]}";
 
                     // 三维数组
                     } else if ( is_array( $values[$key] ) ) {
                         foreach( $values[$key] as $k=>$path ) {
-                            $values[$key][$k] =  $isPrivate ? "{$this->privateURL}/{$values[$key]}" : "{$this->publicURL}/{$values[$key][$k]}";
+                            if (  is_string( $values[$key][$k]) && !Str::isURL( $values[$key][$k]) ) { 
+                                $values[$key][$k] =  $isPrivate ? "{$this->privateURL}/{$values[$key]}" : "{$this->publicURL}/{$values[$key][$k]}";
+                            }
                         }
                     }
                 }
@@ -229,7 +235,7 @@ class Model extends EloquentModel {
 
         // 根据文件路径/网址设定文件名称
         $ext = pathinfo($path, PATHINFO_EXTENSION);         
-        if ( filter_var($path, FILTER_VALIDATE_URL) === TRUE ){
+        if ( Str::isURL($path) ){
             $name = FS::getPathNameByURL( $path, $perfix );
         } else {
             $name = FS::getPathName( $ext, $perfix );

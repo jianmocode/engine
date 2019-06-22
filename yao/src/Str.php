@@ -58,8 +58,8 @@ class Str extends IlluminateStr {
     }
 
     /**
-     * 替换 `{{key}}` 为 bindings 设定数值
-     * @param array &$input 输入数组引用
+     * 替换 `{{key}}` 为 bindings 设定的数值
+     * @param array &$input 输入字符串
      * @param array $bindings 绑定数据
      */
     public static function binds( string & $input, array $bindings ){
@@ -77,4 +77,46 @@ class Str extends IlluminateStr {
         $input = str_replace( $keys, $replaces, $input );
     }
 
+
+    /**
+     * 检查输入的字符串是否为URL
+     * 
+     * @param string $input 输入的字符串
+     * @return bool 如果是URL返回 true, 否则返回 false
+     */
+    public static function isURL( string $input ){
+        return filter_var($input, FILTER_VALIDATE_URL);
+    }
+
+    /**
+     * 检查输入的字符串是否为域名
+     * 
+     * @param string $input 输入的字符串
+     * @return bool 如果是域名返回 true, 否则返回 false
+     */
+    public static function isDomain( string $input ){
+        return filter_var($input, FILTER_VALIDATE_DOMAIN);
+    }
+
+    /**
+     * 检查输入的字符串是否为 Email
+     * 
+     * @param string $input 输入的字符串
+     * @return bool 如果是Email返回 true, 否则返回 false
+     */
+    public static function isEmail( string $input ){
+        return filter_var($input, FILTER_VALIDATE_EMAIL);
+    }
+
+    /**
+     * 检查输入的字符串是否为IP地址
+     * 
+     * @param string $input 输入的字符串
+     * @return bool 如果是IP地址返回 true, 否则返回 false
+     */
+    public static function isIP( string $input ){
+        return filter_var($input, FILTER_VALIDATE_IP);
+    }
+
+    
 }
