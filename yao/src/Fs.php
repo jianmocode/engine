@@ -265,12 +265,11 @@ class FS {
      * @return string 唯一文件名称
      */
     public static function getPathNameByURL( string $url, string $prefix="" ) {
-        
-        $ext = pathinfo($url, PATHINFO_EXTENSION);  
-        $name = hexdec(md5($url));
+        $ext = pathinfo($url, PATHINFO_EXTENSION);
+        $ext = $ext ? ".{$ext}" : "";
+        $name = number_format(hexdec(md5($url)), 0, "", "");
         $path = date("Y") . "/" .date("m") . "/" . date("d") . "/" . substr($name, 0, 2) . "/" . substr($name, 2, 2);
-        
-        return "{$prefix}{$path}/{$name}.{$ext}";
+        return "{$prefix}{$path}/{$name}{$ext}";
     }
 
 

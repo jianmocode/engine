@@ -54,7 +54,7 @@ class Str extends IlluminateStr {
      * @return string Numberic unique string
      */
     public static function uniqid() {
-        return hexdec(uniqid());
+        return number_format(hexdec(uniqid()),0, "", "");
     }
 
     /**
@@ -85,7 +85,45 @@ class Str extends IlluminateStr {
      * @return bool 如果是URL返回 true, 否则返回 false
      */
     public static function isURL( string $input ){
-        return filter_var($input, FILTER_VALIDATE_URL);
+        if ( filter_var($input, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED|FILTER_FLAG_HOST_REQUIRED) ) {
+            return true;
+        } 
+
+        return false;
+    }
+
+    /**
+     * 强制转换为 Https 协议
+     * @param string $input 输入的字符串
+     * @return string https:// 开头的地址
+     */
+    public static function forceHttps( string $input ){
+        
+        if ( self::isDomain($input) ) {
+            return "https://" . $input;
+        }
+
+        if ( !self::isURL($input) ) {
+
+            echo "NO URL {$input}\n";
+            
+
+            return preg_replace("/^(?:\/\/)/", "https://", $input);
+        }
+
+        $regex = "/^(?:http\:)*\/\//";
+        return preg_replace("/^(?:http\:)*\/\//", "https://", $input);
+    }
+
+
+    /**
+     * 检查输入的字符串是否为PATH
+     * 
+     * @param string $input 输入的字符串
+     * @return bool 如果是PATH返回 true, 否则返回 false
+     */
+    public static function isPath( string $input ){
+
     }
 
     /**
@@ -95,7 +133,11 @@ class Str extends IlluminateStr {
      * @return bool 如果是域名返回 true, 否则返回 false
      */
     public static function isDomain( string $input ){
-        return filter_var($input, FILTER_VALIDATE_DOMAIN);
+        if ( filter_var($input, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME)  ) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -105,7 +147,10 @@ class Str extends IlluminateStr {
      * @return bool 如果是Email返回 true, 否则返回 false
      */
     public static function isEmail( string $input ){
-        return filter_var($input, FILTER_VALIDATE_EMAIL);
+        if ( filter_var($input, FILTER_VALIDATE_EMAIL) ){
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -115,8 +160,10 @@ class Str extends IlluminateStr {
      * @return bool 如果是IP地址返回 true, 否则返回 false
      */
     public static function isIP( string $input ){
-        return filter_var($input, FILTER_VALIDATE_IP);
+        if (filter_var($input, FILTER_VALIDATE_IP)  ){
+            return true;
+        }
+        return false;
     }
 
-    
 }
