@@ -162,8 +162,9 @@ class Wxpay {
             $this->log("error","[MAKE] 统一下单接口返回失败({$return_msg}) #{$params["out_trade_no"]} {$params["appid"]} {$params["mch_id"]} {$params["attach"]}", [
                 "notify_url" => Arr::get( $params, "notify_url"),
                 "trade_type" => Arr::get( $params, "trade_type"),
+                "params" => $params,
+                "signature" => $this->signature($params)
             ]);
-
             throw Excp::create("统一下单接口返回失败({$return_msg})", 500, ["return_data"=> $data, "error_codes"=>self::$errorCodes]);
         }
 
@@ -235,6 +236,7 @@ class Wxpay {
      *  - :is_subscribe       string          用户是否关注公众账号，Y-关注，N-未关注
      *  - :trade_type         string          调用接口提交的交易类型 JSAPI，NATIVE，APP，MICROPAY
      *  - :trade_state        string          交易状态	SUCCESS—支付成功 REFUND—转入退款 NOTPAY—未支付 CLOSED—已关闭 REVOKED—已撤销（付款码支付) USERPAYING--用户支付中 PAYERROR--支付失败
+     *  - :trade_state_desc	  string          对当前查询订单状态的描述和下一步操作的指引
      *  - :nonce_str          string          微信返回的随机字符串
      *  - :sign               string          请求签名
      *  - :result_code        string          业务结果 SUCCESS/FAIL
