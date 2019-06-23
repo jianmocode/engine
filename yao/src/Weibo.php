@@ -296,7 +296,7 @@ class Weibo {
             "signature" => trim($signature),
             "jsapi_ticket" => $jsapi_ticket,
             "appsecret" => $appsecret,
-            "rawstring" => trim($string),
+            "rawstring" => trim($origin_str),
         ];
         return $config; 
     }
