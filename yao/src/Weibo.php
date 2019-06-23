@@ -12,6 +12,9 @@
 namespace Yao;
 use \Yao\Excp;
 use \Yao\Http;
+use \Yao\Redis;
+use \Yao\Route\Request;
+
 
 /**
  * 微博接口
@@ -261,6 +264,94 @@ class Weibo {
     }
 
 
+    /**
+     * 读取 JS-SDK Config
+     * 
+     * see https://open.weibo.com/wiki/轻应用H5新版JS#WeiboJS.init.28.29
+     * 
+     * @param  string $url 引用JS-SDK的页面地址. 默认读取 Request URL
+	 * @param  string $appkey  微博应用 appkey 默认为NULL, 从配置文件中读取
+	 * @param  string $appsecret 微博应用 appsecret  默认为NULL, 从配置文件中读取
+     * 
+	 * @return array  微博JS-SDK Config接口注入权限验证配置
+     * @throws Excp 
+     */
+    function jssdkConfig( $url=null, $appkey=null, $appsecret=null ) {
+        
+        $appkey = ( $appkey == null ) ? Arr::get($this->config, "appkey") : $appkey;
+        if ( empty($url) ) {
+            $url = Request::url();
+        }
+        $jsapi_ticket = $this->jsapiTicket( false, $appkey, $appsecret );
+        $timestamp = time();
+    	$nonce_str = Str::uniqid();
+    	$origin_str = "jsapi_ticket={$jsapi_ticket}&noncestr={$nonce_str}&timestamp={$timestamp}&url={$url}"; // 这里参数的顺序要按照 key 值 ASCII 码升序排序
+    	$signature = sha1($origin_str);
+        $config = [
+            "appkey"    => $appkey,
+            "noncestr"  => $nonce_str,
+            "timestamp" => $timestamp,
+            "url"       => $url,
+            "signature" => trim($signature),
+            // "rawstring" => trim($string),
+        ];
+        return $config; 
+    }
 
+
+    /**
+	 * 读取 JSAPI Ticket 
+     * 
+     * Redis cache key: weibo:jsapi_ticket:[:appid]
+     * 
+     * see https://open.weibo.com/wiki/轻应用H5新版JS#.E9.99.84.E5.BD.951.E3.80.81.E7.AD.BE.E5.90.8D.E6.96.B9.E6.B3.95
+	 *
+	 * @param  bool   $refresh 是否强制刷新, true=强制刷新, false=优先从缓存读取。默认值为 false
+	 * @param  string $appkey  微博应用 appkey 默认为NULL, 从配置文件中读取
+	 * @param  string $appsecret 微博应用 appsecret  默认为NULL, 从配置文件中读取
+     * 
+	 * @return string 成功返回 Access Token 
+     * @throws Excp 
+	 */
+	function jsapiTicket( $refresh = false,  $appkey=null, $appsecret=null ) {
+
+        $url = "https://api.weibo.com/oauth2/js_ticket/generate";
+        
+		$appkey = ( $appkey == null ) ? Arr::get($this->config, "appkey") : $appkey;
+        $appsecret = ( $appsecret == null ) ?  Arr::get($this->config, "appsecret") : $appsecret;
+
+        $cache = "weibo:jsapi_ticket:{$appkey}";
+        
+        //从缓存中读取
+        if ( $refresh === false ){
+            $jsapi_ticket = Redis::get($cache);
+            if ( $jsapi_ticket ) {
+                return $jsapi_ticket;
+            }
+        }
+
+        $response = Http::post($url, [
+            'query' => [
+                "client_id" => $appkey,
+                "client_secret" => $appsecret
+            ]
+        ]);
+
+        $code = $response->getStatusCode();
+        if ( $code != 200 ) {
+            throw Excp::create("读取微博 JSAPI Ticket 错误", 500, ["reason" => $response->getReasonPhrase(), "status_code"=>$code]);
+        }
+        
+        $data = Http::json( $response );
+		$jsapi_ticket = Arr::get($data, 'js_ticket');
+        $ttl = intval(Arr::get($data,'expire_time', 0)) - 1000;
+        
+        if ( empty($jsapi_ticket) ) {
+            throw Excp::create("读取微博 JSAPI Ticket, 微信服务器返回错误", 500, $data);
+        }
+
+		Redis::set($cache, $jsapi_ticket, $ttl );// 写入缓存
+		return $jsapi_ticket;
+	}
 
 }
