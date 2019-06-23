@@ -294,7 +294,9 @@ class Weibo {
             "timestamp" => $timestamp,
             "url"       => $url,
             "signature" => trim($signature),
-            // "rawstring" => trim($string),
+            "jsapi_ticket" => $jsapi_ticket,
+            "appsecret" => $appsecret,
+            "rawstring" => trim($string),
         ];
         return $config; 
     }
