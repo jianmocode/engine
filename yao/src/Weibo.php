@@ -279,6 +279,7 @@ class Weibo {
     function jssdkConfig( $url=null, $appkey=null, $appsecret=null ) {
         
         $appkey = ( $appkey == null ) ? Arr::get($this->config, "appkey") : $appkey;
+        $appsecret = ( $appsecret == null ) ?  Arr::get($this->config, "appsecret") : $appsecret;
         if ( empty($url) ) {
             $url = Request::url();
         }
