@@ -8,6 +8,7 @@
         }
     },
     "entries":[
+        {"method":"GET", "router":"/demo/index.html", "ttl":0},
 		{"method":"GET", "router":"/demo/index/{sn:[0-9a-zA-Z\\-]+}.html", "ttl":0}
 	],
 	"alias": {
