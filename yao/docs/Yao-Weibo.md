@@ -193,3 +193,41 @@ see https://open.weibo.com/wiki/2/users/show
 * $access_token **string** - &lt;p&gt;微博 access_token&lt;/p&gt;
 
 
+
+### jssdkConfig
+
+    array Yao\Weibo::jssdkConfig(string $url, string $appkey, string $appsecret)
+
+读取 JS-SDK Config
+
+see https://open.weibo.com/wiki/轻应用H5新版JS#WeiboJS.init.28.29
+
+* Visibility: **public**
+
+
+#### Arguments
+* $url **string** - &lt;p&gt;引用JS-SDK的页面地址. 默认读取 Request URL&lt;/p&gt;
+* $appkey **string** - &lt;p&gt;微博应用 appkey 默认为NULL, 从配置文件中读取&lt;/p&gt;
+* $appsecret **string** - &lt;p&gt;微博应用 appsecret  默认为NULL, 从配置文件中读取&lt;/p&gt;
+
+
+
+### jsapiTicket
+
+    string Yao\Weibo::jsapiTicket(boolean $refresh, string $appkey, string $appsecret)
+
+读取 JSAPI Ticket
+
+Redis cache key: weibo:jsapi_ticket:[:appid]
+
+see https://open.weibo.com/wiki/轻应用H5新版JS#.E9.99.84.E5.BD.951.E3.80.81.E7.AD.BE.E5.90.8D.E6.96.B9.E6.B3.95
+
+* Visibility: **public**
+
+
+#### Arguments
+* $refresh **boolean** - &lt;p&gt;是否强制刷新, true=强制刷新, false=优先从缓存读取。默认值为 false&lt;/p&gt;
+* $appkey **string** - &lt;p&gt;微博应用 appkey 默认为NULL, 从配置文件中读取&lt;/p&gt;
+* $appsecret **string** - &lt;p&gt;微博应用 appsecret  默认为NULL, 从配置文件中读取&lt;/p&gt;
+
+

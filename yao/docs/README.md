@@ -17,4 +17,5 @@ API Index
     * [Schema](Yao-Schema.md)
     * [Api](Yao-Api.md)
     * [Wechat](Yao-Wechat.md)
+    * [Image](Yao-Image.md)
 
