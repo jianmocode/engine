@@ -27,6 +27,8 @@ class Image extends ImageManagerStatic {
     /**
      * 生成二维码
      * 
+     * Redis cache key: image:qrcode:[text+option]
+     * 
      * see https://github.com/endroid/qr-code
      * 
      * 配置参数 $option : 
@@ -66,7 +68,7 @@ class Image extends ImageManagerStatic {
 
         if ( $ttl !== 0 ) {
             
-            $cache = md5( json_encode([$text, $option]) );
+            $cache = "image:qrcode:" . md5( json_encode([$text, $option]) );
 
             // 从缓存中读取
             $blob = Redis::get($cache);
