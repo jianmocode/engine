@@ -20,11 +20,36 @@ Methods
 -------
 
 
+### captcha
+
+    \Yao\mix Yao\Image::captcha(\Yao\mix $option)
+
+生成/校验验证码
+
+see https://github.com/Gregwar/Captcha
+
+配置参数 $option :
+
+- :width  验证码宽度, 默认为 150
+- :height 验证码高度, 默认为 40
+- :font   字体, 默认为 null 随机字库
+
+* Visibility: **public**
+* This method is **static**.
+
+
+#### Arguments
+* $option **Yao\mix** - &lt;p&gt;配置参数数组|用户填写的验证码内容字符串.&lt;/p&gt;
+
+
+
 ### qrcode
 
     string Yao\Image::qrcode(string $text, array $option, integer $ttl)
 
 生成二维码
+
+Redis cache key: image:qrcode:[text+option]
 
 see https://github.com/endroid/qr-code
 
