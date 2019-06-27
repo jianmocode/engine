@@ -130,7 +130,7 @@ class Model extends EloquentModel {
                 $this->$attr =  $isPrivate ? "{$this->privateURL}/{$this->$attr}" : "{$this->publicURL}/{$this->$attr}";
             
             // 二维数组
-            } else {
+            } else if( is_array($this->$attr) ) {
 
                 // 批量处理文件
                 $values = $this->$attr;
