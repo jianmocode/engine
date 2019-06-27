@@ -49,7 +49,8 @@ class Image extends ImageManagerStatic {
 
         // 校验验证码
         if ( is_string( $option ) ) {
-            $phrase = $_SESSION["yao.image.captcha"];
+            $phrase = Arr::get($_SESSION,"yao.image.captcha");
+            Arr::forget( $_SESSION, "yao.image.captcha");
             $builder = new CaptchaBuilder( $phrase );
             return $builder->testPhrase( $option );
 
