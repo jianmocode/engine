@@ -15,6 +15,8 @@ use \Yao\Arr;
 use \Yao\Redis;
 use Intervention\Image\ImageManagerStatic;
 use Endroid\QrCode\QrCode;
+use Gregwar\Captcha\CaptchaBuilder;
+
 
 /**
  * 图像处理函数
@@ -23,6 +25,49 @@ use Endroid\QrCode\QrCode;
  * 
  */
 class Image extends ImageManagerStatic {
+
+
+    /**
+     * 生成/校验验证码
+     * 
+     * see https://github.com/Gregwar/Captcha
+     * 
+     * 配置参数 $option :
+     * 
+     * - :width  验证码宽度, 默认为 150
+     * - :height 验证码高度, 默认为 40
+     * - :font   字体, 默认为 null 随机字库
+     * 
+     * @param mix  $option 配置参数数组|用户填写的验证码内容字符串.
+     * @return mix  如果 $option 为字符串, 返回校验结果. | 如果为配置参数数组, 返回验证图片内容数据(jpg格式)
+     */
+    public static function captcha( $option = [] ) {
+        
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        // 校验验证码
+        if ( is_string( $option ) ) {
+            $phrase = $_SESSION["yao.image.captcha"];
+            $builder = new CaptchaBuilder( $phrase );
+            return $builder->testPhrase( $option );
+
+        // 生成验证码
+        } else if ( is_array($option) ) {
+
+            $width = Arr::get( $option, "width", 150);
+            $height = Arr::get( $option, "height", 40);
+            $font  = Arr::get( $option, "font");
+            $builder = new CaptchaBuilder;
+            $builder->build();
+            $_SESSION["yao.image.captcha"] = $builder->getPhrase();
+            return $builder->get(100);
+        }
+
+        throw Excp::create("配置参数格式不正确", 402);
+    }
+
 
     /**
      * 生成二维码
