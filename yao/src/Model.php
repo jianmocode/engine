@@ -176,7 +176,7 @@ class Model extends EloquentModel {
     public static function paginator(  Builder & $qb, $page=1, $perpage=20, $params=[], $pageName="page", $columns=['*'] ) {
 
         $params = empty($params) ? $_GET : $params;
-        $uri = explode("?", $_SERVER["REQUEST_URI"]);
+        $uri = explode("?", Arr::get($_SERVER, "REQUEST_URI"));
         $path = current($uri);
         if ( array_key_exists($pageName, $params)) {
             unset( $params[$pageName] );
