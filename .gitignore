@@ -4,3 +4,4 @@ service/lib/fonts/simsun.ttf
 route.lua
 mina/jssdk/web/node_modules
 yao
+service/lib/npl/baidu/lib/*
