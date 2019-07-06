@@ -86,13 +86,13 @@ class Media extends Model {
 			"url" => "{$host}/static-file{$url_prefix}",
 			"origin" => "{$host}/static-file{$url_prefix}",
 			"cache" => [
-				"engine" => 'redis',
-				"prefix" => '_mediaStorage:',
-				"host" => Conf::G("mem/redis/host"),
-				"port" => Conf::G("mem/redis/port"),
-				"passwd"=> Conf::G("mem/redis/password"),
-				"raw" =>3600,  // 数据缓存 1小时
-				"info" => 3600   // 信息缓存 1小时
+				// "engine" => 'redis',
+				// "prefix" => '_mediaStorage:',
+				// "host" => Conf::G("mem/redis/host"),
+				// "port" => Conf::G("mem/redis/port"),
+				// "passwd"=> Conf::G("mem/redis/password"),
+				// "raw" =>3600,  // 数据缓存 1小时
+				// "info" => 3600   // 信息缓存 1小时
 			]
         ];
         
@@ -106,13 +106,13 @@ class Media extends Model {
 			"appid" => $appid,
 			"secret" => $secret,
 			"cache" => [
-				"engine" => 'redis',
-				"prefix" => '_mediaStoragePrivate:',
-				"host" => Conf::G("mem/redis/host"),
-				"port" => Conf::G("mem/redis/port"),
-				"passwd"=> Conf::G("mem/redis/password"),
-				"raw" =>0,  // 数据缓存 1小时
-				"info" => 0   // 信息缓存 1小时
+				// "engine" => 'redis',
+				// "prefix" => '_mediaStoragePrivate:',
+				// "host" => Conf::G("mem/redis/host"),
+				// "port" => Conf::G("mem/redis/port"),
+				// "passwd"=> Conf::G("mem/redis/password"),
+				// "raw" =>0,  // 数据缓存 1小时
+				// "info" => 0   // 信息缓存 1小时
 			]
 		];
 
