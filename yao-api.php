@@ -214,7 +214,7 @@ header("Content-Type: application/json");
 header("server: jianmo/server:1.9.3");
 header("x-powered-by: jianmo.ink");
 header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Headers: X-Requested-With,X_Requested_With');
+header("Access-Control-Allow-Headers: content-name, content-type,cache-control,x-requested-with,content-range,Content-Instance,content-disposition");
 
 // 返回数据
 if ( !is_null($response) ) {
