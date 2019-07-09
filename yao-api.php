@@ -215,6 +215,7 @@ header("server: jianmo/server:1.9.3");
 header("x-powered-by: jianmo.ink");
 header('Access-Control-Allow-Origin: *');
 header("Access-Control-Allow-Headers: content-name, content-type,cache-control,x-requested-with,content-range,Content-Instance,content-disposition");
+header("Access-Control-Allow-Credentials: true");
 
 // 返回数据
 if ( !is_null($response) ) {
