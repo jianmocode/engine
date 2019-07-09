@@ -213,6 +213,7 @@ $response = Route::run();
 header("Content-Type: application/json");
 header("server: jianmo/server:1.9.3");
 header("x-powered-by: jianmo.ink");
+header('Access-Control-Allow-Origin: *');
 
 // 返回数据
 if ( !is_null($response) ) {
