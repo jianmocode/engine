@@ -112,6 +112,11 @@ function handler_excp($e) {
         header("x-powered-by: jianmo.ink");
         crossHeader();
         
+        $code = $e->getCode();
+        if ( $code > 600 || $code < 400 ) {
+            $code = 500;
+        }
+        http_response_code( $code );
         echo json_encode([
             "code" =>$e->getCode(),
             "message"=>$e->getMessage(),
@@ -177,7 +182,9 @@ function handler_error($severity, $message, $file, $line) {
         header("server: jianmo/server:1.9.3");
         header("x-powered-by: jianmo.ink");
         crossHeader();
+        http_response_code( 500 );
         echo json_encode([
+            "code" => 500,
             "message" => "程序运行错误({$message})",
             "file"=>$file,
             "line" => $line,
