@@ -110,6 +110,7 @@ function handler_excp($e) {
         header("Content-Type: application/json");
         header("server: jianmo/server:1.9.3");
         header("x-powered-by: jianmo.ink");
+        crossHeader();
         
         echo json_encode([
             "code" =>$e->getCode(),
@@ -131,6 +132,7 @@ function handler_excp($e) {
         header("Content-Type: application/json");
         header("server: jianmo/server:1.9.3");
         header("x-powered-by: jianmo.ink");
+        crossHeader();
         echo json_encode($e->toArray());
 
         // 服务端错误计入日志
@@ -144,6 +146,7 @@ function handler_excp($e) {
         header("Content-Type: application/json");
         header("server: jianmo/server:1.9.3");
         header("x-powered-by: jinamo.ink");
+        crossHeader();
         echo '{"code":'.$e->getCode().', "message":"发生未定义错误"}';
         $exp = Excp::create("访问{$_SERVER["REQUEST_URI"]}时, 发生未定义错误. Exception Type:{$type} Message:".$e->getMessage().".", 500 );
         $exp->log();
@@ -154,6 +157,7 @@ function handler_excp($e) {
         header("Content-Type: application/json");
         header("server: jianmo/server:1.9.3");
         header("x-powered-by: jianmo.ink");
+        crossHeader();
         echo '{"code":500, "message":"发生未定义错误"}';
         $message = $e->getMessage();
         $exp = Excp::create("访问{$_SERVER["REQUEST_URI"]}时, 发生未定义错误 Exception Type:{$type} Message:{$message}.", 500 );
@@ -172,6 +176,7 @@ function handler_error($severity, $message, $file, $line) {
         header("Content-Type: application/json");
         header("server: jianmo/server:1.9.3");
         header("x-powered-by: jianmo.ink");
+        crossHeader();
         echo json_encode([
             "message" => "程序运行错误({$message})",
             "file"=>$file,
@@ -189,6 +194,7 @@ function handler_error($severity, $message, $file, $line) {
     header("Content-Type: application/json");
     header("server: jianmo/server:1.9.3");
     header("x-powered-by: jianmo.ink");
+    crossHeader();
   
     
     echo '{"code":500, "message":"程序运行错误"}';
@@ -213,12 +219,18 @@ $response = Route::run();
 header("Content-Type: application/json");
 header("server: jianmo/server:1.9.3");
 header("x-powered-by: jianmo.ink");
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS');
-header("Access-Control-Allow-Headers: content-name, content-type,cache-control,x-requested-with,content-range,Content-Instance,content-disposition");
-header("Access-Control-Allow-Credentials: true");
+crossHeader();
 
 // 返回数据
 if ( !is_null($response) ) {
     echo json_encode( $response, JSON_UNESCAPED_UNICODE || JSON_UNESCAPED_SLASHES );
+}
+
+
+function crossHeader() {
+
+    header('Access-Control-Allow-Origin: *');
+    header('Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS');
+    header("Access-Control-Allow-Headers: content-name, content-type,cache-control,x-requested-with,content-range,Content-Instance,content-disposition");
+    header("Access-Control-Allow-Credentials: true");
 }
