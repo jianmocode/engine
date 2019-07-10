@@ -59,7 +59,7 @@ class Str extends IlluminateStr {
 
     /**
      * 替换 `{{key}}` 为 bindings 设定的数值
-     * @param array &$input 输入字符串
+     * @param array $input 输入字符串
      * @param array $bindings 绑定数据
      */
     public static function binds( string & $input, array $bindings ){
@@ -73,7 +73,7 @@ class Str extends IlluminateStr {
         }
 
         Arr::varize( $bindings );
-        [$keys,$replaces] = Arr::divide( $bindings );
+        list($keys,$replaces) = Arr::divide( $bindings );
         $input = str_replace( $keys, $replaces, $input );
     }
 

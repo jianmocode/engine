@@ -14,3 +14,5 @@ yao/test/pages/package-lock.json
 yao/test/pages/config-*
 yao/test/config/*.php
 service/lib/npl/baidu/lib/*
+yao/bin/phpdoc/vendor
+yao/bin/phpdoc/composer.lock

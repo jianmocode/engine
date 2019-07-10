@@ -34,6 +34,19 @@ Methods
 -------
 
 
+### __construct
+
+    mixed Yao\Http::__construct()
+
+Http 对象
+
+
+
+* Visibility: **public**
+
+
+
+
 ### json
 
     \Yao\mix Yao\Http::json(\Psr\Http\Message\ResponseInterface $response)

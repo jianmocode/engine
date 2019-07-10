@@ -28,6 +28,11 @@ class Http {
      */
     public static $client = null;
 
+     /**
+     * Http 对象
+     */
+    public function __construct() {}
+
 
     /**
      * 返回JSON数据

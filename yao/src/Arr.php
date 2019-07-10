@@ -1,6 +1,6 @@
 <?php
 /**
- * Class Route
+ * Class Arr
  * 
  * @package Yao
  * @version $Revision$
@@ -48,6 +48,8 @@ class Arr extends IlluminateArr {
      * 替换 `{{key}}` 为 bindings 设定数值
      * @param array &$input 输入数组引用
      * @param array $bindings 绑定数据
+     * 
+     * @return void
      */
     public static function binds( array & $input, array $bindings ){
         
@@ -60,7 +62,7 @@ class Arr extends IlluminateArr {
         }
 
         self::varize( $bindings );
-        [$keys,$replaces] = self::divide( $bindings );
+        list($keys,$replaces) = self::divide( $bindings );
 
         foreach( $input as & $value ) {
             if( is_array($value) ) {
@@ -76,6 +78,8 @@ class Arr extends IlluminateArr {
      * 还原数组 first.second.third  >  $arr["first"]["second"]["third"]
      * 
      * @param array $input 输入数组引用
+     * 
+     * @return array 
      */
     public static function explode( $input  ) {
         
@@ -133,6 +137,8 @@ class Arr extends IlluminateArr {
      * @param string    $field 唯一主键字段名称
      * @param array     $array 二维数组
      * @param array     ...$arrayN 二维数组
+     * 
+     * @return array 
      */
     public static function mapAndMergeBy(string $field, array $array, array ...$arrayN ) {
         
@@ -153,6 +159,10 @@ class Arr extends IlluminateArr {
 
     /**
      * 按分组查询数据
+     * 
+     * @param string $field 字段名称
+     * @param array  $input 数组
+     * @return  array  分组映射
      */
     public static function groupBy( string $field, array $input ) {
         
@@ -172,6 +182,7 @@ class Arr extends IlluminateArr {
     /**
      * 给数组 key 添加 {{}}
      * @param array $input 输入数组引用
+     * @return void
      */
     public static function varize( & $input ) {
         
