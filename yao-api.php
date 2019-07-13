@@ -236,7 +236,10 @@ if ( !is_null($response) ) {
 
 function crossHeader() {
 
-    header('Access-Control-Allow-Origin: http://localhost:8080');
+    $http_origin = Arr::get($_SERVER,'HTTP_ORIGIN');
+    if (strpos($http_origin, "vpin.ink") !== false || strpos($http_origin, "vpin.biz") !== false || strpos($http_origin, "localhost") !== false  ) {
+        header("Access-Control-Allow-Origin: {$http_origin}");
+    }
     header('Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS');
     header("Access-Control-Allow-Headers: content-name,Content-Type,cache-control,x-requested-with,content-range,Content-Instance,content-disposition,Set-Cookie");
     header("Access-Control-Allow-Credentials: true");
