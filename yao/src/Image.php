@@ -61,7 +61,7 @@ class Image extends ImageManagerStatic {
             $height = Arr::get( $option, "height", 40);
             $font  = Arr::get( $option, "font");
             $builder = new CaptchaBuilder;
-            $builder->build();
+            $builder->build( $width, $height, $font);
             $_SESSION["yao.image.captcha"] = $builder->getPhrase();
             return $builder->get(100);
         }
