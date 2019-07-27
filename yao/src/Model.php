@@ -109,6 +109,63 @@ class Model extends EloquentModel {
             }
         }
     }
+    
+    /**
+     * 处理输入文件类字段读取
+     * @param array $exclude 排除字段
+     * @return void
+     */
+    public function pathFilterURL( $exclude=[] ) {
+
+        $files = $this->getFiles();
+        foreach( $files as $attr=>$isPrivate ) {
+
+            // 解析 JSON 字段
+            if ( is_string($this->$attr) ) {
+                $v = json_decode($this->$attr, true);
+                if ( $v !== false ) {
+                    $this->$attr = $v;
+                }
+            }
+            
+            if ( in_array($attr, $exclude) || empty($this->$attr)  ) {
+                continue;
+            }
+
+            // 单一文件路径
+            if ( is_string(Arr::get($this->$attr, "path", false)) ) {
+
+                $this->$attr = $this->$attr["path"];
+            
+            // 二维数组
+            } else if( is_string(Arr::get($this->$attr, "0.path", false)) ) {
+
+                // 批量处理文件
+                $values = $this->$attr;
+                foreach( $values as $key=>$path ) {
+                    if ( empty($values[$key]) ) {
+                        continue;
+                    }
+
+                    // 单文件
+                    if ( is_string(Arr::get($values[$key], "path", false)) ) {
+                     
+                        $values[$key] =  Arr::get($values[$key], "path");
+
+                    // 三维数组
+                    } else if ( is_string( Arr::get($values[$key], "0.path", false) ) ) {
+                        foreach( $values[$key] as $k=>$path ) {
+                            if (  is_string( Arr::get($values[$key][$k], "path", false)) ) { 
+                                $values[$key][$k] =  Arr::get($values[$key][$k], "path");
+                            }
+                        }
+                    }
+                }
+                $this->$attr = $values;
+            }
+        }
+    }
+
 
     /**
      * 处理输入文件类字段读取
@@ -249,7 +306,7 @@ class Model extends EloquentModel {
      * 读取文件字段清单
      * @return array 文件字段清单
      */
-    private function getFiles() {
+    public function getFiles() {
 
         $files = [];
         if ( !empty($this->publicFiles) ) {
