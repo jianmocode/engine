@@ -12,6 +12,7 @@
 namespace Yao;
 use \League\Flysystem\Filesystem;
 use \League\Flysystem\MountManager as Manager;
+use \League\Flysystem\Util\MimeType;
 
 /**
  * 文件管理
@@ -270,6 +271,22 @@ class FS {
         $name = number_format(hexdec(md5($url)), 0, "", "");
         $path = date("Y") . "/" .date("m") . "/" . date("d") . "/" . substr($name, 0, 2) . "/" . substr($name, 2, 2);
         return "{$prefix}{$path}/{$name}{$ext}";
+    }
+
+
+    /**
+     * 根据 MIME Type 获取扩展名
+     */
+    public static function getExt( string $mimeType ) {
+        $map = [
+            "jpe" => "jpg"
+        ];
+        $mimeTypeToExtensionMap = array_flip( MimeType::getExtensionToMimeTypeMap() );
+        $ext = Arr::get($mimeTypeToExtensionMap, $mimeType, "txt");
+        if ( Arr::get($map, $ext, false) ){
+            $ext = Arr::get($map, $ext);
+        }
+        return $ext;
     }
 
 
