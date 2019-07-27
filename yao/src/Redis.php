@@ -108,7 +108,7 @@ class Redis {
             return self::$predis->{$method}(...$parameters);
         } catch( Exception $e ) {
             $config = Arr::get($GLOBALS, "YAO.redis");
-            Log::write("error")->error("调用 Predis 命令失败", $config );
+            Log::write("error")->error($e->getMessage(), $config );
             return false;
         }
         
