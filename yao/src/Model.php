@@ -115,6 +115,63 @@ class Model extends EloquentModel {
      * @param array $exclude 排除字段
      * @return void
      */
+    public function pathWithURL( $exclude=[] ) {
+
+        $files = $this->getFiles();
+        foreach( $files as $attr=>$isPrivate ) {
+            
+            if ( in_array($attr, $exclude) || empty($this->$attr)  ) {
+                continue;
+            }
+
+            // 单一文件路径
+            if ( is_string($this->$attr) && !Str::isURL($this->$attr)) {
+
+                $this->$attr =  [
+                    "url"=>$isPrivate ? "{$this->privateURL}/{$this->$attr}" : "{$this->publicURL}/{$this->$attr}",
+                    "path" => $this->$attr
+                ];
+            
+            // 二维数组
+            } else if( is_array($this->$attr) ) {
+
+                // 批量处理文件
+                $values = $this->$attr;
+                foreach( $values as $key=>$path ) {
+                    if ( empty($values[$key]) ) {
+                        continue;
+                    }
+
+                    // 单文件
+                    if ( is_string($values[$key]) && !Str::isURL($values[$key]) ) {
+                     
+                        $values[$key] =  [
+                            "url" => $isPrivate ? "{$this->privateURL}/{$values[$key]}" : "{$this->publicURL}/{$values[$key]}",
+                            "path" => $values[$key],
+                        ];
+
+                    // 三维数组
+                    } else if ( is_array( $values[$key] ) ) {
+                        foreach( $values[$key] as $k=>$path ) {
+                            if (  is_string( $values[$key][$k]) && !Str::isURL( $values[$key][$k]) ) { 
+                                $values[$key][$k] =  [
+                                    "url" => $isPrivate ? "{$this->privateURL}/{$values[$key][$k]}" : "{$this->publicURL}/{$values[$key][$k]}",
+                                    "path" => $values[$key][$k]
+                                ];
+                            }
+                        }
+                    }
+                }
+                $this->$attr = $values;
+            }
+        }
+    }
+
+    /**
+     * 处理输入文件类字段读取
+     * @param array $exclude 排除字段
+     * @return void
+     */
     public function pathToURL( $exclude=[] ) {
 
         $files = $this->getFiles();
@@ -148,7 +205,7 @@ class Model extends EloquentModel {
                     } else if ( is_array( $values[$key] ) ) {
                         foreach( $values[$key] as $k=>$path ) {
                             if (  is_string( $values[$key][$k]) && !Str::isURL( $values[$key][$k]) ) { 
-                                $values[$key][$k] =  $isPrivate ? "{$this->privateURL}/{$values[$key]}" : "{$this->publicURL}/{$values[$key][$k]}";
+                                $values[$key][$k] =  $isPrivate ? "{$this->privateURL}/{$values[$key][$k]}" : "{$this->publicURL}/{$values[$key][$k]}";
                             }
                         }
                     }
