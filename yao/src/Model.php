@@ -132,13 +132,16 @@ class Model extends EloquentModel {
                 continue;
             }
 
-            // 单一文件路径
+            // 单一文件路径 ["path"=>"...", "url"=>"..."]
             if ( is_string(Arr::get($this->$attr, "path", false)) ) {
 
                 $this->$attr = $this->$attr["path"];
-            
-            // 二维数组
-            } else if( is_string(Arr::get($this->$attr, "0.path", false)) ) {
+
+            // KEY VALUE 数组  logo["dark"] = ["path"=>"...", "url"=>"..."] ||  logo[0] = ["path"=>"...", "url"=>"..."]
+            } else if( is_array($this->$attr) &&  is_string(Arr::get(current($this->$attr), "path", false)) ) {
+
+            // // 二维数组 logo[0] = ["path"=>"...", "url"=>"..."]
+            // } else if( is_string(Arr::get($this->$attr, "0.path", false)) ) {
 
                 // 批量处理文件
                 $values = $this->$attr;
@@ -335,6 +338,10 @@ class Model extends EloquentModel {
      * @return string 文件名称;
      */
     private function writeFile( $path, $private=false, $perfix="" ) {
+
+        if ( !is_string($path)) {
+            return $path;
+        }
 
         self::debug("writeFile: {$path}");
         if ( strpos( $path, "@") !== 0 ) {
