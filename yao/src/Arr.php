@@ -25,6 +25,15 @@ class Arr extends IlluminateArr {
 
 
     /**
+     * 检查是否为 Key-Value 结构数组
+     */
+    public static function isAssoc(array $arr) {
+        if (array() === $arr) return false;
+        return array_keys($arr) !== range(0, count($arr) - 1);
+    }
+
+
+    /**
      * 设定数组默认值
      * 
      * @param array $input 输入数组引用
