@@ -10,6 +10,7 @@
  */
 
 namespace Yao;
+use \ZipArchive;
 use \League\Flysystem\Filesystem;
 use \League\Flysystem\MountManager as Manager;
 use \League\Flysystem\Util\MimeType;
@@ -287,6 +288,40 @@ class FS {
             $ext = Arr::get($map, $ext);
         }
         return $ext;
+    }
+
+
+    /**
+     * 压缩文件为ZIP文件
+     */
+    public static function zipArchive( $zipFile, $path = "", $outfile = null) {
+
+        if ( empty($outfile) ){
+            $outfile = sys_get_temp_dir() . "/" . Str::uniqid() . ".zip";
+        }
+
+        if ( is_array($zipFile) ) {
+            foreach( $zipFile as $name => $file ){
+                self::zipArchive( $file, "{$path}/{$name}", $outfile);
+            }
+        } else {
+            if (!empty($zipFile) && self::has( $zipFile) ) {
+                // echo "{$outfile}: {$path} > $zipFile \n";
+                $content = self::read( $zipFile );
+                $zip = new ZipArchive;
+                if ( file_exists($outfile) ) {
+                    $res = $zip->open($outfile);
+                } else {
+                    $res = $zip->open($outfile,  ZipArchive::CREATE);
+                }
+                if ($res === TRUE) {
+                    $zip->addFromString($path, $content);
+                    $zip->close();
+                }
+            }
+        }
+
+        return $outfile;
     }
 
 
