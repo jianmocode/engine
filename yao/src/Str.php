@@ -38,9 +38,11 @@ class Str extends IlluminateStr {
     public static function explodeTo2DArray( $input, string $array_delimiter=",", string $object_delimiter="|",  array $columns=[]){
 
         $array = self::explodeAndTrim( $array_delimiter, $input );
+      
         foreach( $array as $idx=> & $arr ) {
-            $object = self::explodeAndTrim($arr, $object_delimiter);
             
+            $object = self::explodeAndTrim($object_delimiter, $arr);
+        
             // 映射字段
             if( !empty($columns) ) {
                 $map = [];
