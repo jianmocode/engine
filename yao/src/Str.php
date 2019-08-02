@@ -25,6 +25,38 @@ class Str extends IlluminateStr {
 
 
     /**
+     * 将字符串转换为二维数组
+     * 
+     * @param string $input 待转换字符串
+     * @param string $array_delimiter 数组分割字符
+     * @param string $object_delimiter  Object 分割字符
+     * @param array  $columns  数组项字段映射，为空数组则转换为数组
+     * 
+     * @return array 二维数组
+     * 
+     */
+    public static function explodeTo2DArray( $input, string $array_delimiter=",", string $object_delimiter="|",  array $columns=[]){
+
+        $array = self::explodeAndTrim( $array_delimiter, $input );
+        foreach( $array as $idx=> & $arr ) {
+            $object = self::explodeAndTrim($arr, $object_delimiter);
+            
+            // 映射字段
+            if( !empty($columns) ) {
+                $map = [];
+                foreach( $columns as $idx=>$col ) {
+                    $map[$col] = Arr::get($object, $idx, null );
+                }
+                $object = $map;
+            }
+
+            $arr = $object;
+        }
+
+        return $array;
+    }
+    
+    /**
      * 如果输入字符串, 将用分隔符分隔的字符串转换为数组, 同时去掉每一项首位空行. 
      * 如果输入字符串数组, 去掉每一项首尾空行.
      * 
