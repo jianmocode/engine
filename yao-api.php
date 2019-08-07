@@ -178,6 +178,7 @@ function handler_error($severity, $message, $file, $line) {
     
     $debug = Arr::get($GLOBALS, "YAO.debug", false);
     if ( $debug ) {
+        $trace = array_reverse(debug_backtrace());
         header("Content-Type: application/json");
         header("server: jianmo/server:1.9.3");
         header("x-powered-by: jianmo.ink");
@@ -189,6 +190,7 @@ function handler_error($severity, $message, $file, $line) {
             "file"=>$file,
             "line" => $line,
             "severity" =>$severity,
+            "trace" => $trace,
         ]);
         exit;
     }
