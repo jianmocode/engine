@@ -120,6 +120,11 @@ class Model extends EloquentModel {
         $files = $this->getFiles();
         foreach( $files as $attr=>$isPrivate ) {
 
+            if ( empty($this->$attr)  ){
+                $this->$attr = null;
+                continue;
+            }
+
             // 解析 JSON 字段
             if ( is_string($this->$attr) ) {
                 $v = json_decode($this->$attr, true);
