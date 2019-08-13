@@ -120,6 +120,12 @@ class Model extends EloquentModel {
         $files = $this->getFiles();
         foreach( $files as $attr=>$isPrivate ) {
 
+            // 忽略未设定字段
+            if ( !isset( $this->$attr) ) {
+                continue;
+            }
+
+            // 设置空字段
             if ( empty($this->$attr)  ){
                 $this->$attr = null;
                 continue;
