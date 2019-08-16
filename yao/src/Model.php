@@ -190,7 +190,6 @@ class Model extends EloquentModel {
 
         $files = $this->getFiles();
         foreach( $files as $attr=>$isPrivate ) {
-            
             if ( in_array($attr, $exclude) || empty($this->$attr)  ) {
                 continue;
             }
@@ -212,10 +211,8 @@ class Model extends EloquentModel {
                     if ( empty($values[$key]) ) {
                         continue;
                     }
-
                     // 单文件
                     if ( is_string($values[$key]) && !Str::isURL($values[$key]) ) {
-                     
                         $values[$key] =  [
                             "url" => $isPrivate ? "{$this->privateURL}/{$values[$key]}" : "{$this->publicURL}/{$values[$key]}",
                             "path" => $values[$key],
