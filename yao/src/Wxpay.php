@@ -184,6 +184,9 @@ class Wxpay {
      */
     public function jssdkParams( array $response ) {
         $prepay_id = Arr::get($response, "prepay_id");
+        if ( empty($prepay_id) ) {
+            throw Excp::create("支付返回结果异常", 500, ["response"=>$response]);
+        }
         $params  = [
             "appId" => Arr::get($response, "appid"),
             "timeStamp" => time(),
