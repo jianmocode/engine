@@ -69,8 +69,10 @@ class Str extends IlluminateStr {
      * 
      */
     public static function explodeAndTrim( string $delimiter, $data ) {
-
         if ( is_array($data) ) {
+            if ( empty($data) ) {
+                return [];
+            }
             foreach( $data as & $v ) {
                 if ( is_array($v) ) {
                     self::explodeAndTrim($delimiter, $v);
@@ -79,8 +81,13 @@ class Str extends IlluminateStr {
                 }
             }
             return $data;
+        } else if ( is_string($data) ) {
+            if ( empty(trim($data)) ) {
+                return [];
+            }
+            return array_map("trim", explode($delimiter, $data));
         }
-        return array_map("trim", explode($delimiter, $data));
+        return [];
     }
     
     /**
