@@ -13,6 +13,7 @@ namespace Yao;
 use \Illuminate\Database\Eloquent\Model as EloquentModel;
 use \League\Flysystem\AdapterInterface;
 use \Illuminate\Database\Eloquent\Builder;
+use \Yao\Schema;
 use \Yao\Arr;
 use \Yao\Str;
 
@@ -63,6 +64,108 @@ class Model extends EloquentModel {
      */
     public $generateId = null;
     
+
+    /**
+     * 数据结构JSON描述文件地址
+     */
+    protected $schemaFile = null;
+
+
+    /**
+     * 更新数据结构
+     */
+    public function setup() {
+        
+        if ( is_null( $this->schemaFile ) ) {
+            throw Excp::create("未设定结构描述文件", 402);
+        }
+
+        if ( !file_exists( $this->schemaFile) || !is_readable( $this->schemaFile ) ) {
+            throw Excp::create("结构描述文件不存在或不可读写", 404);
+        }
+
+        $schema = \yaml_parse_file( $this->schemaFile );
+        if ( !is_array($schema) ) {
+            throw Excp::create("结构描述文件格式错误", 402);
+        }
+
+        $tableName = $this->table;
+        $primaryKey = $this->primaryKey;
+
+        if( empty($tableName) ) {
+            throw Excp::create("数据表未定义", 402);
+        }
+
+        if( empty($primaryKey) ) {
+            throw Excp::create("数据表主键未定义", 402);
+        }          
+      
+        $fields = Arr::get($schema, "fields", []);
+        $indexes = Arr::get($schema, "indexes", []);
+      
+
+        // 创建数据表
+        if ( !Schema::hasTable($tableName) ) {
+            Schema::create($tableName, function ($table) use( $primaryKey ) {
+                $table->bigIncrements($primaryKey)->comment("数据表主键");
+                $table->timestamps();
+                $table->softDeletes();
+            });
+        }
+
+        // 更新数据表
+        Schema::table($tableName, function ( $table) use( $tableName, $fields, $indexes ) {
+
+            // 添加字段
+            foreach( $fields as $schema ) {
+                $name = Arr::get( $schema, "name", null);
+                if ( empty($name) ) {
+                    continue;
+                }
+
+                // 添加字段
+                $method = Arr::get( $schema, "type", "string");
+                $args  = Arr::get( $schema, "args", null);
+                if ( is_null($args) ) {
+                    $args = [$name];
+                } else if ( is_array( $args )) {
+                    $args = array_merge([$name], $args);
+                } else {
+                    $args = array_merge([$name], [$args]);
+                }
+
+                // 字段存在则更新
+                if ( Schema::hasColumn( $tableName, $name) ) {
+
+                    if( $method == "timestamp" ) {
+                        continue;
+                    }
+                    $field = $table->$method(...$args)->change();
+
+                // 字段不存在，则创建
+                } else {
+                    $field = $table->$method(...$args);
+                }
+
+                // 设定是否可为空值
+                if( Arr::get( $schema, "nullable", false) ) {
+                    $field->nullable();
+                }
+
+                // 设定默认值
+                if ( Arr::get( $schema, "default", false) !== false ) {
+                    $field->default( Arr::get( $schema, "default"));
+                }
+
+                // 设定注释
+                if( Arr::get( $schema, "comment", false) ) {
+                    $field->comment(Arr::get( $schema, "comment"));
+                }                
+            }
+        });
+    }
+
+
 
     /**
      * 处理输入文件类字段

@@ -1,0 +1,173 @@
+{
+    "fields": [
+       {
+            "comment" : "商品外部ID",
+            "name"    : "outerid",
+            "type"    : "string",
+            "args"  : 128,
+            "nullable": false
+        },{
+            "comment" : "商品来源平台(tb=淘宝联盟,jd=京东联盟,pdd=拼多多联盟)",
+            "name"    : "origin",
+            "type"    : "string",
+            "args"  : 30,
+            "nullable": false,
+            "default" : "taobao"
+        },{
+            "comment" : "商品标题",
+            "name"    : "title",
+            "type"    : "string",
+            "args"  : 300,
+            "nullable": true
+        },{
+            "comment" : "商品短标题",
+            "name"    : "stort",
+            "type"    : "string",
+            "args"  : 100,
+            "nullable": true
+        },{
+            "comment" : "商品描述",
+            "name"    : "description",
+            "type"    : "string",
+            "args"  : 300,
+            "nullable": true
+        },{
+            "comment" : "人群特征",
+            "name"    : "crowd",
+            "type"    : "string",
+            "args"  : 600,
+            "nullable": true
+        },{
+            "comment" : "商品特征",
+            "name"    : "feature",
+            "type"    : "string",
+            "args"  : 600,
+            "nullable": true
+        },{
+            "comment" : "商品详情",
+            "name"    : "detail",
+            "type"    : "text",
+            "nullable": true
+        },{
+            "comment" : "全文检索",
+            "name"    : "summary",
+            "type"    : "text",
+            "nullable": true
+        },{
+            "comment" : "商品主图",
+            "name"    : "cover",
+            "type"    : "json",
+            "nullable": true,
+            "nested"  : {
+                "default": {
+                    "type": "String",
+                    "name": "默认图片"
+                },
+                "white": {
+                    "type": "String",
+                    "name": "白色底图"
+                }
+            }
+        },{
+            "comment" : "商品图片",
+            "name"    : "images",
+            "type"    : "json",
+            "nullable": true,
+            "array": {
+                "type": "String"
+            }
+        },{
+            "comment" : "商品一级类目编码",
+            "name"    : "category_sn",
+            "type"    : "string",
+            "args"  : 128,
+            "nullable": true
+        },{
+            "comment" : "商品二级类目编码",
+            "name"    : "category_sn_2nd",
+            "type"    : "string",
+            "args"  : 128,
+            "nullable": true
+        },{
+            "comment" : "商品三级类目编码",
+            "name"    : "category_sn_3rd",
+            "type"    : "string",
+            "args"  : 128,
+            "nullable": true
+        },{
+            "comment" : "卖出价",
+            "name"    : "price",
+            "type"    : "integer",
+            "nullable": true
+        },{
+            "comment" : "代金券金额",
+            "name"    : "coupon_price",
+            "type"    : "integer",
+            "nullable": true
+        },{
+            "comment" : "买入价",
+            "name"    : "price_buy",
+            "type"    : "integer",
+            "nullable": true
+        },{
+            "comment" : "原始价格",
+            "name"    : "price_origin",
+            "type"    : "integer",
+            "nullable": true
+        },{
+            "comment": "原始交易数量",
+            "name" :  "sold_cnt",
+            "type" : "bigInteger",
+            "default": 0
+        },{
+            "comment": "微品浏览数量",
+            "name" :  "vpin_view_cnt",
+            "type" : "bigInteger",
+            "default": 0
+        },{
+            "comment": "微品交易数量",
+            "name" :  "vpin_sold_cnt",
+            "type" : "bigInteger",
+            "default": 0
+        },{
+            "comment": "上架店铺数量",
+            "name" :  "vpin_store_cnt",
+            "type" : "bigInteger",
+            "default": 0
+        },{
+            "comment": "领券链接",
+            "name" :  "coupon_url",
+            "type" : "string",
+            "args": 256,
+            "nullable": true
+        },{
+            "comment": "买入链接",
+            "name" :  "url",
+            "type" : "string",
+            "args": 256,
+            "nullable": true
+        },{
+            "comment": "原始链接",
+            "name" :  "origin_url",
+            "type" : "string",
+            "args": 256,
+            "nullable": true
+        },{
+            "comment": "有效期起始",
+            "name" :  "start_at",
+            "type" : "timestamp",
+            "nullable": true
+        },{
+            "comment": "有效期结束",
+            "name" :  "end_at",
+            "type" : "timestamp",
+            "nullable": true
+        },{
+            "comment": "平台原始数据",
+            "name" :  "data",
+            "type" : "json",
+            "nullable": true
+        }
+    ],
+    "indexes": []
+}

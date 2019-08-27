@@ -21,6 +21,13 @@ class Category extends Model {
 
 }
 
+class unitTestModel extends Model {
+    protected $table = 'unit_test';
+    protected $primaryKey = 'id_supplier_item';
+    protected $schemaFile = __DIR__ . "/assets/item.json";
+}
+
+
 /**
  * 测试 DB
  * 
@@ -32,14 +39,14 @@ class Category extends Model {
  */
 class testModel extends TestCase {
 
-
     /**
      * 测试选择数据
      */
-    function testSelect() {
-        $category = \App\Category::where('category_sn', 'unit-test-1234567')->first();
-        $this->assertEquals( $category->category_sn, 'unit-test-1234567' );
-        $this->assertEquals( $category->icon["name"], '地址一' );
+    function testSetup() {
+
+        $ut = new unitTestModel();
+        $ut->setup();
+        $this->assertEquals(true, true);
     }
 
 }
