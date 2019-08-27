@@ -74,7 +74,7 @@ class Model extends EloquentModel {
     /**
      * 更新数据结构
      */
-    public function setup() {
+    public function schema() {
         
         if ( is_null( $this->schemaFile ) ) {
             throw Excp::create("未设定结构描述文件", 402);
@@ -112,6 +112,29 @@ class Model extends EloquentModel {
                 $table->softDeletes();
             });
         }
+        
+        // 删除索引
+        Schema::table($tableName, function ( $table) use( $tableName,  $indexes ) {
+            $indexesQuery = DB::select("SHOW INDEXES FROM {$tableName}");
+            $indexesRemoved = []; 
+            foreach( $indexesQuery as $index ){
+                if ( Arr::get($index, "Key_name") == "PRIMARY") {
+                    continue;
+                }
+
+                $key = Arr::get($index, "Key_name") ;
+                if ( in_array($key, $indexesRemoved) ) {
+                    continue;
+                }
+
+                array_push($indexesRemoved, $key);
+                if ( Arr::get( $index, "Non_unique") ) {
+                    $table->dropIndex( $key );
+                } else {
+                    $table->dropUnique($key);
+                }
+            }
+        });
 
         // 更新数据表
         Schema::table($tableName, function ( $table) use( $tableName, $fields, $indexes ) {
@@ -161,6 +184,25 @@ class Model extends EloquentModel {
                 if( Arr::get( $schema, "comment", false) ) {
                     $field->comment(Arr::get( $schema, "comment"));
                 }                
+            }
+        });
+
+        // 重建索引
+        Schema::table($tableName, function ( $table) use( $tableName,  $indexes ) {
+            foreach( $indexes as $index ) {
+                $name =  Arr::get($index, "name");
+                if ( empty($name) ) {
+                    continue;
+                }
+                $method = Arr::get( $index, "type", "index");
+                $keys = is_array($name) ? implode("_", $name) : $name;
+                $keyName = "{$tableName}_{$keys}_{$method}";
+                $args = Arr::get($index, "field", $name);
+                if ( $method == "fulltext" ) {
+                    DB::statement("ALTER TABLE {$tableName} ADD FULLTEXT INDEX `{$keyName}` (`$name`) WITH PARSER ngram");
+                } else {
+                    $table->$method( $args );
+                }
             }
         });
     }

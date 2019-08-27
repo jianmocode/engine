@@ -42,10 +42,10 @@ class testModel extends TestCase {
     /**
      * 测试选择数据
      */
-    function testSetup() {
+    function testSchema() {
 
         $ut = new unitTestModel();
-        $ut->setup();
+        $ut->schema();
         $this->assertEquals(true, true);
     }
 

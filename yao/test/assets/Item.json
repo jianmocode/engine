@@ -169,5 +169,51 @@
             "nullable": true
         }
     ],
-    "indexes": []
+    "indexes": [
+        {
+            "name" : "outerid",
+            "type" : "unique",
+            "field": ["origin","outerid"]
+        },{
+            "name": "origin"
+        },{
+            "name": "category_sn"
+        },{
+            "name": "category_sn_2nd"
+        },{
+            "name": "category_sn_3rd"
+        },{
+            "name": "price"
+        },{
+            "name": "coupon_price"
+        },{
+            "name": "price_buy"
+        },{
+            "name": "price_origin"
+        },{
+            "name": "sold_cnt"
+        },{
+            "name": "vpin_view_cnt"
+        },{
+            "name": "vpin_sold_cnt"
+        },{
+            "name": "vpin_store_cnt"
+        },{
+            "name": "start_at"
+        },{
+            "name": "end_at"
+        },{
+            "name": "title",
+            "type": "fulltext"
+        },{
+            "name": "summary",
+            "type": "fulltext"
+        },{
+            "name": "crowd",
+            "type": "fulltext"
+        },{
+            "name": "feature",
+            "type": "fulltext"
+        }
+    ]
 }
