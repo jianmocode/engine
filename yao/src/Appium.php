@@ -50,11 +50,12 @@ class Appium {
      * @param array $params 查询参数
      * @return array API 返回结果
      */
-    public function get( string $api, array $params = [] ) {
+    public function get( string $api, array $params = [], array $body=null) {
 
         $url = $this->url( $api );
         $response = Http::get( $url, [
-            'query' => $params
+            'query' => $params,
+            'body' => is_null($body) ? $body : json_encode( $body ),
         ]);
         $code = $response->getStatusCode();
         if ( $code != 200 ) {
