@@ -23,7 +23,8 @@
         "intervention/image": "^2.5",
         "gregwar/captcha": "^1.1",
         "phpoffice/phpspreadsheet": "^1.8",
-        "appium/php-client": "^0.3.0"
+        "appium/php-client": "^0.3.0",
+        "paquettg/php-html-parser": "^2.1"
     },
     "homepage": "https://www.yaojs.org", 
     "license": "MIT",
