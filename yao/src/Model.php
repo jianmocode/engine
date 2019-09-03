@@ -16,6 +16,7 @@ use \Illuminate\Database\Eloquent\Builder;
 use \Yao\Schema;
 use \Yao\Arr;
 use \Yao\Str;
+use \Yao\Utils;
 
 defined("YAO_PUBLIC_URL") ?: define("YAO_PUBLIC_URL", Arr::get($GLOBALS, "YAO.storage.public"));
 defined("YAO_PRIVATE_URL") ?: define("YAO_PRIVATE_URL",Arr::get($GLOBALS, "YAO.storage.private"));
@@ -205,10 +206,12 @@ class Model extends EloquentModel {
         if ( !file_exists( $this->schemaFile) || !is_readable( $this->schemaFile ) ) {
             throw Excp::create("结构描述文件不存在或不可读写", 404);
         }
-
-        $schema = \yaml_parse_file( $this->schemaFile );
-        if ( !is_array($schema) ) {
-            throw Excp::create("结构描述文件格式错误", 402);
+        
+        $schemaData = json_decode( file_get_contents($this->schemaFile), true );
+        if ( !is_array($schemaData) ) {
+            Utils::json_decode($this->schemaFile);
+            $error = Utils::json_error();
+            throw Excp::create("结构描述文件格式错误($error)", 402);
         }
 
         $tableName = $this->table;
@@ -222,10 +225,9 @@ class Model extends EloquentModel {
             throw Excp::create("数据表主键未定义", 402);
         }          
       
-        $fields = Arr::get($schema, "fields", []);
-        $indexes = Arr::get($schema, "indexes", []);
+        $fields = Arr::get($schemaData, "fields", []);
+        $indexes = Arr::get($schemaData, "indexes", []);
       
-
         // 创建数据表
         if ( !Schema::hasTable($tableName) ) {
             Schema::create($tableName, function ($table) use( $primaryKey ) {
