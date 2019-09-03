@@ -88,6 +88,28 @@ class Log extends Logger {
     }
 
     /**
+     * 动态添加/修改日志通道
+     * @param string $name 通道名称
+     * @param string|array $config 通道配置或文件名称
+     * @return void
+     */
+    public static function channel( string $name, $config ) {
+
+        if( is_string($config) ) {
+            $GLOBALS["YAO"]["logger"][$name] = [
+                "handler"=>"Monolog\\Handler\\StreamHandler", 
+                "args"=>[$config, 'debug']
+            ];
+            return;
+        } else if ( is_array($config) ) {
+            $GLOBALS["YAO"]["logger"][$name] = $config;
+            return;
+        }
+
+        throw Excp::create("日志同道配置错误", 400, ["config"=>$config]);
+    }
+
+    /**
      * 创建Log对象
      * 
      * @param string $name 日志通道 
