@@ -59,9 +59,6 @@ class testModel extends TestCase {
         $schemaOrigin = \yaml_parse_file(__DIR__ . "/assets/item.json");
         krsort($schemaOrigin);
         krsort($schemaExport);
-        // krsort($schemaOrigin["fields"]);
-        // krsort($schemaExport["fields"]);
-        
 
         foreach( $schemaExport["indexes"] as & $indexes ) {
             ksort( $indexes );
@@ -81,15 +78,19 @@ class testModel extends TestCase {
             ksort( $fields );
         }
 
+        // 打印对比结果
         if ( md5(json_encode($schemaExport) ) != md5(json_encode($schemaOrigin)) ) {
+
             echo "\n";
-            $diff = xdiff_string_diff( json_encode($schemaExport, JSON_PRETTY_PRINT |JSON_UNESCAPED_UNICODE ) . "\n", json_encode($schemaOrigin, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE). "\n");
             echo "export data:\n";
             echo json_encode($schemaExport, JSON_PRETTY_PRINT |JSON_UNESCAPED_UNICODE )  . "\n";
             
             echo "\n";
             echo "origin data:\n";
             echo json_encode($schemaOrigin, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) . "\n";
+
+            echo "\n";
+            $diff = xdiff_string_diff( json_encode($schemaExport, JSON_PRETTY_PRINT |JSON_UNESCAPED_UNICODE ) . "\n", json_encode($schemaOrigin, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE). "\n");
             echo "diff \n";
             echo $diff;
         }
