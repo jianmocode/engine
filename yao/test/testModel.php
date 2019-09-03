@@ -40,13 +40,61 @@ class unitTestModel extends Model {
 class testModel extends TestCase {
 
     /**
-     * 测试选择数据
+     * 测试创建数据结构
      */
     function testSchema() {
 
         $ut = new unitTestModel();
         $ut->schema();
         $this->assertEquals(true, true);
+    }
+
+    /**
+     * 导出数据结构
+     */
+    function testExportSchema() {
+
+        $ut = new unitTestModel();
+        $schemaExport = $ut->exportSchema();
+        $schemaOrigin = \yaml_parse_file(__DIR__ . "/assets/item.json");
+        krsort($schemaOrigin);
+        krsort($schemaExport);
+        // krsort($schemaOrigin["fields"]);
+        // krsort($schemaExport["fields"]);
+        
+
+        foreach( $schemaExport["indexes"] as & $indexes ) {
+            ksort( $indexes );
+        }
+
+        foreach( $schemaExport["fields"] as & $fields ) {
+            ksort( $fields );
+        }
+
+        foreach( $schemaOrigin["indexes"] as & $indexes ) {
+            ksort( $indexes );
+        }
+
+        foreach( $schemaOrigin["fields"] as & $fields ) {
+            unset($fields["nested"]);
+            unset($fields["array"]);
+            ksort( $fields );
+        }
+
+        if ( md5(json_encode($schemaExport) ) != md5(json_encode($schemaOrigin)) ) {
+            echo "\n";
+            $diff = xdiff_string_diff( json_encode($schemaExport, JSON_PRETTY_PRINT |JSON_UNESCAPED_UNICODE ) . "\n", json_encode($schemaOrigin, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE). "\n");
+            echo "export data:\n";
+            echo json_encode($schemaExport, JSON_PRETTY_PRINT |JSON_UNESCAPED_UNICODE )  . "\n";
+            
+            echo "\n";
+            echo "origin data:\n";
+            echo json_encode($schemaOrigin, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) . "\n";
+            echo "diff \n";
+            echo $diff;
+        }
+        
+        $this->assertEquals(md5(json_encode($schemaExport) ),  md5(json_encode($schemaOrigin)));
     }
 
 }

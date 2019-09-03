@@ -72,6 +72,128 @@ class Model extends EloquentModel {
 
 
     /**
+     * 转化为数据结构配置
+     */
+    public function exportSchema() {
+        
+        // 读取字段详情
+        $schema = [
+            "fields" => [],
+            "indexes" => []
+        ];
+        $fields = DB::table('information_schema.columns')
+                        ->select('*')
+                        ->where('table_name', $this->table )
+                        ->get()
+                        ->toArray();
+
+        $dataTypeMap = [
+            "varchar"   => "string",
+            "bigint"    => "bigInteger",
+            "timestamp" => "timestamp",
+            "int"       => "integer",
+            "text"      => "text",
+            "json"      => "json"
+        ];      
+
+        // 导出字段
+        foreach( $fields as $field ) {
+
+            // 忽略主键
+            if ( Arr::get($field, "COLUMN_KEY") == "PRI") {
+                continue;
+            }
+
+            // 忽略自动添加字段
+            if ( in_array(Arr::get($field, "COLUMN_NAME"), ["updated_at", "created_at", "deleted_at"])) {
+                continue;
+            }
+
+            
+            $struct = [
+                "comment" => Arr::get($field, "COLUMN_COMMENT"),
+                "name"    => Arr::get($field, "COLUMN_NAME"),
+                "type"    => Arr::get($dataTypeMap, $field["DATA_TYPE"], "string"),
+            ];
+
+            // 空值
+            if (Arr::get($field, "IS_NULLABLE") == "YES" ){
+                $struct["nullable"] = true;
+            }
+
+            // 创建参数
+            if ( $struct["type"] == "string" ) {
+                $struct["args"] = Arr::get( $field, "CHARACTER_MAXIMUM_LENGTH", 200);
+            }
+
+            // 默认值
+            if ( Arr::get($field, "COLUMN_DEFAULT", null) != null ) {
+                $struct["default"] = Arr::get($field, "COLUMN_DEFAULT");
+                if ( in_array($struct["type"], ["integer", "bigInteger"]) ) {
+                    $struct["default"] = \intval( $struct["default"]);
+                }
+            }
+
+            array_push($schema["fields"], $struct );
+
+        }
+
+        // 导出索引
+        $indexesQuery = DB::select("SHOW INDEXES FROM {$this->table}");
+        $indexesMap = [];
+        foreach( $indexesQuery as $index ){
+
+            if ( Arr::get($index, "Key_name") == "PRIMARY") {
+                continue;
+            }
+
+            $name = Arr::get($index, "Key_name");
+            $type = Arr::get($index, "Non_unique") == 0 ? 'unique' : 'index';
+            if ( Arr::get($index, "Index_type") == "FULLTEXT" ) {
+                $type = "fulltext";
+            }
+            $field = Arr::get( $index, "Column_name");
+
+            $indexesMap[$name][] = [
+                "name" => preg_replace("/^{$this->table}_([0-9a-zA-Z_]+)_{$type}$/", "\$1", $name),
+                "type" => $type,
+                "field" => $field
+            ];
+        }
+
+        foreach($indexesMap as $index ) {
+            $idx = current($index);
+            $fields = Arr::pluck($index, "field");
+            if ( count($fields) == 1 )  {
+                $struct = [
+                    "name" => $idx["name"]
+                ];
+
+                if ( $idx["name"] != $idx["field"] ) {
+                    $struct = [
+                        "field" => $idx["field"]
+                    ];
+                }
+
+            } else {
+                $struct = [
+                    "name" => $idx["name"],
+                    "field" => $fields
+                ];
+            }
+
+            if ( $idx["type"] != "index") {
+                $struct["type"] = $idx["type"];
+            }
+
+            array_push($schema["indexes"], $struct );
+        }
+
+        return $schema;
+    }
+
+
+    /**
      * 更新数据结构
      */
     public function schema() {

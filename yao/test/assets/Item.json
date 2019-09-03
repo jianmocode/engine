@@ -4,14 +4,12 @@
             "comment" : "商品外部ID",
             "name"    : "outerid",
             "type"    : "string",
-            "args"  : 128,
-            "nullable": false
+            "args"  : 128
         },{
             "comment" : "商品来源平台(tb=淘宝联盟,jd=京东联盟,pdd=拼多多联盟)",
             "name"    : "origin",
             "type"    : "string",
             "args"  : 30,
-            "nullable": false,
             "default" : "taobao"
         },{
             "comment" : "商品标题",
@@ -171,7 +169,7 @@
     ],
     "indexes": [
         {
-            "name" : "outerid",
+            "name" : "origin_outerid",
             "type" : "unique",
             "field": ["origin","outerid"]
         },{
