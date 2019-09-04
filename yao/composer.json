@@ -25,7 +25,8 @@
         "phpoffice/phpspreadsheet": "^1.8",
         "appium/php-client": "^0.3.0",
         "paquettg/php-html-parser": "^2.1",
-        "seld/jsonlint": "^1.7"
+        "seld/jsonlint": "^1.7",
+        "swlib/saber": "^1.0"
     },
     "homepage": "https://www.yaojs.org", 
     "license": "MIT",
