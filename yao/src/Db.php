@@ -47,7 +47,7 @@ class DB extends Capsule {
         if ( !self::$isconnected  ) {
             static::$isconnected = true;
 
-            $config = $GLOBALS["YAO"]["mysql"];
+            $config = self::config();
             $capsule = new self();
             $event = new Dispatcher();
             $event->listen(StatementPrepared::class, function ($event) {
@@ -58,6 +58,37 @@ class DB extends Capsule {
             $capsule->setAsGlobal();
             $capsule->bootEloquent();
         }
+    }
+
+    /**
+     * [异步]连接数据库 
+     * @param string $type write = 写连接, read = 读连接
+     * @return \Swoole\Coroutine\MySQL  Instance
+     */
+    public static function connectAsync( $type="write" ) {
+
+        $config = DB::config();
+        $conn = Arr::get($config, "{$type}.0");
+        if ( empty($conn) ) {
+            throw Excp::create("读取数据库配置失败", 500);
+        }
+
+        $hosts = explode(":", Arr::get($conn, "host"));
+        $conn["host"] = Arr::get($hosts, "0");
+        $conn["port"] = Arr::get($conn, "port") ?  Arr::get($conn, "port") :  Arr::get($hosts, "1", 3306);
+        $conn["user"] = Arr::get($conn, "username");
+        Arr::forget($config, ["read", "write", "sticky", "driver","username"]);
+        $config = array_merge($config, $conn );
+        $mysql = new \Swoole\Coroutine\MySQL();
+        $mysql->connect( $config );
+        return $mysql;
+    }
+
+    /**
+     * 读取数据库配置
+     */
+    public static function config() {
+        return Arr::get($GLOBALS, "YAO.mysql", []);
     }
     
 }
