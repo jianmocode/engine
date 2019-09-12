@@ -67,13 +67,14 @@ function handler_excp($e) {
  * 安全过滤
  */
 function securityFilter( & $input  ) {
-    
+
     if ( is_array($input) ) {
         foreach( $input as & $v ) {
             securityFilter( $v );
         }
     } else if ( is_string($input) ) {
         $input = filter_var($input, FILTER_SANITIZE_STRING);
+        echo "input {$input}\n";
     }
 }
 
