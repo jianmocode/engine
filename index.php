@@ -18,6 +18,27 @@ use \Xpmse\Mem as Mem;
 use \FastRoute\simpleDispatcher;
 use \Mina\Router\Dispatcher;
 
+
+/**
+ * 安全过滤
+ */
+function securityFilter( & $input  ) {
+
+    if ( is_array($input) ) {
+        foreach( $input as & $v ) {
+            securityFilter( $v );
+        }
+    } else if ( is_string($input) ) {
+        $input = filter_var($input, FILTER_SANITIZE_STRING);
+    }
+}
+
+// 安全过滤
+securityFilter( $_GET );
+securityFilter( $_POST );
+
+
+
 function __getInstance() {
 
     if ( !empty($_SERVER['HTTP_CONTENT_INSTANCE']) ) {

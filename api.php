@@ -74,7 +74,6 @@ function securityFilter( & $input  ) {
         }
     } else if ( is_string($input) ) {
         $input = filter_var($input, FILTER_SANITIZE_STRING);
-        echo "input {$input}\n";
     }
 }
 
