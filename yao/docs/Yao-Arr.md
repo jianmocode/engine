@@ -20,6 +20,23 @@ Methods
 -------
 
 
+### isAssoc
+
+    mixed Yao\Arr::isAssoc(array $arr)
+
+检查是否为 Key-Value 结构数组
+
+
+
+* Visibility: **public**
+* This method is **static**.
+
+
+#### Arguments
+* $arr **array**
+
+
+
 ### defaults
 
     void Yao\Arr::defaults(array $input, array $defaults)

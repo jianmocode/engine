@@ -64,3 +64,34 @@ Methods
 
 
 
+
+### connectAsync
+
+    \Swoole\Coroutine\MySQL Yao\DB::connectAsync(string $type)
+
+[异步]连接数据库
+
+
+
+* Visibility: **public**
+* This method is **static**.
+
+
+#### Arguments
+* $type **string** - &lt;p&gt;write = 写连接, read = 读连接&lt;/p&gt;
+
+
+
+### config
+
+    mixed Yao\DB::config()
+
+读取数据库配置
+
+
+
+* Visibility: **public**
+* This method is **static**.
+
+
+

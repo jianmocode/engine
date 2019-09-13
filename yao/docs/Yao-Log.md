@@ -73,6 +73,24 @@ Methods
 
 
 
+### channel
+
+    void Yao\Log::channel(string $name, string|array $config)
+
+动态添加/修改日志通道
+
+
+
+* Visibility: **public**
+* This method is **static**.
+
+
+#### Arguments
+* $name **string** - &lt;p&gt;通道名称&lt;/p&gt;
+* $config **string|array** - &lt;p&gt;通道配置或文件名称&lt;/p&gt;
+
+
+
 ### write
 
     \Yao\Log Yao\Log::write(string $name)

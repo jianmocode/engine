@@ -246,6 +246,42 @@ Methods
 
 
 
+### getExt
+
+    mixed Yao\FS::getExt(\Yao\string $mimeType)
+
+根据 MIME Type 获取扩展名
+
+
+
+* Visibility: **public**
+* This method is **static**.
+
+
+#### Arguments
+* $mimeType **Yao\string**
+
+
+
+### zipArchive
+
+    mixed Yao\FS::zipArchive($zipFile, $path, $outfile)
+
+压缩文件为ZIP文件
+
+
+
+* Visibility: **public**
+* This method is **static**.
+
+
+#### Arguments
+* $zipFile **mixed**
+* $path **mixed**
+* $outfile **mixed**
+
+
+
 ### __callStatic
 
     mixed Yao\FS::__callStatic(string $method, array $parameters)

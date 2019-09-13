@@ -20,6 +20,26 @@ Methods
 -------
 
 
+### explodeTo2DArray
+
+    array Yao\Str::explodeTo2DArray(string $input, string $array_delimiter, string $object_delimiter, array $columns)
+
+将字符串转换为二维数组
+
+
+
+* Visibility: **public**
+* This method is **static**.
+
+
+#### Arguments
+* $input **string** - &lt;p&gt;待转换字符串&lt;/p&gt;
+* $array_delimiter **string** - &lt;p&gt;数组分割字符&lt;/p&gt;
+* $object_delimiter **string** - &lt;p&gt;Object 分割字符&lt;/p&gt;
+* $columns **array** - &lt;p&gt;数组项字段映射，为空数组则转换为数组&lt;/p&gt;
+
+
+
 ### explodeAndTrim
 
     array Yao\Str::explodeAndTrim(string $delimiter, string|array $data)

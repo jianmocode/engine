@@ -85,8 +85,45 @@ Properties
 * Visibility: **public**
 
 
+### $schemaFile
+
+    protected mixed $schemaFile = null
+
+数据结构JSON描述文件地址
+
+
+
+* Visibility: **protected**
+
+
 Methods
 -------
+
+
+### exportSchema
+
+    mixed Yao\Model::exportSchema()
+
+转化为数据结构配置
+
+
+
+* Visibility: **public**
+
+
+
+
+### schema
+
+    mixed Yao\Model::schema()
+
+更新数据结构
+
+
+
+* Visibility: **public**
+
+
 
 
 ### filesInput
@@ -99,6 +136,38 @@ Methods
 
 * Visibility: **public**
 
+
+
+
+### pathFilterURL
+
+    void Yao\Model::pathFilterURL(array $exclude)
+
+处理输入文件类字段读取
+
+
+
+* Visibility: **public**
+
+
+#### Arguments
+* $exclude **array** - &lt;p&gt;排除字段&lt;/p&gt;
+
+
+
+### pathWithURL
+
+    void Yao\Model::pathWithURL(array $exclude)
+
+处理输入文件类字段读取
+
+
+
+* Visibility: **public**
+
+
+#### Arguments
+* $exclude **array** - &lt;p&gt;排除字段&lt;/p&gt;
 
 
 
@@ -148,7 +217,7 @@ Methods
 
 
 
-* Visibility: **private**
+* Visibility: **public**
 
 
 
