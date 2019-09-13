@@ -51,7 +51,7 @@ class testSplash extends TestCase {
                 },
                 "https://www.vpin.biz", [
                     "resource_timeout" => 5,
-                    "user_agent" => "FROM Yao/Splash",
+                    "user_agent" => "FROM Yao/Splash Async",
                     "js_source" => "document.title=\"INJECT TITLE\";"
                 ]
             );
