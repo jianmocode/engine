@@ -73,7 +73,8 @@ class Http {
                 return $e->getResponse();
             }
 
-            $excp = Excp::create("发送远程请求错误", 500, ["method"=>$method, "parameters"=>$parameters]);
+            $message = $e->getMessage();
+            $excp = Excp::create("发送远程请求错误($message)", 500, ["method"=>$method, "parameters"=>$parameters]);
             $excp->log();
             throw $excp;
 
