@@ -34,5 +34,31 @@ class testSplash extends TestCase {
         $this->assertEquals(strpos($content, "INJECT TITLE") !== false, true);
     }
 
+    /**
+     * 测试 RenderHtmlAsync
+     */
+    function testRenderHtmlAsync() {
+
+        $self = $this;
+        go( function(){
+            $content = Splash::renderHtmlAsync(
+                function( $content, $excp ) {
+                    if ( $excp ) {
+                        echo $excp->getMessage();
+                    } else {
+                        echo strpos($content, "INJECT TITLE") . "\n";
+                    }
+                },
+                "https://www.vpin.biz", [
+                    "resource_timeout" => 5,
+                    "user_agent" => "FROM Yao/Splash",
+                    "js_source" => "document.title=\"INJECT TITLE\";"
+                ]
+            );
+        });
+
+        $this->assertEquals(true, true);
+    }
+
 
 }

@@ -121,13 +121,38 @@ class Splash {
     /**
      * [异步]抓取并渲染HTML网页
      * 
-     * @param callable $callback 回调函数 function($content, $error=null){}
+     * @param callable $callback 回调函数 function($content, $excp=null){}
      * @param string $url 页面地址
      * @param array $options 配置选项
-     * @return string HTML页面源码
+     * @return void
      */
     public static function renderHtmlAsync( callable $callback, string $url, array $options=[] ) {
+        
+        // user_agent
+        if ( array_key_exists("user_agent", $options) ) {
+            $options["headers"] = [
+               "User-Agent" => Arr::get($options, "user_agent")
+            ];
+            unset($options["user_agent"]);
+        }
 
+        $options["url"] = $url;
+        $response = \Yao\Async\Http::post( self::$api . "/render.html", $options, [
+            "retry_time" => 3,
+            'headers' => [
+                "Content-Type" => "application/json"
+            ],
+            "after" => function( $response ) use( $callback) {
+                $code = $response->getStatusCode();
+                if ( $code != 200 ) {
+                    $message = $response->getReasonPhrase();
+                    $excp = Excp::create("调用Splash接口错误({$message})", 500, ["reason" => $response->getReasonPhrase(), "status_code"=>$code]);
+                    $callback($response->getBody(), null);
+                }
+
+                $callback($response->getBody(), null);
+            }
+        ]);
     }
 
 }
