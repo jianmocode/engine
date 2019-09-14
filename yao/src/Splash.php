@@ -156,3 +156,7 @@ class Splash {
     }
 
 }
+
+if ( Arr::get($GLOBALS, "YAO.splash") ) {
+    Splash::setting($GLOBALS["YAO"]["splash"]);
+} 
