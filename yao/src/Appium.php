@@ -105,4 +105,41 @@ class Appium {
     }
 
 
+    /**
+     * DELETE 方法调用
+     * 
+     * @param string $api API 名称
+     * @param array $data 请求参数
+     * @param array $params 查询参数
+     * @return array|null API 返回结果
+     */
+    public function delete( string $api, array $data = [], array $params=[] ) {
+
+        $url = $this->url( $api );
+        $response = Http::delete( $url, [
+            'query' => $params,
+            'body'  => json_encode($data)
+        ]);
+        $code = $response->getStatusCode();
+        if ( $code != 200 ) {
+
+            if ( $response->getBody() ) {
+                $error = Http::json( $response );
+                $message = Arr::get( $error, "value.message");
+                $status = Arr::get( $error, "status", 0);
+                $session_id = Arr::get( $error, "sessionId", null);
+                throw Excp::create("接口调用失败($api)", 500, ["message" => $message, "session_id"=>$session_id, "status"=>$status]);
+            }
+
+            throw Excp::create("接口调用失败($api)", 500, ["reason" => $response->getReasonPhrase(), "status_code"=>$code]);
+        }
+
+        if ( $response->getBody() ) {
+            return Http::json( $response );
+        }
+
+        return null;
+    }
+
+
 }
