@@ -22,10 +22,10 @@ class testMQ extends TestCase {
         
         for( $i=0; $i<10; $i++) {
             $time = microtime();
-            $mq->push(["hello"=>"world {$time}"]);
+            $mq->push(["hello"=>"9 world {$time}"]);
         }
-        $mq->push(["hello"=>"world {$time}"], 1);
-        $mq->push(["hello"=>"world {$time}"], 2);
+        $mq->push(["hello"=>"1 world {$time}"], 1);
+        $mq->push(["hello"=>"2 world {$time}"], 2);
         $this->assertEquals(true, true);
     }
 
@@ -50,10 +50,10 @@ class testMQ extends TestCase {
         $mq = new MQ("unit_test_blocking", ["blocking"=>true]);
         for( $i=0; $i<3; $i++) {
             $time = microtime();
-            $mq->push(["hello"=>"blocking world {$time}"]);
+            $mq->push(["hello"=>"9 blocking world {$time}"]);
         }
-        $mq->push(["hello"=>"blocking world {$time}"], 1);
-        $mq->push(["hello"=>"blocking world {$time}"], 2);
+        $mq->push(["hello"=>"1 blocking world {$time}"], 1);
+        $mq->push(["hello"=>"2 blocking world {$time}"], 2);
         $this->assertEquals(true, true);
     }
 
