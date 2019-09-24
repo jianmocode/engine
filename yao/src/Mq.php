@@ -287,11 +287,11 @@ class MQ {
 
         $this->pid = posix_getpid();
         swoole_set_process_name("YAO-MQ-{$this->name}-Master");
+        Redis::hset("mq:{$this->name}", "pid", $this->pid);
         set_time_limit(0);
         for( $i=0; $i<$workerNums; $i++ ) {
             $this->startWorker( $i, $callback, $timeout );
         }
-        Redis::hset("mq:{$this->name}", "pid", $this->pid);
         $this->monitor($callback, $timeout);
         return $this->pid;
     }
@@ -320,14 +320,12 @@ class MQ {
     private function startWorker( int $index=0, callable $callback, int $timeout=0 ) {
         $worker_process = new Process(function (Process $worker) use($index, $callback, $timeout) {
             swoole_set_process_name("YAO-MQ-{$this->name}-Worker-{$index}");    
-            $this->bindMasterExitEvent( $worker );
             try {
                 $this->pop( $callback, $timeout);
             }catch( Excp $e ){
-                echo "执行结果失败 {$e->getMessage()}";
+                echo "执行结果失败 {$e->getMessage()}\n";
             }
-
-        }, 0, true );
+        }, 1, true );
         $worker_pid = $worker_process->start();
         $this->workers[$index] = $worker_pid;
         Redis::hset("mq:{$this->name}", "workers", json_encode($this->workers));
@@ -346,24 +344,9 @@ class MQ {
         $index = array_search($pid, $this->workers);
         if ($index !== false) {
             $this->startWorker($index, $callback, $timeout );
+            return;
         }
-
-        print_r( $this->workers );
-        
         throw Excp::create("子进程不存在({$pid})", 404);
-    }
-
-    /**
-     * 如果主进程退出，等待Worker运行完毕后也退出
-     * @param Process $worker
-     * @return void
-     */
-    private function bindMasterExitEvent( Process $worker ) {
-        // 检查主进程是否已经退出
-        if (!Process::kill($this->pid, 0)) {
-            Redis::hset("mq:{$this->name}", "pid", 0);
-            $worker->exit();
-        }
     }
 
     /**
