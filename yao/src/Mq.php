@@ -69,7 +69,7 @@ class MQ {
 
         // 设置默认值
         Arr::defaults($option, [
-            "blocking" => false, // 是否为阻塞队列, 默认为非阻塞
+            "blocking" => false, // 是否等待 callback 方法运行完毕
             "log" => ["handler"=>"Monolog\\Handler\\StreamHandler", "args"=>["/logs/yao-mq-{$name}.log", 'debug']],
             "backup" => "/backup/yao-mq-{$name}.mq"
         ]);
@@ -293,12 +293,15 @@ class MQ {
      */
     private function startWorker( int $index=0, callable $callback, int $timeout=0 ) {
         $worker_process = new Process(function (Process $worker) use($index, $callback, $timeout) {
-            swoole_set_process_name("YAO-MQ-{$this->name}-Worker-{$index}");    
+            swoole_set_process_name("YAO-MQ-{$this->name}-Worker-{$index}");
+            
+            // 回调任务数据
             try {
-                $this->pop( $callback, $timeout);
+                $this->pop($callback, $timeout);
             }catch( Excp $e ){
-                $callback(["error"=>$e->getMessage() . time(), "context"=>$e->getContext()]);
+                $callback(["error"=>$e->getMessage() . time(), "context"=>$e->getContext()], $e);
             }
+
         }, 1, false );
         $worker_pid = $worker_process->start();
         $this->workers[$index] = $worker_pid;
