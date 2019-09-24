@@ -10,8 +10,7 @@
  */
 
 namespace Yao;
-
-use function GuzzleHttp\json_decode;
+use Swoole\Process;
 
 /**
  * 轻量级消息队列
@@ -35,30 +34,19 @@ class MQ {
 
 
     /**
-     * Worker 进程信息
+     * 主进程PID
      * 
-     * @var array<Process>
+     * @var int
      */
-    private $processes = [];
+    private $pid = 0;
 
 
     /**
-     * Worker 信息
+     * Worker PID
      * 
-     * @var array<Worker>
+     * @var array<int>
      */
     private $workers = [];
-
-
-    /**
-     * 等待关闭标记
-     */
-    private $flagStop = false;
-
-    /**
-     * 等待清空标记
-     */
-    private $flagClean = false;
 
 
     /**
@@ -68,15 +56,16 @@ class MQ {
 
         // 从缓存中读取配置
         if ( empty($option) ) {
-            $option_cache = Redis::get("mq:{$name}:option");
+
+            // 读取配置
+            $option_cache = Redis::hget("mq:{$name}", "option");
             if( $option_cache != false) {
                 $option = json_decode($option_cache, true);
             }
-            if ( $option === false ) {
+            if ( !is_array($option) ) {
                 $option = [];
             }
         }
-
         // 设置默认值
         Arr::defaults($option, [
             "blocking" => false, // 是否为阻塞队列, 默认为非阻塞
@@ -87,7 +76,24 @@ class MQ {
         // 方法赋值
         $this->name = $name;
         $this->option = $option;
-        Redis::set("mq:{$this->name}:option", json_encode($option));
+
+        // 设定配置
+        Redis::hset("mq:{$this->name}", "option", json_encode($option));
+
+        // 读取主进程信息
+        $pid = Redis::hget("mq:{$this->name}", "pid");
+        if ( $pid ) {
+            $this->pid = $pid;
+        }
+
+        // 读取Worker进程信息
+        $workers = Redis::hget("mq:{$this->name}", "workers");
+        if ( $workers !== false ) {
+            $workers = json_decode($workers, true);
+            if ( $workers !== false) {
+                $this->workers = $workers;
+            }
+        }
     }
 
     /**
@@ -184,10 +190,6 @@ class MQ {
      */
     public function push( array $data, int $priority=9 ) {
         
-        if ( $this->flagStop || $this->flagClean ) {
-            return $this;
-        }
-
         // 最多9个优先级
         if ( $priority < 0 || $priority > 9 ) {
             $priority = 9;
@@ -241,7 +243,7 @@ class MQ {
         }
 
         $priorities = json_decode($text, true);
-        if ( $priorities === false ) {
+        if ( !is_array($priorities) ) {
             $priorities = [];
         }
         return $priorities;
@@ -267,29 +269,122 @@ class MQ {
         return $this;
     }
 
-
     /**
-     * 启动Worker进程
+     * 启动队列
+     * 
+     * @param callable $callback 任务程序
+     * @param int $workerNums Worker数量
+     * @param int $timeout 任务运行超时时长，单位秒
+     * 
+     * @return int 主进程PID
      */
-    public function start( callable $callback, int $workerNum = 1, int $timeout=0, callable $onSuccess=null, callable $onError=null) {
+    public function start( callable $callback, int $workerNums = 1, int $timeout=0 ) {
+
+        // 检查守护进程是否已经启动
+        if ( $this->pid != 0 && Process::kill($this->pid, 0) ) {
+            throw Excp::create("{$this->name}守护进程已启动 PID={$this->pid}", 403);
+        }
+
+        $this->pid = posix_getpid();
+        swoole_set_process_name("YAO-MQ-{$this->name}-Master");
+        set_time_limit(0);
+        for( $i=0; $i<$workerNums; $i++ ) {
+            $this->startWorker( $i, $callback, $timeout );
+        }
+        Redis::hset("mq:{$this->name}", "pid", $this->pid);
+        $this->monitor($callback, $timeout);
+        return $this->pid;
     }
 
     /**
-     * 关闭Worker进程
+     * 关闭队列
+     * @return bool true 关闭成功, false 关闭失败
      */
-    public function stop( bool $wait_pending = true) {
+    public function stop() {
+        Process::kill($this->pid, 9);
+        if(!Process::kill($this->pid, 0)) {
+            Redis::hset("mq:{$this->name}", "pid",0);
+            return true;
+        }
+        return false;
     }
 
     /**
-     * 队列监控程序
+     * 创建Worker进程
+     * 
+     * @param int       $index      Worker序号
+     * @param callable  $callback   任务程序
+     * @param int       $timeout    任务运行超时时长，单位秒
+     * @return void
      */
-    public function monitor() {
+    private function startWorker( int $index=0, callable $callback, int $timeout=0 ) {
+        $worker_process = new Process(function (Process $worker) use($index, $callback, $timeout) {
+            swoole_set_process_name("YAO-MQ-{$this->name}-Worker-{$index}");    
+            $this->bindMasterExitEvent( $worker );
+            try {
+                $this->pop( $callback, $timeout);
+            }catch( Excp $e ){
+                echo "执行结果失败 {$e->getMessage()}";
+            }
+
+        }, 0, true );
+        $worker_pid = $worker_process->start();
+        $this->workers[$index] = $worker_pid;
+        Redis::hset("mq:{$this->name}", "workers", json_encode($this->workers));
     }
 
     /**
-     * Worker 进程清单
+     * 重启Worker进程
+     * 
+     * @param int       $pid        Worker进程号
+     * @param callable  $callback   任务程序
+     * @param int       $timeout    任务运行超时时长，单位秒
+     * @return void
      */
-    public function processes() {
+    private function restartWorker( int $pid, callable $callback, int $timeout=0 ) {
+        
+        $index = array_search($pid, $this->workers);
+        if ($index !== false) {
+            $this->startWorker($index, $callback, $timeout );
+        }
+
+        print_r( $this->workers );
+        
+        throw Excp::create("子进程不存在({$pid})", 404);
+    }
+
+    /**
+     * 如果主进程退出，等待Worker运行完毕后也退出
+     * @param Process $worker
+     * @return void
+     */
+    private function bindMasterExitEvent( Process $worker ) {
+        // 检查主进程是否已经退出
+        if (!Process::kill($this->pid, 0)) {
+            Redis::hset("mq:{$this->name}", "pid", 0);
+            $worker->exit();
+        }
+    }
+
+    /**
+     * 监控Worker进程(如果退出，自动重启)
+     * 
+     * @param callable  $callback   任务程序
+     * @param int       $timeout    任务运行超时时长，单位秒
+     * @return void
+     */
+    private function monitor( callable $callback, int $timeout=0 ) {
+        while(1){
+            if ( count($this->workers) ) {
+                // 检查退出子进程
+                $worker_process = Process::wait(); 
+                if ($worker_process) {
+                    $this->restartWorker(Arr::get($worker_process, "pid"), $callback, $timeout);
+                }
+            } else {
+                break;
+            }
+        }
     }
 
     /**

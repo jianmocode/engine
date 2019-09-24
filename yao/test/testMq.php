@@ -69,5 +69,30 @@ class testMQ extends TestCase {
         }
         $this->assertEquals(true, true);
     }
+
+    /**
+     * 测试 Start 方法
+     */
+    function testStart(){
+        $mq = new MQ("unit_test");
+        $mq->start(function($data){
+            echo "\nHello Daemon {$data["hello"]}";
+        }, 2);
+        $this->assertEquals(true, true);
+    }
+
+    /**
+     * 测试推入队列
+     */
+    // function testPopDaemon() {
+    //     $mq = new MQ("unit_test");
+    //     for( $i=0; $i<10; $i++) {
+    //         $time = microtime();
+    //         $mq->push(["hello"=>"9 world {$time}"]);
+    //     }
+    //     $mq->push(["hello"=>"1 world {$time}"], 1);
+    //     $mq->push(["hello"=>"2 world {$time}"], 2);
+    //     $this->assertEquals(true, true);
+    // }
     
 }
