@@ -65,13 +65,29 @@ class MQ {
      * 创建一个消息队列
      */
     public function __construct(string $name, array $option=[]) {
+
+        // 从缓存中读取配置
+        if ( empty($option) ) {
+            $option_cache = Redis::get("mq:{$name}:option");
+            if( $option_cache != false) {
+                $option = json_decode($option_cache, true);
+            }
+            if ( $option === false ) {
+                $option = [];
+            }
+        }
+
+        // 设置默认值
         Arr::defaults($option, [
             "blocking" => false, // 是否为阻塞队列, 默认为非阻塞
             "log" => ["handler"=>"Monolog\\Handler\\StreamHandler", "args"=>["/logs/yao-mq-{$name}.log", 'debug']],
             "backup" => "/backup/yao-mq-{$name}.mq"
         ]);
+
+        // 方法赋值
         $this->name = $name;
         $this->option = $option;
+        Redis::set("mq:{$this->name}:option", json_encode($option));
     }
 
     /**

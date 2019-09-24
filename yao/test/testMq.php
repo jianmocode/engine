@@ -61,7 +61,7 @@ class testMQ extends TestCase {
      * 测试 Pop 阻塞模式
      */
     function testPopBlocking() {
-        $mq = new MQ("unit_test_blocking",["blocking"=>true]);
+        $mq = new MQ("unit_test_blocking");
         for( $i=0; $i<5; $i++){
             $mq->pop(function($data){
                 echo "\nHello {$data["hello"]}";
