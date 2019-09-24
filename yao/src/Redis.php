@@ -40,6 +40,10 @@ class Redis {
 
         if ( !Redis::$predis instanceof Client ) {
             $config = Arr::get($GLOBALS, "YAO.redis");
+            Arr::defaults($config, [
+                "read_write_timeout" => -1,
+                "connection_timeout" => 5
+            ]);
             try {
                 Redis::$predis = new Client( $config );
             } catch( Exception $e ) {

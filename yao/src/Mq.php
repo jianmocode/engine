@@ -66,6 +66,7 @@ class MQ {
                 $option = [];
             }
         }
+
         // 设置默认值
         Arr::defaults($option, [
             "blocking" => false, // 是否为阻塞队列, 默认为非阻塞
@@ -77,7 +78,8 @@ class MQ {
         $this->name = $name;
         $this->option = $option;
 
-        // 设定配置
+        // 添加到列表 & 设定配置
+        Redis::hset("mq:list", $this->name, 1);
         Redis::hset("mq:{$this->name}", "option", json_encode($option));
 
         // 读取主进程信息
@@ -94,6 +96,7 @@ class MQ {
                 $this->workers = $workers;
             }
         }
+
     }
 
     /**
@@ -108,20 +111,31 @@ class MQ {
             $this->lock( $timeout );
         }
         
-        $priorities = $this->priorities();
-        $priority_names = preg_filter('/^/', "mq:{$this->name}:", $priorities);
-        array_push($priority_names, $timeout);
-        $data_res = Redis::brpop(...$priority_names);
-        if ($data_res === false ){
+        $priority_names = [
+            "mq:{$this->name}:1",
+            "mq:{$this->name}:2",
+            "mq:{$this->name}:3",
+            "mq:{$this->name}:4",
+            "mq:{$this->name}:5",
+            "mq:{$this->name}:6",
+            "mq:{$this->name}:7",
+            "mq:{$this->name}:8",
+            "mq:{$this->name}:9"
+        ];
+        $data_res = Redis::brpop($priority_names, $timeout);
+        if (!$data_res){
             throw Excp::create("消费任务失败(REDIS返回结果异常)", 500, [
+                "prioritys" => $priority_names,
+                "data_res" => $data_res,
                 "name" => $this->name,
                 "option" => $this->option
             ]);
         }
 
-        $data = json_decode(Arr::get($data_res, 1, ""), true);
+        $data = json_decode(Arr::get($data_res, 1), true);
         if ( $data === false ) {
             throw Excp::create("消费任务失败(JSON解析错误)", 500, [
+                "data_res" => $data_res,
                 "name" => $this->name,
                 "option" => $this->option
             ]);
@@ -195,7 +209,6 @@ class MQ {
             $priority = 9;
         }
 
-        $this->addPriority($priority);
         $priority_name = "{$this->name}:{$priority}";
         if (Redis::lpush("mq:{$priority_name}", json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)) === false){
             throw Excp::create("添加任务失败", 500, [
@@ -228,45 +241,6 @@ class MQ {
         if ( Redis::exists($unlock) ) {
             Redis::brpop($unlock, $timeout);
         }
-    }
-
-    /**
-     * 读取所有优先级数据
-     * 
-     * @return array<int> 优先级列表
-     */
-    private function priorities() {
-
-        $text = Redis::hGet("mq:list", $this->name);
-        if ( !$text  ) {
-            $text = "[]";
-        }
-
-        $priorities = json_decode($text, true);
-        if ( !is_array($priorities) ) {
-            $priorities = [];
-        }
-        return $priorities;
-    }
-
-    /**
-     * 添加优先级
-     * 
-     * @param int $priority 优先级
-     * @return $this
-     */
-    private function addPriority( int $priority ){
-        $priorities = $this->priorities();
-        array_push( $priorities, $priority );
-        $priorities = array_unique( $priorities );
-        sort($priorities);
-        if (Redis::hSet("mq:list", $this->name, json_encode($priorities)) === false) {
-            throw Excp::create("添加优先级失败", 500, [
-                "priority" => $priority
-            ]);
-        }
-
-        return $this;
     }
 
     /**
@@ -323,9 +297,9 @@ class MQ {
             try {
                 $this->pop( $callback, $timeout);
             }catch( Excp $e ){
-                echo "执行结果失败 {$e->getMessage()}\n";
+                $callback(["error"=>$e->getMessage() . time(), "context"=>$e->getContext()]);
             }
-        }, 1, true );
+        }, 1, false );
         $worker_pid = $worker_process->start();
         $this->workers[$index] = $worker_pid;
         Redis::hset("mq:{$this->name}", "workers", json_encode($this->workers));
