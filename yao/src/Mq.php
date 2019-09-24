@@ -128,16 +128,12 @@ class MQ {
             if ( $blocking ) {
                 $this->unlock();
             }
-
-            $excp = Excp::create("消费任务失败(REDIS返回结果异常)", 502, [
+            throw Excp::create("消费任务失败(REDIS返回结果异常)", 500, [
                 "prioritys" => $priority_names,
                 "data_res" => $data_res,
                 "name" => $this->name,
                 "option" => $this->option
             ]);
-
-            $callback( null, $excp );
-            return;
         }
 
         $data = json_decode(Arr::get($data_res, 1), true);
@@ -146,35 +142,28 @@ class MQ {
             if ( $blocking ) {
                 $this->unlock();
             }
-
-            $excp = Excp::create("消费任务失败(JSON解析错误)", 502, [
+            throw Excp::create("消费任务失败(JSON解析错误)", 500, [
                 "data_res" => $data_res,
                 "name" => $this->name,
                 "option" => $this->option
             ]);
-
-            $callback( null, $excp );
-            return;
         }
 
         // 错误处理
-        set_error_handler(function($errno, $errstr, $errfile, $errline ) use($blocking, $callback){
+        set_error_handler(function($errno, $errstr, $errfile, $errline ) use($blocking){
             
             // 阻塞模式下，解锁
             if ( $blocking ) {
                 $this->unlock();
             }
 
-            $excp = Excp::create("消费任务执行失败({$errstr})", 502, [
+            throw Excp::create("消费任务执行失败({$errstr})", 500, [
                 "errno" => $errno,
                 "errline" => $errline,
                 "errfile" => $errfile,
                 "name" => $this->name,
                 "option" => $this->option
             ]);
-
-            $callback( null, $excp );
-            return;
         });
 
         $response = null;
@@ -182,6 +171,7 @@ class MQ {
         // 捕获异常
         try {
             $response = $callback( $data );
+
         } catch( Excp $e ) {
             
             // 阻塞模式下，解锁
@@ -264,13 +254,18 @@ class MQ {
     /**
      * 启动队列
      * 
-     * @param callable $callback 任务程序
      * @param int $workerNums Worker数量
+     * @param callable $callback 任务程序
+     * @param callable $onError 错误回调函数
      * @param int $timeout 任务运行超时时长，单位秒
      * 
      * @return int 主进程PID
      */
-    public function start( callable $callback, int $workerNums = 1, int $timeout=0 ) {
+    public function start(int $workerNums = 1, callable $callback, callable $onError=null,  int $timeout=0 ) {
+        
+        if ( $onError == null ) {
+            $onError = function($excp){};
+        }
 
         // 检查守护进程是否已经启动
         if ( $this->pid != 0 && Process::kill($this->pid, 0) ) {
@@ -282,9 +277,9 @@ class MQ {
         Redis::hset("mq:{$this->name}", "pid", $this->pid);
         set_time_limit(0);
         for( $i=0; $i<$workerNums; $i++ ) {
-            $this->startWorker( $i, $callback, $timeout );
+            $this->startWorker( $i, $callback, $onError, $timeout );
         }
-        $this->monitor($callback, $timeout);
+        $this->monitor($callback, $onError, $timeout);
         return $this->pid;
     }
 
@@ -306,21 +301,21 @@ class MQ {
      * 
      * @param int       $index      Worker序号
      * @param callable  $callback   任务程序
+     * @param callable  $onError    错误处理函数
      * @param int       $timeout    任务运行超时时长，单位秒
      * @return void
      */
-    private function startWorker( int $index=0, callable $callback, int $timeout=0 ) {
-        $worker_process = new Process(function (Process $worker) use($index, $callback, $timeout) {
+    private function startWorker( int $index=0, callable $callback, callable $onError, int $timeout=0 ) {
+        $worker_process = new Process(function (Process $worker) use($index, $callback, $onError, $timeout) {
             swoole_set_process_name("YAO-MQ-{$this->name}-Worker-{$index}");
-            
             // 回调任务数据
             try {
                 $this->pop($callback, $timeout);
             }catch( Excp $e ){
-                $callback(["error"=>$e->getMessage() . time(), "context"=>$e->getContext()], $e);
+                $onError($e);
             }
 
-        }, 1, false );
+        }, 1, true);
         $worker_pid = $worker_process->start();
         $this->workers[$index] = $worker_pid;
         Redis::hset("mq:{$this->name}", "workers", json_encode($this->workers));
@@ -331,14 +326,15 @@ class MQ {
      * 
      * @param int       $pid        Worker进程号
      * @param callable  $callback   任务程序
+     * @param callable  $onError    错误处理函数
      * @param int       $timeout    任务运行超时时长，单位秒
      * @return void
      */
-    private function restartWorker( int $pid, callable $callback, int $timeout=0 ) {
+    private function restartWorker( int $pid, callable $callback, callable $onError, int $timeout=0 ) {
         
         $index = array_search($pid, $this->workers);
         if ($index !== false) {
-            $this->startWorker($index, $callback, $timeout );
+            $this->startWorker($index, $callback, $onError, $timeout );
             return;
         }
         throw Excp::create("子进程不存在({$pid})", 404);
@@ -348,28 +344,24 @@ class MQ {
      * 监控Worker进程(如果退出，自动重启)
      * 
      * @param callable  $callback   任务程序
+     * @param callable  $onError    错误回调函数
      * @param int       $timeout    任务运行超时时长，单位秒
      * @return void
      */
-    private function monitor( callable $callback, int $timeout=0 ) {
+    private function monitor( callable $callback, callable $onError, int $timeout=0 ) {
         while(1){
             if ( count($this->workers) ) {
                 // 检查退出子进程
                 $worker_process = Process::wait(); 
                 if ($worker_process) {
-                    $this->restartWorker(Arr::get($worker_process, "pid"), $callback, $timeout);
+                    $this->restartWorker(Arr::get($worker_process, "pid"), $callback,$onError, $timeout);
                 }
             } else {
                 break;
             }
         }
     }
-
-    /**
-     * 队列中任务清单
-     */
-    public function jobs() {
-    }
+    
 
     /**
      * 终止指定任务

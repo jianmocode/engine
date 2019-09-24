@@ -75,9 +75,9 @@ class testMQ extends TestCase {
      */
     function testStart(){
         $mq = new MQ("unit_test");
-        $mq->start(function($data){
+        $mq->start(2, function($data){
             echo "\nHello Daemon {$data["hello"]}";
-        }, 2);
+        });
         $this->assertEquals(true, true);
     }
 
