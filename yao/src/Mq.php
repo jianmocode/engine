@@ -124,6 +124,10 @@ class MQ {
         ];
         $data_res = Redis::brpop($priority_names, $timeout);
         if (!$data_res){
+            // 阻塞模式下，解锁
+            if ( $blocking ) {
+                $this->unlock();
+            }
             throw Excp::create("消费任务失败(REDIS返回结果异常)", 500, [
                 "prioritys" => $priority_names,
                 "data_res" => $data_res,
@@ -134,6 +138,10 @@ class MQ {
 
         $data = json_decode(Arr::get($data_res, 1), true);
         if ( $data === false ) {
+            // 阻塞模式下，解锁
+            if ( $blocking ) {
+                $this->unlock();
+            }
             throw Excp::create("消费任务失败(JSON解析错误)", 500, [
                 "data_res" => $data_res,
                 "name" => $this->name,
