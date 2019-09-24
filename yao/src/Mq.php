@@ -128,12 +128,16 @@ class MQ {
             if ( $blocking ) {
                 $this->unlock();
             }
-            throw Excp::create("消费任务失败(REDIS返回结果异常)", 500, [
+
+            $excp = Excp::create("消费任务失败(REDIS返回结果异常)", 502, [
                 "prioritys" => $priority_names,
                 "data_res" => $data_res,
                 "name" => $this->name,
                 "option" => $this->option
             ]);
+
+            $callback( null, $excp );
+            return;
         }
 
         $data = json_decode(Arr::get($data_res, 1), true);
@@ -142,28 +146,35 @@ class MQ {
             if ( $blocking ) {
                 $this->unlock();
             }
-            throw Excp::create("消费任务失败(JSON解析错误)", 500, [
+
+            $excp = Excp::create("消费任务失败(JSON解析错误)", 502, [
                 "data_res" => $data_res,
                 "name" => $this->name,
                 "option" => $this->option
             ]);
+
+            $callback( null, $excp );
+            return;
         }
 
         // 错误处理
-        set_error_handler(function($errno, $errstr, $errfile, $errline ) use($blocking){
+        set_error_handler(function($errno, $errstr, $errfile, $errline ) use($blocking, $callback){
             
             // 阻塞模式下，解锁
             if ( $blocking ) {
                 $this->unlock();
             }
 
-            throw Excp::create("消费任务执行失败({$errstr})", 500, [
+            $excp = Excp::create("消费任务执行失败({$errstr})", 502, [
                 "errno" => $errno,
                 "errline" => $errline,
                 "errfile" => $errfile,
                 "name" => $this->name,
                 "option" => $this->option
             ]);
+
+            $callback( null, $excp );
+            return;
         });
 
         $response = null;
@@ -171,7 +182,6 @@ class MQ {
         // 捕获异常
         try {
             $response = $callback( $data );
-
         } catch( Excp $e ) {
             
             // 阻塞模式下，解锁
