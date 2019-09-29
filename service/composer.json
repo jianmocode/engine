@@ -39,7 +39,9 @@
         "paquettg/php-html-parser":"1.7.0",
         "andreskrey/readability.php":"v1.1.0",
         "tga/simhash-php":"2.0",
-        "aliyuncs/oss-sdk-php": "~2.3.0"
+        "aliyuncs/oss-sdk-php": "~2.3.0",
+        "cache/simple-cache-bridge": "^1.0",
+        "cache/redis-adapter": "^1.0"
     },
     
     "require-dev": {
