@@ -46,7 +46,9 @@ class testModelDatabase extends TestCase {
             ->addColumn( "data",   $md->type('text',['json'=>true]) )
             ->addColumn( "data_origin_1",   $md->type('json',['null'=>true]) )
             ->addColumn( "data_origin_2",   $md->type('json',['null'=>false]) )
-		;
+        ;
+        
+        $this->assertEquals(true, true);
 	}
 
 

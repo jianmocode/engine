@@ -19,6 +19,8 @@ use \Mina\Cache\Redis as Cache;
 
 use \Xpmse\DataDriver\Data as Data;
 use \Illuminate\Database\Capsule\Manager as DB;
+use Illuminate\Events\Dispatcher;
+use Illuminate\Database\Events\StatementPrepared;
 use \Illuminate\Database\Query\Builder as QueryBuilder;
 use \Illuminate\Database\ConnectionInterface as ConnectionInterface;
 use \Illuminate\Database\Query\Grammars\Grammar as Grammar;
@@ -286,13 +288,13 @@ class Database implements Data {
 
 
 	/**
-	 * @var JSON 字段
+	 * @var array 字段
 	 */
 	private $json = null;
 
 
 	/**
-	 * @var JSON MAP 字段
+	 * @var array MAP 字段
 	 */
 	private $json_map = [];
 
@@ -387,7 +389,12 @@ class Database implements Data {
 			"database" => !empty($options['database']) ? trim($options['database']): $db_name,
 		];
 
-		$this->db = new DB;
+        $this->db = new DB;
+        $event = new Dispatcher();
+        $event->listen(StatementPrepared::class, function ($event) {
+            $event->statement->setFetchMode(PDO::FETCH_ASSOC);
+        });
+        $this->db->setEventDispatcher( $event );
 		$read_cname  = "_db_read_" . md5( implode('_', array_values($read) ) );
 		$write_cname  = "_db_write" . md5( implode('_', array_values($write) ) );
 
@@ -403,7 +410,9 @@ class Database implements Data {
 			$GLOBALS[$write_cname] = $this->conn['write'] = $this->db->getConnection('write');
 		} else {
 			$this->conn['write'] = $GLOBALS[$write_cname];
-		}
+        }
+        
+        $this->db->setAsGlobal();
 
 		// Fix Connection BUG 
 		$prefix = !empty($options['prefix']) ? trim($options['prefix']): $prefix;
@@ -569,7 +578,7 @@ class Database implements Data {
 
 	/**
 	 * 创建一条数据，如果存在则更新
-	 * @param  array	  $data		数据集合
+	 * @param  array $data		数据集合
 	 * @param  array|null $updateColumns 待更新字段清单，为 null 则更新 data 中填写的字段。
 	 * @return boolean 成功返回  true, 失败返回false
 	 */
@@ -635,7 +644,6 @@ class Database implements Data {
 
 			throw new Excp( $e->getMessage(), $e->getCode(), [
 					'sql' => $sql,
-					'return' => $return,
 					'message'=>$e->getMessage(), '__trace__'=>$e->getTrace()
 				]);
 		}
@@ -1021,7 +1029,7 @@ class Database implements Data {
 		$sql = "SELECT $fdstr FROM $table_fullname $query";
 
 		$db = $this->db('read');
-		$db->setFetchMode(PDO::FETCH_ASSOC);
+		// $db->setFetchMode(PDO::FETCH_ASSOC);
 
 		try {
 
@@ -1101,14 +1109,14 @@ class Database implements Data {
 	 * @see https://github.com/illuminate/database/blob/master/Query/Builder.php
 	 * @return \Illuminate\Database\Query\Builder 对象
 	 */
-	function query( $db="read", $include_removed=false ) {
+	function query( $conn_name="read", $include_removed=false ) {
 
 		if ( $this->table == null ) {
 			throw new Excp('未选定数据表', 404, ['table' => null] );
 		}
 
-		$db = $this->db( $db );
-		$db->setFetchMode(PDO::FETCH_ASSOC);
+		$db = $this->db( $conn_name );
+		// $db->setFetchMode(PDO::FETCH_ASSOC);
 
 		$qb = new databaseQueryBuilder(
 			$db, $db->getQueryGrammar(), $db->getPostProcessor(),
@@ -1145,7 +1153,7 @@ class Database implements Data {
 
 		if ( $return ) {
 			
-			$db->setFetchMode(PDO::FETCH_ASSOC);
+			// $db->setFetchMode(PDO::FETCH_ASSOC);
 			
 			try {
 				$rows = $db->select($sql, $data);
@@ -1380,7 +1388,7 @@ class Database implements Data {
 			throw new Excp('未选定数据表', 404, [
 				'table' => null,
 				'column_name'=>$column_name, 
-				'type'=>$type ] );
+			    ] );
 		}
 
 		$schema = $this->db()->getSchemaBuilder();
@@ -1396,15 +1404,12 @@ class Database implements Data {
 
 	/**
 	 * 读取数据表字段清单
-	 * @return [type] [description]
+	 * @return Array
 	 */
 	public function getColumns() {
 
 		if ( $this->table == null ) {
-			throw new Excp('未选定数据表', 404, [
-				'table' => null,
-				'column_name'=>$column_name, 
-				'type'=>$type ] );
+			throw new Excp('未选定数据表', 404 );
         }
         
         
@@ -1425,6 +1430,9 @@ class Database implements Data {
     }
 
 
+    /**
+     * @return array
+     */
     private function getJSONColumns( $table_name="", $reload=false) {
         
         $table_name  = trim($table_name);
@@ -1791,8 +1799,8 @@ class Database implements Data {
 		if ( $this->table == null ) {
 			throw new Excp('未选定数据表', 404, [
 				'table' => null,
-				'column_name'=>$column_name, 
-				'type'=>$type ] );
+                'column_name'=>$column_name
+            ]);
 		}
 
         $this->clearCache();
@@ -1808,8 +1816,8 @@ class Database implements Data {
 			if ( !$allow_not_exists ) {
 				throw new Excp('字段不存在', 404, [
 					'table' => $this->table,
-					'column_name'=>$column_name, 
-					'type'=>$type ]);
+                    'column_name'=>$column_name
+                ]);
 			}
 
 			unset($GLOBALS['_dropColumnArgs']);
@@ -1852,7 +1860,7 @@ class Database implements Data {
 	 * 快速读取数据库连接
 	 * 
 	 * @param  [type] $name [description]
-	 * @return [type]	   [description]
+	 * @return ConnectionInterface	   [description]
 	 */
 	function db( $name = 'write' ) {
 
@@ -2032,7 +2040,7 @@ class Database implements Data {
 	
 	/**
 	 * 过滤无效输入参数
-	 * @param  [type] $data [description]
+	 * @param  array $data [description]
 	 * @return [type]	   [description]
 	 */
 	public function _fliter( & $data, $replaceRaw = true  ) {
@@ -2170,7 +2178,7 @@ class Database implements Data {
      * 返回数据缓存名称
      */
     private function cacheName( $name  ) {
-        $table_name  = trim($table_name);
+        $table_name  = "";
 		$table_name = empty($table_name) ? trim($this->table) : $table_name;
         $table_fullname = $this->db()->getTablePrefix().$table_name;
         return "{$table_fullname}:{$name}";

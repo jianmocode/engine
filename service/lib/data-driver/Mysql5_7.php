@@ -21,6 +21,8 @@ use \Mina\Cache\Redis as Cache;
 use \Xpmse\DataDriver\Data as Data;
 use \Illuminate\Database\Capsule\Manager as DB;
 use \Illuminate\Database\Query\Builder as QueryBuilder;
+use Illuminate\Events\Dispatcher;
+use Illuminate\Database\Events\StatementPrepared;
 use \Illuminate\Database\ConnectionInterface as ConnectionInterface;
 use \Illuminate\Database\Query\Grammars\Grammar as Grammar;
 use \Illuminate\Database\Query\Processors\Processor as Processor;
@@ -146,6 +148,11 @@ class Mysql5_7 implements Data {
 		];
 
         $this->db = new DB;
+        $event = new Dispatcher();
+        $event->listen(StatementPrepared::class, function ($event) {
+            $event->statement->setFetchMode(PDO::FETCH_ASSOC);
+        });
+        $this->db->setEventDispatcher( $event );
     
 		$read_cname  = "_db_read_" . md5( implode('_', array_values($read) ) );
 		$write_cname  = "_db_write" . md5( implode('_', array_values($write) ) );
@@ -166,7 +173,6 @@ class Mysql5_7 implements Data {
 		} else {
 			$this->conn['write'] = $GLOBALS[$write_cname];
         }
-
         $this->db->setAsGlobal();
         
         // 支持JSON字段
@@ -806,7 +812,7 @@ class Mysql5_7 implements Data {
 		}
 
 		$db = $this->db( $conn_name );
-		$db->setFetchMode(PDO::FETCH_ASSOC);
+		// $db->setFetchMode(PDO::FETCH_ASSOC);
 
 		$qb = new \Xpmse\DataDriver\sqlQueryBuilder( 
             $db, $db->getQueryGrammar(), $db->getPostProcessor(),
@@ -840,7 +846,7 @@ class Mysql5_7 implements Data {
 
 		if ( $return ) {
 			
-			$db->setFetchMode(PDO::FETCH_ASSOC);
+			// $db->setFetchMode(PDO::FETCH_ASSOC);
 			
 			try {
 				$rows = $db->select($sql, $data);
