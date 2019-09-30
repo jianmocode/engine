@@ -157,7 +157,7 @@ class Mysql5_7 implements Data {
 		$read_cname  = "_db_read_" . md5( implode('_', array_values($read) ) );
 		$write_cname  = "_db_write" . md5( implode('_', array_values($write) ) );
 
-		if ( empty($GLOBALS[$read_cname]) ) {
+		if ( !array_key_exists($read_cname, $GLOBALS) || empty($GLOBALS[$read_cname]) ) {
 			$this->db->addConnection($read, 'read');
             $GLOBALS[$read_cname] = $this->db->getConnection('read');
             $this->conn['read'] = $GLOBALS[$read_cname];
@@ -166,7 +166,7 @@ class Mysql5_7 implements Data {
 			$this->conn['read'] = $GLOBALS[$read_cname];
 		}
 
-		if ( empty($GLOBALS[$write_cname]) ) {
+		if ( !array_key_exists($write_cname, $GLOBALS) || empty($GLOBALS[$write_cname]) ) {
 			$this->db->addConnection($write, 'write');
             $GLOBALS[$write_cname] = $this->db->getConnection('write');
             $this->conn['write'] = $GLOBALS[$write_cname];

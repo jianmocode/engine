@@ -6,3 +6,4 @@ mina/jssdk/web/node_modules
 yao
 service/lib/npl/baidu/lib/*
 service/test/.phpunit.result.cache
+test.php
