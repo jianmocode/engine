@@ -267,7 +267,7 @@ class sqlQueryBuilder extends QueryBuilder {
         $resp = $pg->toArray();
         $structs = $this->getQueryFieldStructs(false);
         foreach( $resp["data"] as & $row ) {
-            $this->filter( $row );
+            $this->filter( $row, $structs);
         }
 
 		// $resp['next'] = ($pg->lastPage() > $pg->currentPage()) ? ($pg->currentPage() + 1) : false ;

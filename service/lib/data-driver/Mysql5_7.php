@@ -21,6 +21,8 @@ use \Mina\Cache\Redis as Cache;
 use \Xpmse\DataDriver\Data as Data;
 use \Illuminate\Database\Capsule\Manager as DB;
 use \Illuminate\Database\Query\Builder as QueryBuilder;
+use Illuminate\Events\Dispatcher;
+use Illuminate\Database\Events\StatementPrepared;
 use \Illuminate\Database\ConnectionInterface as ConnectionInterface;
 use \Illuminate\Database\Query\Grammars\Grammar as Grammar;
 use \Illuminate\Database\Query\Processors\Processor as Processor;
@@ -146,24 +148,32 @@ class Mysql5_7 implements Data {
 		];
 
         $this->db = new DB;
-        
-
+        $event = new Dispatcher();
+        $event->listen(StatementPrepared::class, function ($event) {
+            $event->statement->setFetchMode(PDO::FETCH_ASSOC);
+        });
+        $this->db->setEventDispatcher( $event );
+    
 		$read_cname  = "_db_read_" . md5( implode('_', array_values($read) ) );
 		$write_cname  = "_db_write" . md5( implode('_', array_values($write) ) );
 
-		if ( empty($GLOBALS[$read_cname]) ) {
+		if ( !array_key_exists($read_cname, $GLOBALS) || empty($GLOBALS[$read_cname]) ) {
 			$this->db->addConnection($read, 'read');
-			$GLOBALS[$read_cname] = $this->conn['read'] = $this->db->getConnection('read');
+            $GLOBALS[$read_cname] = $this->db->getConnection('read');
+            $this->conn['read'] = $GLOBALS[$read_cname];
+           
 		} else {
 			$this->conn['read'] = $GLOBALS[$read_cname];
 		}
 
-		if ( empty($GLOBALS[$write_cname]) ) {
+		if ( !array_key_exists($write_cname, $GLOBALS) || empty($GLOBALS[$write_cname]) ) {
 			$this->db->addConnection($write, 'write');
-			$GLOBALS[$write_cname] = $this->conn['write'] = $this->db->getConnection('write');
+            $GLOBALS[$write_cname] = $this->db->getConnection('write');
+            $this->conn['write'] = $GLOBALS[$write_cname];
 		} else {
 			$this->conn['write'] = $GLOBALS[$write_cname];
         }
+        $this->db->setAsGlobal();
         
         // 支持JSON字段
         // $this->conn['read']->getDoctrineSchemaManager()->getDatabasePlatform()->registerDoctrineType('json');
@@ -395,7 +405,6 @@ class Mysql5_7 implements Data {
 
 			throw new Excp( $e->getMessage(), $e->getCode(), [
 					'sql' => $sql,
-					'return' => $return,
 					'message'=>$e->getMessage(), '__trace__'=>$e->getTrace()
 				]);
 		}
@@ -792,19 +801,21 @@ class Mysql5_7 implements Data {
 	 * @see https://laravel.com/docs/5.3/queries
 	 * @see https://laravel.com/docs/5.3/pagination
 	 * @see https://github.com/illuminate/database/blob/master/Query/Builder.php
+     * @param string $db_name 链接名称
+     * @param bool $include_removed 
 	 * @return \Illuminate\Database\Query\Builder 对象
 	 */
-	function query( $db="read", $include_removed=false ) {
+	function query( $conn_name="read", $include_removed=false ) {
 
 		if ( $this->table == null ) {
 			throw new Excp('未选定数据表', 404, ['table' => null] );
 		}
 
-		$db = $this->db( $db );
-		$db->setFetchMode(PDO::FETCH_ASSOC);
+		$db = $this->db( $conn_name );
+		// $db->setFetchMode(PDO::FETCH_ASSOC);
 
-		$qb = new sqlQueryBuilder(
-			$db, $db->getQueryGrammar(), $db->getPostProcessor(),
+		$qb = new \Xpmse\DataDriver\sqlQueryBuilder( 
+            $db, $db->getQueryGrammar(), $db->getPostProcessor(),
 			$this
 		);
 
@@ -835,7 +846,7 @@ class Mysql5_7 implements Data {
 
 		if ( $return ) {
 			
-			$db->setFetchMode(PDO::FETCH_ASSOC);
+			// $db->setFetchMode(PDO::FETCH_ASSOC);
 			
 			try {
 				$rows = $db->select($sql, $data);
@@ -1062,8 +1073,8 @@ class Mysql5_7 implements Data {
 		if ( $this->table == null ) {
 			throw new Excp('未选定数据表', 404, [
 				'table' => null,
-				'column_name'=>$column_name, 
-				'type'=>$type ] );
+                'column_name'=>$column_name
+            ]);
 		}
 
 		$schema = $this->db()->getSchemaBuilder();
@@ -1079,17 +1090,14 @@ class Mysql5_7 implements Data {
 
 	/**
 	 * 读取数据表列结构
-	 * @return [type] [description]
+	 * @return Array [description]
 	 */
 	public function getColumns() {
 
 		// var_dump( '@getColumns table is:', $this->table , ' fullname is:', $this->db()->getTablePrefix().$this->table );
 
 		if ( $this->table == null ) {
-			throw new Excp('未选定数据表', 404, [
-				'table' => null,
-				'column_name'=>$column_name, 
-				'type'=>$type ] );
+			throw new Excp('未选定数据表', 404 );
 		}
 
 		return $this->db()->getSchemaBuilder()->getColumnListing( $this->table );
@@ -1404,8 +1412,8 @@ class Mysql5_7 implements Data {
 		if ( $this->table == null ) {
 			throw new Excp('未选定数据表', 404, [
 				'table' => null,
-				'column_name'=>$column_name, 
-				'type'=>$type ] );
+                'column_name'=>$column_name
+            ]);
 		}
 
 		// 传递参数
@@ -1420,7 +1428,7 @@ class Mysql5_7 implements Data {
 				throw new Excp('字段不存在', 404, [
 					'table' => $this->table,
 					'column_name'=>$column_name, 
-					'type'=>$type ]);
+				]);
 			}
 
 			unset($GLOBALS['_dropColumnArgs']);
@@ -1464,7 +1472,7 @@ class Mysql5_7 implements Data {
 	 * 快速读取数据库连接
 	 * 
 	 * @param  [type] $name [description]
-	 * @return [type]	   [description]
+	 * @return ConnectionInterface	   [description]
 	 */
 	function db( $name = 'write' ) {
 
@@ -1643,7 +1651,7 @@ class Mysql5_7 implements Data {
 	 * @param  [type] $data [description]
 	 * @return [type]	   [description]
 	 */
-	public function _fliter( & $data, $replaceRaw = true  ) {
+	public function _fliter( array & $data, $replaceRaw = true  ) {
 
         $fields = $this->getFields();
 
@@ -1698,7 +1706,7 @@ class Mysql5_7 implements Data {
      * 返回数据缓存名称
      */
     private function cacheName( $name  ) {
-        $table_name  = trim($table_name);
+        $table_name  = "";
 		$table_name = empty($table_name) ? trim($this->table) : $table_name;
         $table_fullname = $this->db()->getTablePrefix().$table_name;
         return "{$table_fullname}:{$name}";

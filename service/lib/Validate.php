@@ -131,7 +131,7 @@ class Validate {
             }
 
             // 检查非空数值
-            if ( !is_null($value) && !$this->test( $field, $value, $rule) ) {
+            if ( !empty($value) && !$this->test( $field, $value, $rule) ) {
                 throw new Excp($message, 400, [
                     "fields"=> [$field],
                     "values" => ["$field"=>$value],

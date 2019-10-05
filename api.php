@@ -61,7 +61,29 @@ function handler_excp($e) {
     }
 
 }
+
+
+/**
+ * 安全过滤
+ */
+function securityFilter( & $input  ) {
+
+    if ( is_array($input) ) {
+        foreach( $input as & $v ) {
+            securityFilter( $v );
+        }
+    } else if ( is_string($input) ) {
+        $input = filter_var($input, FILTER_SANITIZE_STRING);
+    }
+}
+
+
 set_exception_handler('handler_excp');
+
+// 安全过滤
+securityFilter( $_GET );
+securityFilter( $_POST );
+
 
 // API地址
 $path = current(explode("?",$_SERVER["REQUEST_URI"]));

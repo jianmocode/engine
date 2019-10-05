@@ -6,6 +6,7 @@ use \Xpmse\Excp as Excp;
 use \Xpmse\Conf as Conf;
 use \Xpmse\Model as Model;
 use \Xpmse\Utils as Utils;
+use PHPUnit\Framework\TestCase;
 
 $driver = getenv("driver");
 if ( empty($driver) ) {
@@ -16,7 +17,7 @@ $driver = ucfirst(strtolower($driver));
 
 echo "\nXpmse\Model DataDriver: {$driver} 测试... \n\n\t";
 
-class testModelDatabase extends PHPUnit_Framework_TestCase {
+class testModelDatabase extends TestCase {
 
 	// 测试删除数据表、添加修改删除替换字段
 	function testDropTableAddAlterPutDropColumn() {
@@ -45,7 +46,9 @@ class testModelDatabase extends PHPUnit_Framework_TestCase {
             ->addColumn( "data",   $md->type('text',['json'=>true]) )
             ->addColumn( "data_origin_1",   $md->type('json',['null'=>true]) )
             ->addColumn( "data_origin_2",   $md->type('json',['null'=>false]) )
-		;
+        ;
+        
+        $this->assertEquals(true, true);
 	}
 
 

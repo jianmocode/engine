@@ -450,7 +450,9 @@
 					data-cropable="{{attr.cropable ? attr.cropable : 'yes'}}"
 					data-draggable="{{attr.draggable ? attr.draggable : 'yes'}}"
 					data-src="{{_value.url}}"
-					data-path="{{_value.path}}"
+                    data-path="{{_value.path}}"
+                    data-chunking="true"
+					data-chunk-size="524288"
                     ></div>
                 <div><a href="{{_value.url}}" target="_blank">{{name}}下载</a></div>
 				<div class="help-block">{{_error ? _error : helper}}</div>
@@ -482,7 +484,9 @@
 						data-cropable="{{attr.cropable ? attr.cropable : 'yes'}}"
 						data-draggable="{{attr.draggable ? attr.draggable : 'yes'}}"
 						data-src="{{img.url}}"
-						data-path="{{img.path}}"
+                        data-path="{{img.path}}"
+                        data-chunking="true"
+					    data-chunk-size="524288"
 						data-multiple="1"
                         ></div>
                     <div><a href="{{img.url}}" target="_blank">{{name}}下载</a></div>
@@ -546,7 +550,9 @@
 						data-cropable="{{attr.cropable ? attr.cropable : 'yes'}}"
 						data-draggable="{{attr.draggable ? attr.draggable : 'yes'}}"
 						data-src="{{img.url}}"
-						data-path="{{img.path}}"
+                        data-path="{{img.path}}"
+                        data-chunking="true"
+					    data-chunk-size="524288"
 						data-nested-value="1"
                         ></div>
                         <div><a href="{{img.url}}" target="_blank">{{name}}下载</a></div>
@@ -633,7 +639,9 @@
 					data-progress="{{attr.progress ? attr.progress : 'yes'}}"
 					data-draggable="{{attr.draggable ? attr.draggable : 'yes'}}"
 					data-src="{{_value.url}}"
-					data-path="{{_value.path}}"
+                    data-path="{{_value.path}}"
+                    data-chunking="true"
+					data-chunk-size="524288"
                     ></div>
                     <div><a href="{{_value.url}}" target="_blank">{{name}}下载</a></div>
 				<div class="help-block">{{_error ? _error : helper}}</div>
@@ -662,7 +670,9 @@
 						data-allow-types="{{attr.allow ? attr.allow : 'image/*,video/*,application/*,audio/*'}}"
 						data-maxsize="{{attr.maxsize ? attr.maxsize : '20'}}"
 						data-progress="{{attr.progress ? attr.progress : 'yes'}}"
-						data-draggable="{{attr.draggable ? attr.draggable : 'yes'}}"
+                        data-draggable="{{attr.draggable ? attr.draggable : 'yes'}}"
+                        data-chunking="true"
+					    data-chunk-size="524288"
 						data-src="{{img.url}}"
 						data-path="{{img.path}}"
 						data-multiple="1"
@@ -728,7 +738,9 @@
 						data-progress="{{attr.progress ? attr.progress : 'yes'}}"
 						data-draggable="{{attr.draggable ? attr.draggable : 'yes'}}"
 						data-src="{{img.url}}"
-						data-path="{{img.path}}"
+                        data-path="{{img.path}}"
+                        data-chunking="true"
+					    data-chunk-size="524288"
 						data-nested-value="1"
                         ></div>
                     <div><a href="{{img.url}}" target="_blank">{{name}}下载</a></div>
