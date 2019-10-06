@@ -156,7 +156,7 @@ class MQ {
             if ( $blocking ) {
                 $this->unlock();
             }
-            
+
             // 队列错误
             $e = Excp::create("消费任务执行失败({$errstr})", 500, [
                 "errno" => $errno,
@@ -182,6 +182,19 @@ class MQ {
                 $this->unlock();
             }
             throw $e;
+
+        } catch( \PDOException $e ) {
+
+            // 阻塞模式下，解锁
+            if ( $blocking ) {
+                $this->unlock();
+            }
+
+            $message = $e->getMessage();
+            throw Excp::create("消费任务执行失败({$message})", 500, [
+                "name" => $this->name,
+                "option" => $this->option
+            ]);
 
         } catch( Excption $e ) {
             
