@@ -208,7 +208,7 @@ class MQ {
      * @param array $data      任务数据
      * @param int   $priority  任务优先级[1-9]
      * 
-     * @return $this
+     * @return int $job_id 任务ID
      */
     public function push( array $data, int $priority=9 ) {
         
@@ -218,7 +218,8 @@ class MQ {
         }
 
         $priority_name = "{$this->name}:{$priority}";
-        if (Redis::lpush("mq:{$priority_name}", json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)) === false){
+        $job_id = Redis::lpush("mq:{$priority_name}", json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+        if ($job_id === false){
             throw Excp::create("添加任务失败", 500, [
                 "data" => $data,
                 "priority" => $priority,
@@ -227,7 +228,7 @@ class MQ {
             ]);
         }
 
-        return $this;
+        return $job_id;
     }
 
     /**
