@@ -126,11 +126,13 @@ class Str extends IlluminateStr {
      * @return bool 如果是URL返回 true, 否则返回 false
      */
     public static function isURL( string $input ){
-        if ( filter_var($input, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED|FILTER_FLAG_HOST_REQUIRED) ) {
-            return true;
-        } 
 
-        return false;
+        if ( defined("PHP_VERSION_ID") && PHP_VERSION_ID >= 70310 ) {
+            return filter_var($input, FILTER_VALIDATE_URL);
+        } else {
+            return filter_var($input, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED|FILTER_FLAG_HOST_REQUIRED);
+        }
+        
     }
 
     /**
