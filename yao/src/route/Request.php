@@ -382,7 +382,10 @@ class Request {
         }
 
         $this->headers = $headers;
-        $this->contentType = Arr::get($this->headers, "CONTENT_TYPE") ?: 'text/plain';
+        $this->contentType = Arr::get($this->headers, "CONTENT_TYPE");
+        if ( empty($this->contentType) ) {
+            $this->contentType = Arr::get($this->headers, "Content-Type")  ?: 'text/plain';
+        }
     }
 
     /**
