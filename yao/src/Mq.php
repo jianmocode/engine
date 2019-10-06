@@ -156,14 +156,17 @@ class MQ {
             if ( $blocking ) {
                 $this->unlock();
             }
-
-            throw Excp::create("消费任务执行失败({$errstr})", 500, [
+            
+            // 队列错误
+            $e = Excp::create("消费任务执行失败({$errstr})", 500, [
                 "errno" => $errno,
                 "errline" => $errline,
                 "errfile" => $errfile,
                 "name" => $this->name,
                 "option" => $this->option
             ]);
+            $e->log();
+            throw $e;
         });
 
         $response = null;
