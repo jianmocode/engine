@@ -23,7 +23,7 @@ defined("YAO_PRIVATE_URL") ?: define("YAO_PRIVATE_URL",Arr::get($GLOBALS, "YAO.s
 
 
 // 连接数据库
-DB::connect();
+DB::setting();
 
 /**
  * 数据模型 

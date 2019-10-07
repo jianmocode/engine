@@ -24,9 +24,9 @@ use Illuminate\Database\Events\StatementPrepared;
 class DB extends Capsule {
 
     /**
-     * 连接标记
+     * 设定标记
      */
-    public static $isconnected = false;
+    public static $isInit = false;
 
     /**
      * 数据库对象
@@ -43,11 +43,11 @@ class DB extends Capsule {
      * @param  array   $parameters
      * @return mixed
      */
-    public static function connect() {
-        if ( !self::$isconnected  ) {
-            static::$isconnected = true;
+    public static function setting() {
 
-            $config = self::config();
+        if ( !self::$isInit  ) {
+            static::$isInit = true;
+            $config = self::config();   
             $capsule = new self();
             $event = new Dispatcher();
             $event->listen(StatementPrepared::class, function ($event) {
@@ -60,8 +60,9 @@ class DB extends Capsule {
         }
     }
 
+
     /**
-     * [异步]连接数据库 
+     * [异步]连接数据库 (暂勿使用)
      * @param string $type write = 写连接, read = 读连接
      * @return \Swoole\Coroutine\MySQL  Instance
      */
@@ -92,6 +93,3 @@ class DB extends Capsule {
     }
     
 }
-
-// 连接数据库
-DB::connect();

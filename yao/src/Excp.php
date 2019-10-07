@@ -72,9 +72,16 @@ class Excp extends Exception {
      * @return Excp 异常对象实例
      */
     public function __construct( $message, int $code=0, $context=[] ) {
+        
         $this->message = $message;
         $this->code = $code;
         $this->context = $context;
+        
+        // 关闭数据库连接
+        try {
+            DB::disconnect();
+        } catch( \PDOException $e ) {}
+
     }
 
 
