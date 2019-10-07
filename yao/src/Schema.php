@@ -13,7 +13,7 @@ namespace Yao;
 use Illuminate\Support\Facades\Schema as FacadesSchema;
 
 // 连接数据库
-DB::connect();
+DB::setting();
 
 /**
  * 数据库
