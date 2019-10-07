@@ -39,13 +39,12 @@ class DB extends Capsule {
     /**
      * 连接数据库
      *
-     * @param  string  $method
-     * @param  array   $parameters
-     * @return mixed
+     * @param  bool  $force 强制连接选项
+     * @return void
      */
-    public static function setting() {
+    public static function setting(bool $force=false ) {
 
-        if ( !self::$isInit  ) {
+        if ( !self::$isInit || $force===true ) {
             static::$isInit = true;
             $config = self::config();   
             $capsule = new self();
