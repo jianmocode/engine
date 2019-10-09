@@ -121,7 +121,7 @@ function handler_excp($e) {
             "code" =>$e->getCode(),
             "message"=>$e->getMessage(),
             "trace"=>$e->getTrace()
-        ]);
+        ],JSON_UNESCAPED_UNICODE || JSON_UNESCAPED_SLASHES );
         exit;
     }
 
@@ -138,7 +138,7 @@ function handler_excp($e) {
         header("server: jianmo/server:1.9.3");
         header("x-powered-by: jianmo.ink");
         crossHeader();
-        echo json_encode($e->toArray());
+        echo json_encode($e->toArray(), JSON_UNESCAPED_UNICODE || JSON_UNESCAPED_SLASHES );
 
         // 服务端错误计入日志
         if ( $code >= 500 ) {
@@ -191,7 +191,7 @@ function handler_error($severity, $message, $file, $line) {
             "line" => $line,
             "severity" =>$severity,
             "trace" => $trace,
-        ]);
+        ],JSON_UNESCAPED_UNICODE || JSON_UNESCAPED_SLASHES );
         exit;
     }
 
