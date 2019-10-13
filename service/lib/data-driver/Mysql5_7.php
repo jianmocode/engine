@@ -471,9 +471,9 @@ class Mysql5_7 implements Data {
 	public function getBy( $uniqueKey, $value,  $select=['*'] ) {
 
         $qb = $this->query()->where($uniqueKey, '=', $value)->limit(1);
-        header("Debug-getBySql: ". $qb->getSql() );
+        // header("Debug-getBySql: ". $qb->getSql() );
         $rows = $qb->select( $select )->get()->toArray();
-        header("Debug-getByRes: ". count($rows) );
+        // header("Debug-getByRes: ". count($rows) );
 		if ( empty($rows) ) {
 			return [];
 		}
