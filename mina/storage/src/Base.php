@@ -418,10 +418,20 @@ class Base implements MinaObject {
 			throw new Exception("原文件不存在 ( $origin )", 400 );
 		}
 
-		
+        // 读取文件类型
+        // $pi = pathinfo($path);
+        // $type = strtoupper($pi["extension"]);
+        // $im->setFormat($type);
+
 		$raw = $this->getBlob( $path );
-		$im = new \Imagick;
-		$im->readImageBlob($raw);
+        $im = new \Imagick;
+        try {
+            $im->readImageBlob($raw);
+        } catch( Exception  $e ) {
+            $im->clear();
+      	    $im->destroy();
+            return ['width'=>0, 'height'=>0, 'prop'=>[]];
+        }
 		$prop = $im->getImageProperties("*");
 		$w = $im->getImageWidth();
 		$h = $im->getImageHeight();

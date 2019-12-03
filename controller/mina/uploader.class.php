@@ -239,9 +239,9 @@ class minaUploaderController extends minaBaseController {
 		$ext = $media->getExt($_FILES['file']['name']);
 
 		if ( $type == 'image' ) {
-			
-			$rs = $media->uploadImage($_FILES['file']['tmp_name'], $ext);
-			echo json_encode(['url'=>$rs['origin'],  'path'=> $rs['path']]);
+			$this->imageupload();
+			// $rs = $media->uploadImage($_FILES['file']['tmp_name'], $ext);
+			// echo json_encode(['url'=>$rs['origin'],  'path'=> $rs['path']]);
 			return;
 
 		} else if ( $type == 'file' ) {
@@ -402,7 +402,7 @@ class minaUploaderController extends minaBaseController {
 
 		$media = M('Media', $this->option);
 
-		$tmp_name  =  $media->tmpName($_POST['name']);
+        $tmp_name  =  $media->tmpName( $_POST['name'] ? $_POST['name'] : $_FILES["file"]["name"] );
 		if ( $_POST['chunk'] == 0  ) {
 			@unlink($tmp_name);
 		}
@@ -416,6 +416,7 @@ class minaUploaderController extends minaBaseController {
 		// 删除临时文件
 		@unlink($_FILES["file"]["tmp_name"]);
 		if ( intval($_POST['chunks']) == intval($_POST['chunk']) + 1) {
+
 			$mediaData = $media->uploadImage( $tmp_name );
 			
 			if ( isset($mediaData['extra']) ) {
