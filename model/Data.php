@@ -21,7 +21,7 @@ use \Xpmse\Openapi;
 
 $GLOBALS['_SYS'] =  [
     "location" => Utils::getLocation(),
-    "now" => date("y-m-d H:i:s")
+    "now" => date("Y-m-d H:i:s")
 ];
 
 
