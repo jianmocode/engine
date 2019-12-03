@@ -20,7 +20,8 @@ use \Xpmse\Openapi;
 @session_start();
 
 $GLOBALS['_SYS'] =  [
-	"location" => Utils::getLocation(),
+    "location" => Utils::getLocation(),
+    "now" => date("y-m-d H:i:s")
 ];
 
 
