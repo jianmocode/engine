@@ -616,7 +616,10 @@ class minaUploaderController extends minaBaseController {
             if ("application/x-zip-compressed" == $mimetype) {
                 $mimetype = "application/zip";
             }
-            $ext = $mimes->getExtension($mimetype);
+
+            if ( "application/octet-stream" != $mimetype) {
+                $ext = $mimes->getExtension($mimetype);
+            }
         }
 
         if (empty($ext)) {
@@ -645,8 +648,8 @@ class minaUploaderController extends minaBaseController {
 
 		// 根据名称生成 media_id
 		
-		$filename = !empty($_POST['name'] ) ? $_POST['name'] . date('Y-m-d')  : $_FILES["file"]["name"] . date('Y-m-d');
-		$name =  hash('md4', $filename ) . '.' . $ext;
+        $filename = !empty($_POST['name'] ) ? $_POST['name'] . date('Y-m-d')  : $_FILES["file"]["name"] . date('Y-m-d');
+        $name =  hash('md4', $filename ) . '.' . $ext;
 		$mediaData = $media->appendFile( $name, $blob, $rest, $ext );
 		@unlink($_FILES["file"]["tmp_name"]);
 

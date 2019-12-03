@@ -504,7 +504,12 @@ class Media extends Model {
 			$ext = 'xlsx';
 		} else if ( $ext === 'ptx' ) {
 			$ext = 'pptx';
-		}
+        }
+        
+        if ( strtolower(substr($file_name, -6)) == "tar.gz" ) {
+            return "tar.gz";
+        }
+        
 		return $ext;
 
 		// return $ext;
