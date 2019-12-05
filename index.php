@@ -207,7 +207,7 @@ $dispatcher->setup(
 
         $p = $maps[$slug];
         if ( empty( $p) ) {
-            echo json_encode(["message"=>"页面不存在", "code"=>404]);
+            echo json_encode(["message"=>"页面不存在", "code"=>404, "slug"=>$slug]);
             exit;
         }
         $page = "{$p["instance"]}:{$p["slug"]}";
