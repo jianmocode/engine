@@ -184,6 +184,11 @@ $dispatcher->setup(
 
         // 页面渲染异常情况 （ $vars == 状态码  $maps == 状态信息 )
         if ( $entry === null && is_numeric($vars) && is_string($maps) ) {
+            if ( $vars == 404 ) {
+                // 可能死锁
+                header("Location: /404");
+                exit;
+            }
             echo json_encode(["message"=>$maps, "code"=>$vars]);
             exit;
         }
