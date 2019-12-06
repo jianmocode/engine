@@ -4,7 +4,7 @@
         <div class="body">
             <div class="uploader">
                 <div name="tuieditorUpload" class="file-uploader rounded rounded-4 push-10-t"
-                    data-api='/_a/mina/uploader/upload?type=file'
+                    data-api='/_a/mina/uploader/upload?type=file&remove-disabled=1'
                     data-title=''
                     data-width="500"
 				    data-height="375"
@@ -61,8 +61,6 @@
         var id = $("#tuiEditorFiles .action input[name=tuiEidtorUploadedfile]").attr("data-id");
         var url =  $("#tuiEditorFiles .action input[name=tuiEidtorUploadedfile").val();
 
-        console.log( url );
-
         if ( url == null || url == "" ) {
             App.notify( "请上传文件或输入文件地址", 'fa fa-times', 'danger' );
             return;
@@ -81,15 +79,22 @@
             return;
         }
 
-        tuiEditorFilesInsertHtml( instance, url );        
-        $('.tuiEditorFiles').addClass('hidden');
+        if ( tuiEditorFilesInsertHtml( instance, url ) !== false ) {
+            $('.tuiEditorFiles').addClass('hidden');
+        };        
 
     }
 
 
     function tuiEditorFilesInsertHtml( instance, url ){
         
-        var loc = new URL(url);
+        try {
+            var loc = new URL(url);
+        } catch( e ) {
+            App.notify( "文件网址不正确", 'fa fa-times', 'danger' );
+            return false;
+        }
+
         var path = loc.pathname;
         var ext = path.split(".").pop();
         

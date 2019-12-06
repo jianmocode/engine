@@ -284,6 +284,12 @@ class minaUploaderController extends minaBaseController {
 	}
 
 	private function action_delete( $query ) {
+
+        if ( array_key_exists("remove-disabled", $query) ) {
+            echo json_encode(['ret'=>'complete', 'msg'=>'删除成功(忽略处理)']);
+            return;
+        }
+
 		$path = $query['path'];	
 		$media = M('Media', $this->option );
 		$rs = $media->rmByPath($path);
