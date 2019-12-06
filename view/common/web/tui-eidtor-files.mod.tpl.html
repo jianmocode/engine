@@ -1,0 +1,134 @@
+<div id="tuiEditorFiles" class="tuiEditorFiles hidden">
+    <div class="mask"></div>
+    <div class="wrap">
+        <div class="body">
+            <div class="uploader">
+                <div name="tuieditorUpload" class="file-uploader rounded rounded-4 push-10-t"
+                    data-api='/_a/mina/uploader/upload?type=file'
+                    data-title=''
+                    data-width="500"
+				    data-height="375"
+                    data-type="attachment"
+                    data-display-name="true"
+                    data-icon="fa fa-paperclip" 
+                    data-placeholder="" 
+                    data-allow-types=".png,.jpg,.gif,.svg,.mp4,.zip,.tar.gz,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
+                    data-maxsize="200"
+                    data-progress="yes"
+                    data-draggable="yes"
+                    data-src=""
+                    data-path=""
+                    data-chunking="true"
+                    data-chunk-size="1024000"
+                    event-success="
+                        function( file ){
+                            var json_text = file.xhr.response;
+                            var json_data = JSON.parse(json_text);
+                            var url = json_data.url;
+                            var ipput = $('.tuiEditorFiles .action input[name=tuiEidtorUploadedfile]');
+                            ipput.val( url );
+                        }
+                    "
+                ></div>
+            </div>
+            <div class="action">
+                <div>
+                    <input name="tuiEidtorUploadedfile" class="form-control"  style="width: 100%;" type="text" placeholder="上传或输入文件地址"  value="" /> 
+                </div>
+                <div style="margin-top: 20px;">
+                    <a class="btn btn-primary btn-large" href="javascript:tuiEditorFilesInsert();" style="margin-right:15px">插入文件</a>
+                    <a class="btn btn-default btn-large" href="javascript:$('.tuiEditorFiles').addClass('hidden');">取消操作</a>
+                </div>
+                <div style="margin-top: 20px;word-wrap:break-word;line-height: 1.6;list-style-position: inside;">
+                    <ol style="margin:0px;padding:0px;line-height: 2.0;">
+                        <li>可以上传或输入文件网址.</li>
+                        <li>上传支持文件格式: .png,.jpg,.gif,.svg,.mp4,.zip,.tar.gz,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx</li>
+                        <li>上传文件大小不能超过50M</li>
+                        <li>如为腾讯视频详情页，显示为视频播放器。 https://v.qq.com/x/cover/dh1fyeb58mnt.html </li>
+                        <li>png,gif,jpg,svg 文件显示为图片 </li>
+                        <li>mp4 文件显示为视频播放器 </li>
+                    </ol>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    function tuiEditorFilesInsert() {
+
+        var id = $("#tuiEditorFiles .action input[name=tuiEidtorUploadedfile]").attr("data-id");
+        var url =  $("#tuiEditorFiles .action input[name=tuiEidtorUploadedfile").val();
+
+        console.log( url );
+
+        if ( url == null || url == "" ) {
+            App.notify( "请上传文件或输入文件地址", 'fa fa-times', 'danger' );
+            return;
+        }
+
+        var instances =  tui.Editor.getInstances();
+        var instance = null;
+        instances.forEach(function(editor) {
+            if ( $(editor.options.el).attr('id') == id ) {
+                instance = editor;
+            }
+        });
+
+        if ( instance == null ) {
+            App.notify( "未找到编辑器实例", 'fa fa-times', 'danger' );
+            return;
+        }
+
+        tuiEditorFilesInsertHtml( instance, url );        
+        $('.tuiEditorFiles').addClass('hidden');
+
+    }
+
+
+    function tuiEditorFilesInsertHtml( instance, url ){
+        
+        var loc = new URL(url);
+        var path = loc.pathname;
+        var ext = path.split(".").pop();
+        
+        url = loc.protocol + "//" + loc.host + path;
+
+        // 图片
+        if ( $.inArray( ext, ["png", "jpg", "gif", "svg"]) !== -1 ) {
+            tuiEditorFilesInsertImage(instance, url);
+
+        // 视频
+        } else if ( ext == 'mp4') {
+            tuiEditorFilesInsertVideo(instance, url);
+
+        // 腾讯视频
+        } else if ( loc.host == 'v.qq.com') { 
+            tuiEditorFilesInsertQVideo( instance, url );
+
+        // 其他文件
+        } else {
+            tuiEditorFilesInsertFile(instance, url);
+        }
+        
+    }
+
+    function tuiEditorFilesInsertImage( instance, url ) {
+        instance.insertText("![图片]("+url+")");
+    }
+
+    function tuiEditorFilesInsertVideo( instance, url) {
+        instance.insertText("\n```video\n"+url+"\n```\n");
+    }
+
+    function tuiEditorFilesInsertQVideo( instance, url ) {
+        instance.insertText("\n```qqvideo\n"+url+"\n```\n");
+    }
+
+    function tuiEditorFilesInsertFile( instance, url ) {
+        instance.insertText("[文件下载]("+url+")");
+    }
+
+
+</script>

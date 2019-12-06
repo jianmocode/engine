@@ -1,0 +1,56 @@
+/**
+ * TUI 文件上传
+ */
+
+.tuiEditorFiles {
+    display: block;
+    position: absolute;
+    height: 100vh;
+    width: 100vw;
+    top:0px;
+    left: 0px;
+    z-index: 1099;
+ }
+
+ .tuiEditorFiles .mask {
+    background: rgba(0, 0, 0, .5);
+    height: 100vh;
+    width: 100vw;
+ }
+
+ .tuiEditorFiles .wrap {
+    display: block;
+    position: absolute;
+    z-index: 1100;
+    top: 20vh;
+    left: 18vw;
+    background: #ffffff;
+    width: 960px;
+    height: 475px;
+ }
+
+ .tuiEditorFiles .wrap .title {
+     text-align: right;
+     padding: 8px 10px 10px 10px;
+     width: 100%;
+ }
+
+ .tuiEditorFiles .wrap .body {
+    display: flex;
+    padding:40px;
+ }
+
+ .tuiEditorFiles .wrap .body .uploader {
+     width: 60%;
+ }
+
+ .tuiEditorFiles .wrap .body .action {
+    width: 35%;
+    margin-top: 10px;
+}
+
+.tuiEditorFiles  .file-uploader .progress {
+   width: 960px !important;
+   left: 0px;
+   display: block !important;
+}
