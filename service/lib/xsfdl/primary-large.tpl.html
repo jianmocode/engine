@@ -290,6 +290,47 @@
 	</script>
 </template>
 
+<template type="tuieditor">
+	<!-- 富文本(tui.editor): {{name}} ({{_name}}) 开始  -->
+	<div class="form-group   {{_error ? 'has-error'}}  {{ class }}">
+		<label class="col-xs-2 control-label" for="{{_name}}">{{name}}{% if rule.required == true %}<span class="text-danger">*</span>{% endif %}</label>
+		<div class="col-xs-8">
+            <div id="{{_name}}TuiEditor"></div>
+            <textarea style="display: none;" id="{{_name}}" name="{{_name}}">{{ _value | e('html')}}</textarea>
+            <textarea style="display: none;" id="{{_name}}__html" name="{{_name}}__html"></textarea>
+			<div class="help-block">{{_error ? _error : helper}}</div>
+		</div>
+	</div><!-- END 富文本(tui.editor): {{name}} ({{_name}}) -->
+	<script type="text/javascript">
+		// Init full text tui.editor
+		var {{_name}}TuiEditor = new tui.Editor({
+            el: document.querySelector('#{{_name}}TuiEditor'),
+            previewStyle: 'vertical',
+            height: '{{ attr.height ? attr.height : 600 }}px',
+            initialEditType: 'markdown',
+            initialValue: $('textarea[name={{_name}}]').val(),
+            toolbarItems: [
+                'heading','bold','italic','strike','divider',
+                'hr','quote','divider','ul','ol','task','divider',
+                'indent','outdent','divider',
+                'table','link','divider',
+                'code','codeblock','divider',
+            ],
+            exts: [
+                'colorSyntax','table', 'video'
+            ],
+            events: {
+                change: function(){
+                    var markdown = {{_name}}TuiEditor.getMarkdown();
+                    var html = {{_name}}TuiEditor.getHtml();
+                    $('textarea[name={{_name}}]').val(markdown);
+                    $('textarea[name={{_name}}__html]').val(html);
+                }
+            }
+        });
+	</script>
+</template>
+
 <template type="json-editor">
 
     <!-- JSON编辑器(json-editor): {{name}} ({{_name}}) 开始  -->
