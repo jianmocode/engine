@@ -2111,8 +2111,8 @@ class Database implements Data {
 			$tab_o = array_key_exists($tab, $map['table']) && is_string($map['table'][$tab]) ? $map['table'][$tab] : $tab;
 
 			// 原始数据表
-			$json_columns = $this->getJSONColumns( $tab_o );
-
+            $json_columns = $this->getJSONColumns( $tab_o );
+      
 			foreach ($json_columns  as $field ) {
 
 				// 字段映射关系
@@ -2130,7 +2130,14 @@ class Database implements Data {
 					if ( $data[$field_as] === null ) {
 						$data[$field_as] = null;	
 					} else {
-						$data[$field_as] = json_decode($data[$field_as], true);
+                        // Join BUG (Not fixed-- )
+                        $val = json_decode($data[$field_as], true);
+                        if ( ($val === null || $val === false) && !empty($data[$field_as]) ) {
+                            // var_dump($data[$field_as]);
+
+                        } else {
+                            $data[$field_as] = $val;
+                        }
 					}
 				}
 
