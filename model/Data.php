@@ -315,7 +315,7 @@ class Data {
                     
 					if ( $pos === 0 ) {  // {{__var.slug}}
                         // echo "<!-- debug :: {{__var.slug}} = {$match[0]}  pos={$pos} v={$v}  text=$text-->\n";    
-                        $text = str_replace('{{' .$match[0] . '}}', $v , $text);
+                        $text = str_replace('{{' .$match[0] . '}}', urldecode($v) , $text);
                         $text = str_replace($match[0], "'{$v}'" , $text);
                         // echo "<!-- debug :: after text={$text} -->\n";
 					} else {  // {{'someting  __var.slug'}}
