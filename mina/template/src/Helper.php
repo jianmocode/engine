@@ -404,7 +404,6 @@ class Helper  {
 		return $url;
 	}
 
-
 	static function hmDateTime( $datetime, $fmt='Y年m月d日' ) {
         if ( empty($datetime) ) {
             $datetime = date('Y-m-d H:i:s');
@@ -413,6 +412,10 @@ class Helper  {
 		$datetime = str_replace('@', '', $datetime );
 		$ts = strtotime($datetime);
 		return date($fmt, $ts);
+    }
+    
+    static function UrlEncode( $string ) {
+		return urlencode( $string );
 	}
 
 	static function length( $value ) {
@@ -430,7 +433,9 @@ class Helper  {
 		$string = str_replace("\n", "", $string );
 		$string = str_replace("\r", "", $string );
 		return trim( $string );
-	}
+    }
+    
+  
 
 	static function implode( $split ,$array ) {
 		if ( is_array($array) ) {
