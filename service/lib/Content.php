@@ -170,7 +170,9 @@ class Content {
             "figcaption" => [],
             "audio" => ["controls"],
             "video" => ["controls", "width", "height"],
-            "source" => ["src", "type"]
+            "source" => ["src", "type"],
+            "iframe" => ["frameborder", "src", "allowfullscreen", "width", "height"],
+            "figure" => ["contenteditable", "data-trix-attachment", "data-trix-content-type", "data-trix-id", "data-trix-attributes"]
         ]
     ];
 
@@ -590,14 +592,21 @@ class Content {
                 return;
             }
 
+            if ( $href->tag == 'iframe' ) {
+                return;
+            }
+            
             $span = current( $href->children );
             if ( is_null( $span ) ) {
                 $node->setTag("span")->setAttrs([]);
                 return;
             }
-
-            $url = $span->attr("data-url");
-            $name = $span->attr("data-name");
+            
+            if ( method_exists($span, "attr") ) {
+                $url = $span->attr("data-url");
+                $name = $span->attr("data-name");
+            }
+            
             $node->setTag("div")->setAttrs([]);
             $node->addClass("jm-content-attachment");
             $node->innerHTML("
