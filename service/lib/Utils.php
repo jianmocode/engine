@@ -560,9 +560,11 @@ class Utils {
 	}
 
 	public static function addressLocation(   $address, $option=[] ) {
-		$ak = $option['ak'] ;
+        
+        $ak = array_get($option,'ak', null);
+
 		if ( $ak === null ) {
-		return ['status'=>'404', 'message'=>'无百度API配置信息 AK=NULL', 'extra'=>['ip'=>$ip, 'ak'=>$ak, 'sk'=>$sk]];
+		    return ['status'=>'404', 'message'=>'无百度API配置信息 AK=NULL', 'extra'=>['ip'=>$ip, 'ak'=>$ak, 'sk'=>$sk]];
 		}
 		$api = empty( $option['api']) ? "/geocoder/v2/" :  $option['api'];
 		$url = "http://api.map.baidu.com";
